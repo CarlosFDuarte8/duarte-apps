@@ -16,7 +16,22 @@ Valide com npm run lint e npm run build.
 - src/components/ui: marca, icones, rotulo de secao e tags.
 - src/data: projetos, tecnologias e contato.
 
-## Links de contato
+## Projetos e carrossel
+
+Cadastre novos projetos em `src/data/projects.ts`, com um `number` único. O carrossel usa essa lista automaticamente, avança a cada seis segundos e oferece setas, indicadores, teclado e navegação por toque. A reprodução pausa ao interagir e respeita movimento reduzido, a visibilidade da seção e da aba.
+
+Para adicionar botões a um projeto, preencha o campo opcional `links`:
+
+```ts
+links: [
+  { label: "Acessar projeto", href: "https://seu-projeto.com" },
+  { label: "Ver código", href: "https://github.com/seu-usuario/seu-projeto" },
+],
+```
+
+Use os endereços reais. Links externos abrem em uma nova aba; sem `links`, o cartão fica sem botões de acesso. A política do NutriGo continua acessível apenas pelo rodapé.
+
+## Configuração dos contatos
 
 Os campos de `src/data/site.ts` alimentam os botões da seção Conversar.
 Configure em `.env.local` e na hospedagem:

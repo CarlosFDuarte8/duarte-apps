@@ -1,0 +1,36 @@
+.carousel { min-width: 0; }
+.carousel-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+.carousel-count { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; letter-spacing: 2px; white-space: nowrap; }
+.carousel-count strong { color: var(--ink); font-size: 18px; }
+.carousel button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.carousel button:focus-visible, .carousel-viewport:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.carousel-rotation { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 12px; border: 1px solid #dce3ef; border-radius: 99px; background: #ffffffb3; color: #566070; font-size: 11px; }
+.carousel-rotation svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.carousel-viewport { overflow: hidden; border-radius: 20px; touch-action: pan-y pinch-zoom; }
+.carousel-track { display: flex; width: 100%; transition: transform 500ms var(--ease-out); }
+.carousel-slide { flex: 0 0 100%; min-width: 0; }
+.carousel .project-card { height: 100%; min-height: 310px; margin: 0; box-shadow: none; }
+.carousel .project-card:hover { transform: none; }
+.carousel .project-content { min-width: 0; }
+.project-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.project-actions .button { min-height: 44px; font-size: 12px; padding-inline: 16px; }
+.project-actions .button-primary { background: var(--project-accent); box-shadow: none; }
+.carousel-controls { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 22px; }
+.carousel-arrow { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border: 1px solid #dce3ef; border-radius: 50%; background: #fff; color: var(--ink); transition: background 200ms, color 200ms; }
+.carousel-arrow:hover { color: var(--blue); background: #eaf0ff; }
+.carousel-arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.carousel-previous svg { rotate: 180deg; }
+.carousel-dots { display: flex; justify-content: center; flex-wrap: wrap; min-width: 0; }
+.carousel-dots button { display: grid; place-items: center; width: 32px; height: 44px; padding: 0; border: 0; border-radius: 8px; background: transparent; }
+.carousel-dots span { width: 7px; height: 7px; border-radius: 99px; background: #b8c2d4; transition: width 250ms, background 250ms; }
+.carousel-dots button[aria-current="true"] span { width: 22px; background: var(--blue); }
+.carousel-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 600px) {
+  .carousel .project-card { min-height: 360px; align-content: start; }
+  .carousel-controls { gap: 12px; }
+  .project-actions { flex-direction: column; align-items: stretch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track { transition: none; }
+}
