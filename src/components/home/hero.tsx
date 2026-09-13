@@ -1,7 +1,7 @@
 import { ArrowIcon } from "../ui/icons";
 
 export function Hero() {
-  return (<section className="hero shell" id="inicio">
+  return (<section className="hero shell">
         <div className="hero-copy">
           <div className="availability"><span /> Disponível para novos desafios</div>
           <h1>Transformo ideias em<br /><em>produtos digitais.</em></h1>
