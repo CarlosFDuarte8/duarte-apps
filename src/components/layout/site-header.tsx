@@ -7,7 +7,7 @@ export function SiteHeader() {
   return (<header className="nav shell" id="inicio">
         <Brand />
         <nav aria-label="Navegação principal">
-          {navigationItems.filter((item) => item.id !== "inicio").map((item) => (
+          {navigationItems.filter((item) => item.id !== "inicio" && item.id !== "contato").map((item) => (
             <Link key={item.id} href={`/#${item.id}`}>{item.label}</Link>
           ))}
         </nav>

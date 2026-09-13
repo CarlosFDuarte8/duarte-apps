@@ -16,6 +16,20 @@ Valide com npm run lint e npm run build.
 - src/components/ui: marca, icones, rotulo de secao e tags.
 - src/data: projetos, tecnologias e contato.
 
+## Links de contato
+
+Os campos de `src/data/site.ts` alimentam os botões da seção Conversar.
+Configure em `.env.local` e na hospedagem:
+
+```dotenv
+CONTACT_WHATSAPP=https://wa.me/SEU_NUMERO_COM_DDI
+CONTACT_LINKEDIN=https://www.linkedin.com/in/SEU_PERFIL
+CONTACT_GITHUB=https://github.com/SEU_USUARIO
+CONTACT_EMAIL=SEU_EMAIL
+```
+
+Substitua os exemplos pelos valores reais. O WhatsApp usa o número com DDI e DDD, somente dígitos. Campos vazios não geram botões. Reinicie o servidor de desenvolvimento após configurar; em produção, faça uma nova compilação/publicação.
+
 ## Política do NutriGo
 
 Politica: /nutrigo/privacy-policy. Link apenas no rodape.

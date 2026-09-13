@@ -99,6 +99,15 @@ section[id] { scroll-margin-top: 32px; }
   background: linear-gradient(90deg, transparent, #8b9fff70, transparent);
 }
 .contact h2 em { color: #a4b6ff; }
+.contact-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 30px; }
+.contact-actions:empty { display: none; }
+.button-whatsapp { color: #fff; background: #17834a; border: 1px solid #309c63; }
+.button-whatsapp:hover { background: #146c3e; box-shadow: 0 10px 24px #00000025; }
+.button-social { color: #eef2ff; background: #ffffff08; border: 1px solid #ffffff30; }
+.button-social:hover { background: #ffffff15; }
+@media (max-width: 600px) {
+  .contact-actions { flex-direction: column; align-items: stretch; max-width: 340px; margin-inline: auto; }
+}
 .footer > a:last-child { text-underline-offset: 4px; transition: color 200ms; }
 .footer > a:last-child:hover { color: var(--blue); text-decoration: underline; }
 

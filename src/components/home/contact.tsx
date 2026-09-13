@@ -1,5 +1,4 @@
-import { site } from "@/data/site";
-import { ArrowIcon } from "../ui/icons";
+import { ContactLinks } from "../ui/contact-links";
 
 export function Contact() {
   return (<section className="contact" id="contato">
@@ -8,7 +7,7 @@ export function Contact() {
           <span className="contact-kicker">TEM UMA IDEIA OU OPORTUNIDADE?</span>
           <h2>Vamos construir algo<br /><em>incrível juntos.</em></h2>
           <p>Estou sempre aberto a boas conversas, projetos interessantes e novos desafios.</p>
-          {site.contactEmail && <a className="button button-light" href={`mailto:${site.contactEmail}`}>Entrar em contato <ArrowIcon /></a>}
+          <ContactLinks />
         </div>
       </section>);
 }
