@@ -1,0 +1,153 @@
+/* Visual polish and motion, kept separate from the base layout. */
+:root {
+  --font-inter: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --font-manrope: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::selection { background: #dce5ff; color: #183888; }
+section[id] { scroll-margin-top: 32px; }
+
+.nav { position: relative; z-index: 3; }
+.nav nav a { position: relative; padding-block: 10px; }
+.nav nav a::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--blue);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 250ms var(--ease-out);
+}
+.nav nav a:is(:hover, :focus-visible)::after { transform: scaleX(1); }
+.brand-mark { transition: transform 300ms var(--ease-out), box-shadow 300ms; }
+.brand:hover .brand-mark { transform: rotate(-8deg); box-shadow: 0 10px 24px #3157e833; }
+
+.hero { position: relative; }
+.hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 85% 30%, #eef1ff 0%, transparent 55%);
+}
+.hero h1 { font-size: clamp(44px, 5.2vw, 70px); letter-spacing: -0.065em; text-wrap: balance; }
+.hero h1 em {
+  background: linear-gradient(110deg, #3157e8 10%, #7353d6 65%, #3157e8);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.hero-copy > p { max-width: 540px; }
+.availability { background: #ffffffb3; box-shadow: 0 4px 16px #182e6310; }
+.hero-metrics strong { letter-spacing: -1px; }
+.hero-visual { isolation: isolate; }
+.code-window { border: 1px solid #ffffff20; }
+.window-bar { border-bottom: 1px solid #ffffff08; }
+.button { transition: transform 250ms var(--ease-out), box-shadow 250ms, background 250ms; }
+.button svg, .nav-cta svg { transition: transform 250ms var(--ease-out); }
+.button:hover svg, .nav-cta:hover svg { transform: translateX(4px); }
+.button-primary:hover { background: #2548ce; box-shadow: 0 16px 32px #3157e838; }
+.button-ghost:hover { background: #f7f9ff; box-shadow: 0 8px 24px #182e630a; }
+
+.about { border-top: 1px solid var(--line); }
+.section-label { letter-spacing: 2.4px; }
+.projects { background: linear-gradient(180deg, #f6f8fc, #f0f3fa 65%, #f6f8fc); }
+.project-list { gap: 24px; }
+.project-card {
+  --project-accent: #3157e8;
+  position: relative;
+  border-color: #e1e6f0;
+  box-shadow: 0 4px 8px #182e6303, 0 12px 40px #182e6304;
+  transition: transform 350ms var(--ease-out), box-shadow 350ms, border-color 350ms;
+}
+.project-card.violet { --project-accent: #7447ca; }
+.project-card.green { --project-accent: #147869; }
+.project-card::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  bottom: 30px;
+  left: 0;
+  width: 3px;
+  border-radius: 0 4px 4px 0;
+  background: var(--project-accent);
+  opacity: 0;
+  transition: opacity 350ms;
+}
+.project-eyebrow { color: var(--project-accent); }
+.project-content h3 { color: var(--ink); letter-spacing: -1px; }
+.project-art { box-shadow: inset 0 0 40px #00000020; }
+.project-art span { transition: transform 600ms var(--ease-out); }
+.project-art::after { width: 155px; height: 155px; transition: transform 700ms var(--ease-out); }
+.tags span { border: 1px solid #e9edf4; background: #f8f9fc; }
+.stack-card { background: linear-gradient(135deg, #f8faff, #f0f3fa); box-shadow: 0 16px 48px #182e6306; }
+.skill-cloud span { transition: transform 200ms var(--ease-out), border-color 200ms, box-shadow 200ms; }
+.contact { background: radial-gradient(ellipse at 50% 100%, #18254a, #0a1020 75%); }
+.contact::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #8b9fff70, transparent);
+}
+.contact h2 em { color: #a4b6ff; }
+.footer > a:last-child { text-underline-offset: 4px; transition: color 200ms; }
+.footer > a:last-child:hover { color: var(--blue); text-decoration: underline; }
+
+@media (hover: hover) {
+  .project-card:hover { transform: translateY(-5px); border-color: #cbd4e6; box-shadow: 0 22px 52px #182e6310; }
+  .project-card:hover::before { opacity: 1; }
+  .project-card:hover .project-art span { transform: translateY(-3px) scale(1.06); }
+  .project-card:hover .project-art::after { transform: scale(1.18); }
+  .skill-cloud span:hover { transform: translateY(-3px); border-color: #bccbf9; box-shadow: 0 6px 16px #3157e810; }
+}
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+@keyframes soft-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px #2bb67312; }
+  50% { box-shadow: 0 0 0 7px #2bb67305; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-copy > * { animation: enter 850ms var(--ease-out) both; }
+  .hero-copy > :nth-child(2) { animation-delay: 80ms; }
+  .hero-copy > :nth-child(3) { animation-delay: 160ms; }
+  .hero-copy > :nth-child(4) { animation-delay: 240ms; }
+  .hero-copy > :nth-child(5) { animation-delay: 320ms; }
+  .hero-visual { animation: enter 1100ms 180ms var(--ease-out) both; }
+  .floating-card { animation: float 6s ease-in-out 2; }
+  .card-api { animation-delay: -3s; }
+  .orb-one { animation: float 8s ease-in-out 2; }
+  .orb-two { animation: float 7s ease-in-out 2 reverse; }
+  .availability > span { animation: soft-pulse 3s ease-in-out 3; }
+}
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: clamp(38px, 10vw, 54px); letter-spacing: -0.06em; }
+  .hero-copy > p { font-size: 15px; }
+  .project-list { gap: 16px; }
+  .project-content h3 { font-size: 26px; }
+  .section-label { letter-spacing: 1.4px; font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .button:hover, .project-card:hover, .skill-cloud span:hover,
+  .brand:hover .brand-mark, .project-card:hover .project-art span,
+  .project-card:hover .project-art::after, .button:hover svg, .nav-cta:hover svg { transform: none; }
+}

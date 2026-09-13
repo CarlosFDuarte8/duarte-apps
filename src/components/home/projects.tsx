@@ -1,6 +1,7 @@
 import { SectionLabel } from "../ui/section-label";
 import { projects } from "@/data/projects";
 import { ProjectCard } from "../projects/project-card";
+import { Reveal } from "../ui/reveal";
 
 export function Projects() {
   return (<section className="projects section" id="projetos">
@@ -11,7 +12,7 @@ export function Projects() {
           </div>
           <div className="project-list">
             {projects.map((project) => (
-              <ProjectCard key={project.title} project={project} />
+              <Reveal key={project.title}><ProjectCard project={project} /></Reveal>
             ))}
           </div>
         </div>
