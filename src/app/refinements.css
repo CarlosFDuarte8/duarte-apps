@@ -101,6 +101,8 @@ section[id] { scroll-margin-top: 32px; }
 .contact h2 em { color: #a4b6ff; }
 .contact-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 30px; }
 .contact-actions:empty { display: none; }
+.button .contact-icon { width: 20px; height: 20px; flex-shrink: 0; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.button:hover .contact-icon { transform: none; }
 .button-whatsapp { color: #fff; background: #17834a; border: 1px solid #309c63; }
 .button-whatsapp:hover { background: #146c3e; box-shadow: 0 10px 24px #00000025; }
 .button-social { color: #eef2ff; background: #ffffff08; border: 1px solid #ffffff30; }

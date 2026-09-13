@@ -1,15 +1,17 @@
 import { site } from "@/data/site";
 import { ArrowIcon } from "./icons";
+import { ContactIcon, type ContactIconName } from "./contact-icon";
 
 export function ContactLinks() {
-  const contacts: { label: string; href: string; primary?: boolean }[] = [
+  const contacts: { icon: ContactIconName; label: string; href: string; primary?: boolean }[] = [
     {
+      icon: "whatsapp",
       label: "Conversar no WhatsApp",
       href: site.contactWhatsApp,
       primary: true,
     },
-    { label: "LinkedIn", href: site.contactLinkedIn },
-    { label: "GitHub", href: site.contactGitHub },
+    { icon: "linkedin", label: "LinkedIn", href: site.contactLinkedIn },
+    { icon: "github", label: "GitHub", href: site.contactGitHub },
   ];
   const links = contacts.filter((link) => link.href);
 
@@ -23,7 +25,7 @@ export function ContactLinks() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {link.label} <ArrowIcon />
+          <ContactIcon name={link.icon} /> {link.label} <ArrowIcon />
         </a>
       ))}
       {site.contactEmail && (
@@ -31,7 +33,7 @@ export function ContactLinks() {
           className="button button-social"
           href={`mailto:${site.contactEmail}`}
         >
-          Enviar e-mail <ArrowIcon />
+          <ContactIcon name="email" /> Enviar e-mail <ArrowIcon />
         </a>
       )}
     </div>
