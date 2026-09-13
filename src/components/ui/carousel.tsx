@@ -18,11 +18,6 @@ function subscribeToMotion(callback: () => void) {
   return () => media.removeEventListener("change", callback);
 }
 
-function subscribeToVisibility(callback: () => void) {
-  document.addEventListener("visibilitychange", callback);
-  return () => document.removeEventListener("visibilitychange", callback);
-}
-
 export function Carousel({
   slides,
   label,
@@ -39,15 +34,11 @@ export function Carousel({
   const [focusPaused, setFocusPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [pageVisible, setPageVisible] = useState(true);
   const reducedMotion = useSyncExternalStore(
     subscribeToMotion,
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     () => true,
-  );
-  const pageVisible = useSyncExternalStore(
-    subscribeToVisibility,
-    () => document.visibilityState === "visible",
-    () => false,
   );
   const rotationEnabled = !paused && !focusPaused && !reducedMotion;
   const playing = rotationEnabled && !hovered && visible && pageVisible && slides.length > 1;
@@ -59,6 +50,13 @@ export function Carousel({
     }, { threshold: 0.25 });
     observer.observe(container.current);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const update = () => setPageVisible(document.visibilityState === "visible");
+    update();
+    document.addEventListener("visibilitychange", update);
+    return () => document.removeEventListener("visibilitychange", update);
   }, []);
 
   useEffect(() => {
@@ -125,8 +123,8 @@ export function Carousel({
         aria-label="Projetos; use as setas do teclado ou deslize para navegar"
         onPointerDown={(event) => {
           if (!event.isPrimary || event.button !== 0) return;
-          setPaused(true);
           if (event.target instanceof Element && event.target.closest("a, button")) return;
+          setPaused(true);
           gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
           event.currentTarget.setPointerCapture(event.pointerId);
         }}
