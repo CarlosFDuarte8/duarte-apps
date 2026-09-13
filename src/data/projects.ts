@@ -6,6 +6,7 @@ export type Project = {
   stack: string[];
   tone: 'blue' | 'violet' | 'green';
   privacyPolicyHref?: string;
+  links?: { label: string; href: string }[];
 };
 
 export const projects: Project[] = [
@@ -17,6 +18,15 @@ export const projects: Project[] = [
       "Aplicativo mobile para acompanhamento de pacientes, questionários inteligentes, notificações e experiências conectadas a dispositivos.",
     stack: ["React Native", ".NET", "SQL Server", "BLE"],
     tone: "blue",
+    links: [
+      {
+        label: "Android",
+        href: "https://play.google.com/store/search?q=noar+health&c=apps&hl=pt&gl=US"
+      },
+      {
+        label: "iOS",
+        href: "https://apps.apple.com/br/app/noar-health/id1673473276?l=en-GB"
+      }]
   },
   {
     number: "02",
