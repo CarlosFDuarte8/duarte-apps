@@ -522,6 +522,9 @@ h2 {
     linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
   background-size: 24px 24px;
 }
+.project-art-image {
+  object-fit: cover;
+}
 .violet .project-art {
   background: linear-gradient(145deg, #21113d, #7447ca);
 }

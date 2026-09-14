@@ -1,6 +1,7 @@
 import type { Project } from "@/data/projects";
 import { TagList } from "../ui/tag-list";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowIcon } from "../ui/icons";
 
 export function ProjectCard({ project }: { project: Project }) {
@@ -31,7 +32,22 @@ export function ProjectCard({ project }: { project: Project }) {
           </div>
         )}
       </div>
-      <div className="project-art" aria-hidden="true"><div className="art-grid" /><span>{project.number}</span></div>
+      <div className="project-art" aria-hidden="true">
+        {project.image ? (
+          <Image
+            src={project.image}
+            alt=""
+            fill
+            sizes="(max-width: 900px) 100vw, 420px"
+            className="project-art-image"
+          />
+        ) : (
+          <>
+            <div className="art-grid" />
+            <span>{project.number}</span>
+          </>
+        )}
+      </div>
     </article>
   );
 }

@@ -1,3 +1,5 @@
+import type { StaticImageData } from "next/image";
+
 export type Project = {
   number: string;
   eyebrow: string;
@@ -7,7 +9,10 @@ export type Project = {
   tone: 'blue' | 'violet' | 'green';
   privacyPolicyHref?: string;
   links?: { label: string; href: string }[];
+  image?: StaticImageData;
 };
+
+import nutrigoBanner from "@/assets/banners/nutrigo-google-play-feature-graphic.png";
 
 export const projects: Project[] = [
   {
@@ -54,5 +59,6 @@ export const projects: Project[] = [
     stack: ["React Native", "Planejamento alimentar", "Assistente com IA", "Mobile"],
     tone: "green",
     privacyPolicyHref: "/nutrigo/privacy-policy",
+    image: nutrigoBanner,
   },
 ];
