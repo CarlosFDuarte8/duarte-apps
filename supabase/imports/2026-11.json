@@ -1,0 +1,376 @@
+{
+  "id": "3bdf4528-3f82-50de-b4f6-7362ce6aabee",
+  "month": "2026-11",
+  "status": "draft",
+  "categories": [
+    "porteiro",
+    "porteira",
+    "organista"
+  ],
+  "events": [
+    {
+      "id": "29e7541e-c532-53b5-adc0-ab96f83c1fe3",
+      "date": "2026-11-01",
+      "kind": "culto",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "primeiro",
+          "member_id": "e0f2b634-0144-50d6-a070-a7fe37303c93"
+        },
+        {
+          "role": "segundo",
+          "member_id": "06bd01e1-86d8-57c9-8581-13626dd4d99d"
+        },
+        {
+          "role": "porteira",
+          "member_id": "2d7c6981-794a-58d7-8b49-4255b8a53110"
+        },
+        {
+          "role": "meia_hora",
+          "member_id": "f19ca0a5-13b9-5e4a-a4b3-367c083cf2c8"
+        },
+        {
+          "role": "culto",
+          "member_id": "f19ca0a5-13b9-5e4a-a4b3-367c083cf2c8"
+        }
+      ]
+    },
+    {
+      "id": "7e36330d-6b57-5040-8674-5e6dd88899a7",
+      "date": "2026-11-01",
+      "kind": "jovens",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "jovens_porteiro",
+          "member_id": "06bd01e1-86d8-57c9-8581-13626dd4d99d"
+        },
+        {
+          "role": "jovens_porteira",
+          "member_id": "2d7c6981-794a-58d7-8b49-4255b8a53110"
+        },
+        {
+          "role": "jovens_organista",
+          "member_id": "4d374988-8616-51a5-a5f4-665dc4e38fa0"
+        }
+      ]
+    },
+    {
+      "id": "78857441-2f43-55f9-975a-9da9dcc05401",
+      "date": "2026-11-03",
+      "kind": "ensaio",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "ensaio_porteiro",
+          "member_id": "e0f2b634-0144-50d6-a070-a7fe37303c93"
+        }
+      ]
+    },
+    {
+      "id": "1c27d5e2-260d-508f-8d68-9d50955f1628",
+      "date": "2026-11-06",
+      "kind": "culto",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "primeiro",
+          "member_id": "17bd51d5-6992-5e2d-8e67-79bb97722aec"
+        },
+        {
+          "role": "segundo",
+          "member_id": "de2af740-3431-5deb-a5e6-d9a585d187fa"
+        },
+        {
+          "role": "porteira",
+          "member_id": "a0ee7409-dcdd-526d-a369-2dbd84ae0039"
+        },
+        {
+          "role": "meia_hora",
+          "member_id": "4d374988-8616-51a5-a5f4-665dc4e38fa0"
+        },
+        {
+          "role": "culto",
+          "member_id": "337a2826-7a10-5786-9f03-7d8522147a7a"
+        }
+      ]
+    },
+    {
+      "id": "3cf67333-ffe1-5a90-9eb4-5239459bbccf",
+      "date": "2026-11-08",
+      "kind": "culto",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "primeiro",
+          "member_id": "ef437602-7a60-5ab8-ba58-1cbc50e70514"
+        },
+        {
+          "role": "segundo",
+          "member_id": "e0f2b634-0144-50d6-a070-a7fe37303c93"
+        },
+        {
+          "role": "porteira",
+          "member_id": "69a6f2f8-7eae-5ed9-b1ab-dfd97eb685cd"
+        },
+        {
+          "role": "meia_hora",
+          "member_id": "2005e8ed-8567-51fd-9600-d7aca2c977c1"
+        },
+        {
+          "role": "culto",
+          "member_id": "2005e8ed-8567-51fd-9600-d7aca2c977c1"
+        }
+      ]
+    },
+    {
+      "id": "bc0274cc-f2af-59a6-896b-f19a14df3c3b",
+      "date": "2026-11-08",
+      "kind": "jovens",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "jovens_porteiro",
+          "member_id": "ef437602-7a60-5ab8-ba58-1cbc50e70514"
+        },
+        {
+          "role": "jovens_porteira",
+          "member_id": "ee00a2ba-c3c8-5564-95fc-71a515cf9af6"
+        },
+        {
+          "role": "jovens_organista",
+          "member_id": "337a2826-7a10-5786-9f03-7d8522147a7a"
+        }
+      ]
+    },
+    {
+      "id": "2dcf1ef7-e698-5074-930a-d1f80ac93c0d",
+      "date": "2026-11-13",
+      "kind": "culto",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "primeiro",
+          "member_id": "06bd01e1-86d8-57c9-8581-13626dd4d99d"
+        },
+        {
+          "role": "segundo",
+          "member_id": "de2af740-3431-5deb-a5e6-d9a585d187fa"
+        },
+        {
+          "role": "porteira",
+          "member_id": "a0ee7409-dcdd-526d-a369-2dbd84ae0039"
+        },
+        {
+          "role": "meia_hora",
+          "member_id": "d6647412-d7f4-5a0c-85e7-c22b53a0fd2b"
+        },
+        {
+          "role": "culto",
+          "member_id": "d6647412-d7f4-5a0c-85e7-c22b53a0fd2b"
+        }
+      ]
+    },
+    {
+      "id": "c6934c41-79e5-58ac-b55e-b4dd3301db23",
+      "date": "2026-11-15",
+      "kind": "culto",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "primeiro",
+          "member_id": "de2af740-3431-5deb-a5e6-d9a585d187fa"
+        },
+        {
+          "role": "segundo",
+          "member_id": "17bd51d5-6992-5e2d-8e67-79bb97722aec"
+        },
+        {
+          "role": "porteira",
+          "member_id": "a0ee7409-dcdd-526d-a369-2dbd84ae0039"
+        },
+        {
+          "role": "meia_hora",
+          "member_id": "987072f1-e44c-5c51-b79c-45c6ba28ac32"
+        },
+        {
+          "role": "culto",
+          "member_id": "987072f1-e44c-5c51-b79c-45c6ba28ac32"
+        }
+      ]
+    },
+    {
+      "id": "ab417f73-5667-54c3-a641-128ec8bf92b8",
+      "date": "2026-11-15",
+      "kind": "jovens",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "jovens_porteiro",
+          "member_id": "06bd01e1-86d8-57c9-8581-13626dd4d99d"
+        },
+        {
+          "role": "jovens_porteira",
+          "member_id": "69a6f2f8-7eae-5ed9-b1ab-dfd97eb685cd"
+        },
+        {
+          "role": "jovens_organista",
+          "member_id": "4d374988-8616-51a5-a5f4-665dc4e38fa0"
+        }
+      ]
+    },
+    {
+      "id": "43f2d59b-45f5-5869-b561-ce3397d21d30",
+      "date": "2026-11-20",
+      "kind": "culto",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "primeiro",
+          "member_id": "e0f2b634-0144-50d6-a070-a7fe37303c93"
+        },
+        {
+          "role": "segundo",
+          "member_id": "06bd01e1-86d8-57c9-8581-13626dd4d99d"
+        },
+        {
+          "role": "porteira",
+          "member_id": "3ac0c86f-20a6-5dc3-a538-3c667796745a"
+        },
+        {
+          "role": "meia_hora",
+          "member_id": "5149220f-99fb-5238-aa1c-8f8228b80aef"
+        },
+        {
+          "role": "culto",
+          "member_id": "5149220f-99fb-5238-aa1c-8f8228b80aef"
+        }
+      ]
+    },
+    {
+      "id": "1d2936e0-5199-5fdc-9480-3a5592b1958c",
+      "date": "2026-11-22",
+      "kind": "culto",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "primeiro",
+          "member_id": "17bd51d5-6992-5e2d-8e67-79bb97722aec"
+        },
+        {
+          "role": "segundo",
+          "member_id": "de2af740-3431-5deb-a5e6-d9a585d187fa"
+        },
+        {
+          "role": "porteira",
+          "member_id": "a0ee7409-dcdd-526d-a369-2dbd84ae0039"
+        },
+        {
+          "role": "meia_hora",
+          "member_id": "f19ca0a5-13b9-5e4a-a4b3-367c083cf2c8"
+        },
+        {
+          "role": "culto",
+          "member_id": "f19ca0a5-13b9-5e4a-a4b3-367c083cf2c8"
+        }
+      ]
+    },
+    {
+      "id": "2eeeceb7-e060-5d49-b0b6-336ed5f3d6d5",
+      "date": "2026-11-22",
+      "kind": "jovens",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "jovens_porteiro",
+          "member_id": "ef437602-7a60-5ab8-ba58-1cbc50e70514"
+        },
+        {
+          "role": "jovens_porteira",
+          "member_id": "3ac0c86f-20a6-5dc3-a538-3c667796745a"
+        },
+        {
+          "role": "jovens_organista",
+          "member_id": "987072f1-e44c-5c51-b79c-45c6ba28ac32"
+        }
+      ]
+    },
+    {
+      "id": "f9da7135-0f4e-5bce-9549-f28a565353f6",
+      "date": "2026-11-27",
+      "kind": "culto",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "primeiro",
+          "member_id": "de2af740-3431-5deb-a5e6-d9a585d187fa"
+        },
+        {
+          "role": "segundo",
+          "member_id": "17bd51d5-6992-5e2d-8e67-79bb97722aec"
+        },
+        {
+          "role": "porteira",
+          "member_id": "a0ee7409-dcdd-526d-a369-2dbd84ae0039"
+        },
+        {
+          "role": "meia_hora",
+          "member_id": "4d374988-8616-51a5-a5f4-665dc4e38fa0"
+        },
+        {
+          "role": "culto",
+          "member_id": "337a2826-7a10-5786-9f03-7d8522147a7a"
+        }
+      ]
+    },
+    {
+      "id": "7c1b0530-68ff-5e04-b086-8f14d4ff4369",
+      "date": "2026-11-29",
+      "kind": "culto",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "primeiro",
+          "member_id": "06bd01e1-86d8-57c9-8581-13626dd4d99d"
+        },
+        {
+          "role": "segundo",
+          "member_id": "e0f2b634-0144-50d6-a070-a7fe37303c93"
+        },
+        {
+          "role": "porteira",
+          "member_id": "ee00a2ba-c3c8-5564-95fc-71a515cf9af6"
+        },
+        {
+          "role": "meia_hora",
+          "member_id": "2005e8ed-8567-51fd-9600-d7aca2c977c1"
+        },
+        {
+          "role": "culto",
+          "member_id": "2005e8ed-8567-51fd-9600-d7aca2c977c1"
+        }
+      ]
+    },
+    {
+      "id": "97b9deaf-bf9f-5989-90bd-733bf2a8f0db",
+      "date": "2026-11-29",
+      "kind": "jovens",
+      "notes": "",
+      "assignments": [
+        {
+          "role": "jovens_porteiro",
+          "member_id": "06bd01e1-86d8-57c9-8581-13626dd4d99d"
+        },
+        {
+          "role": "jovens_porteira",
+          "member_id": "2d7c6981-794a-58d7-8b49-4255b8a53110"
+        },
+        {
+          "role": "jovens_organista",
+          "member_id": "4d374988-8616-51a5-a5f4-665dc4e38fa0"
+        }
+      ]
+    }
+  ]
+}

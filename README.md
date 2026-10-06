@@ -2,10 +2,18 @@
 
 Next.js (App Router), React e TypeScript.
 
+## Escalas CCB INCRA-08
+
+O sistema de escalas está em `/escalas`, com administração em `/admin`.
+Consulte [o guia de configuração](docs/ESCALAS.md) para migrations, Supabase,
+primeiro administrador, importação dos PDFs de 2026, testes e execução local.
+O projeto usa Yarn 4: `yarn install --immutable`, `yarn dev`, `yarn lint`,
+`yarn typecheck`, `yarn test` e `yarn build`.
+
 ## Desenvolvimento
 
-Execute npm ci e npm run dev. Abra http://localhost:3000.
-Valide com npm run lint e npm run build.
+Execute yarn install --immutable e yarn dev. Abra http://localhost:3000.
+Valide com yarn lint, yarn typecheck, yarn test e yarn build.
 
 ## Estrutura
 

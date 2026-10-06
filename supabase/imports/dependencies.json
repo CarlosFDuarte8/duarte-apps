@@ -1,0 +1,25 @@
+[
+  {
+    "id": "5a1bf218-6749-5171-bcd4-228810061e38",
+    "trigger_member": "de2af740-3431-5deb-a5e6-d9a585d187fa",
+    "trigger_roles": [
+      "primeiro",
+      "segundo"
+    ],
+    "required_member": "a0ee7409-dcdd-526d-a369-2dbd84ae0039",
+    "required_role": "porteira",
+    "exclusive": true,
+    "enabled": true
+  },
+  {
+    "id": "0697dc3b-52c2-5ea1-ba79-2a42efc95f32",
+    "trigger_member": "337a2826-7a10-5786-9f03-7d8522147a7a",
+    "trigger_roles": [
+      "culto"
+    ],
+    "required_member": "4d374988-8616-51a5-a5f4-665dc4e38fa0",
+    "required_role": "meia_hora",
+    "exclusive": false,
+    "enabled": true
+  }
+]
