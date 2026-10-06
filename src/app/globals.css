@@ -692,26 +692,6 @@ h2 {
   color: #606d87;
   font-size: 9px;
 }
-.footer {
-  min-height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #8a93a3;
-  font-size: 10px;
-}
-.footer .brand {
-  color: var(--ink);
-  font-size: 17px;
-}
-.footer .brand-mark {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-}
-.footer .brand-mark svg {
-  width: 18px;
-}
 @media (max-width: 900px) {
   .nav nav {
     display: none;
@@ -843,16 +823,6 @@ h2 {
   .contact h2 {
     font-size: 40px;
   }
-  .footer {
-    padding: 24px 0;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .footer p {
-    order: 3;
-    width: 100%;
-    margin: 0;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -876,4 +846,3 @@ a:focus-visible { outline: 3px solid var(--blue); outline-offset: 5px; }
 .privacy-content a { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
 .privacy-updated { color: var(--muted); }
 .privacy-back { display: inline-block; margin-bottom: 16px; }
-.footer { gap: 20px; flex-wrap: wrap; padding-block: 24px; }
