@@ -7,7 +7,11 @@ import december from "../../../supabase/imports/2026-12.json";
 import { z } from "zod";
 import {
   categories,
+  compareEvents,
+  firstFreeMonth,
   memberSchema,
+  monthRange,
+  slotProgress,
   dependencySchema,
   defaultRules,
   generate,
@@ -211,5 +215,45 @@ describe("Geração de escalas", () => {
     expect(
       imported.flatMap((p) => p.events.flatMap((e) => e.assignments)),
     ).toHaveLength(172);
+  });
+});
+describe("Utilitários da tela de escalas", () => {
+  it("ordena eventos por data e, no mesmo dia, jovens, ensaio e culto", () => {
+    const sorted = [
+      { date: "2026-10-11", kind: "culto" },
+      { date: "2026-10-04", kind: "culto" },
+      { date: "2026-10-11", kind: "jovens" },
+    ].sort(compareEvents);
+    expect(sorted.map((e) => `${e.date}/${e.kind}`)).toEqual([
+      "2026-10-04/culto",
+      "2026-10-11/jovens",
+      "2026-10-11/culto",
+    ]);
+  });
+  it("gera o intervalo de meses, inclusive virada de ano", () => {
+    expect(monthRange("2026-11", "2027-01")).toEqual([
+      "2026-11",
+      "2026-12",
+      "2027-01",
+    ]);
+    expect(monthRange("2026-12", "2026-10")).toEqual([]);
+    expect(monthRange("invalido", "2026-10")).toEqual([]);
+    expect(monthRange("2026-01", "2030-01", 12)).toHaveLength(13);
+  });
+  it("encontra o primeiro mês livre", () => {
+    expect(firstFreeMonth("2026-10", [])).toBe("2026-10");
+    expect(firstFreeMonth("2026-10", ["2026-10", "2026-11"])).toBe("2026-12");
+    expect(firstFreeMonth("2026-12", ["2026-12"])).toBe("2027-01");
+  });
+  it("conta as funções preenchidas", () => {
+    const period = generated.periods[0];
+    const full = slotProgress(period.events, period.categories, base.rules);
+    expect(full.total).toBeGreaterThan(0);
+    expect(full.filled).toBe(full.total);
+    const empty = period.events.map((e) => ({ ...e, assignments: [] }));
+    expect(slotProgress(empty, period.categories, base.rules)).toEqual({
+      total: full.total,
+      filled: 0,
+    });
   });
 });

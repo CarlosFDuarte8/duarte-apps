@@ -4,11 +4,10 @@ import { snapshot } from "@/lib/escalas/repository";
 import { compareEvents, labels } from "@/lib/escalas/domain";
 import { MemberForm } from "@/components/escalas/forms";
 import {
-  CATEGORY_NAMES,
-  KIND_NAMES,
   PageHeader,
   StatusBadge,
 } from "@/components/escalas/admin-ui";
+import { CATEGORY_NAMES, KIND_NAMES } from "@/lib/escalas/names";
 export default async function Page({
   params,
 }: {

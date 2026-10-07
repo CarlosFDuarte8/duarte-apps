@@ -2,11 +2,11 @@ import Link from "next/link";
 import { snapshot } from "@/lib/escalas/repository";
 import { today, validatePeriod } from "@/lib/escalas/domain";
 import {
-  CATEGORY_NAMES,
   PageHeader,
   StatusBadge,
   monthLabel,
 } from "@/components/escalas/admin-ui";
+import { CATEGORY_NAMES } from "@/lib/escalas/names";
 
 const periodOptions = [
   { value: "atuais", label: "Atuais e futuros" },

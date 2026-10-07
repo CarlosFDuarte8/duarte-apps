@@ -7,11 +7,10 @@ import {
   weekday,
 } from "@/lib/escalas/domain";
 import {
-  CATEGORY_NAMES,
   PageHeader,
-  WEEKDAY_NAMES,
   shortMonthLabel,
 } from "@/components/escalas/admin-ui";
+import { CATEGORY_NAMES, WEEKDAY_NAMES } from "@/lib/escalas/names";
 export default async function Page() {
   const state = await snapshot();
   const events = state.periods.flatMap((p) => p.events);

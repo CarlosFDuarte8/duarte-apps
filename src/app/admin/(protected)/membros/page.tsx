@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { snapshot } from "@/lib/escalas/repository";
 import { categories } from "@/lib/escalas/domain";
-import { CATEGORY_NAMES, PageHeader } from "@/components/escalas/admin-ui";
+import { PageHeader } from "@/components/escalas/admin-ui";
+import { CATEGORY_NAMES } from "@/lib/escalas/names";
 
 const columns = ["nome", "categoria", "status"] as const;
 type Column = (typeof columns)[number];
