@@ -11,24 +11,52 @@ import {
   CATEGORY_NAMES,
   KIND_NAMES,
   dayLabel,
+  shortMonthLabel,
 } from "@/components/escalas/admin-ui";
 import {
   categories,
   roles,
   labels,
   categoryOf,
+  compareEvents,
   memberSchema,
   monthSchema,
   categorySchema,
+  shiftMonth,
   today,
+  type Conflict,
   type Member,
   type Context,
   type Period,
+  type Role,
   type Rules,
   type Dependency,
   validatePeriod,
   eligible,
 } from "@/lib/escalas/domain";
+
+const CULTO_ROLES: Role[] = [
+  "primeiro",
+  "segundo",
+  "porteira",
+  "meia_hora",
+  "culto",
+];
+// Funções esperadas em cada evento, conforme as categorias do período e as regras de ensaio.
+function eventSlots(
+  event: Period["events"][number],
+  periodCategories: Period["categories"],
+  rules: Rules,
+) {
+  return roles.filter(
+    (role) =>
+      (role.startsWith(`${event.kind}_`) ||
+        (event.kind === "culto" && CULTO_ROLES.includes(role))) &&
+      periodCategories.includes(categoryOf(role)) &&
+      (event.kind !== "ensaio" ||
+        rules.rehearsal_categories.includes(categoryOf(role))),
+  );
+}
 
 function useSave(revision: number) {
   const router = useRouter();
@@ -330,20 +358,58 @@ const generationSchema = z.object({
   end: monthSchema,
   categories: z.array(categorySchema).min(1),
 });
-export function GenerationForm({ revision }: { revision: number }) {
+const MAX_MONTHS = 12;
+function monthRange(start: string, end: string) {
+  const months: string[] = [];
+  if (!monthSchema.safeParse(start).success || !monthSchema.safeParse(end).success)
+    return months;
+  for (let m = start; m <= end && months.length <= 24; m = shiftMonth(m, 1))
+    months.push(m);
+  return months;
+}
+export function GenerationForm({
+  revision,
+  existingMonths,
+}: {
+  revision: number;
+  existingMonths: string[];
+}) {
+  // Primeiro mês, a partir do atual, que ainda não tem escala.
+  let first = today().slice(0, 7);
+  while (existingMonths.includes(first)) first = shiftMonth(first, 1);
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors },
   } = useForm<z.infer<typeof generationSchema>>({
     resolver: zodResolver(generationSchema),
     defaultValues: {
-      start: today().slice(0, 7),
-      end: today().slice(0, 7),
+      start: first,
+      end: first,
       categories: [...categories],
     },
   });
   const { save, busy, feedback } = useSave(revision);
+  const start = useWatch({ control, name: "start" });
+  const end = useWatch({ control, name: "end" });
+  const selected = useWatch({ control, name: "categories" });
+  const months = monthRange(start, end);
+  const clashes = months.filter((m) => existingMonths.includes(m));
+  const problem = !months.length
+    ? "O mês final deve ser igual ou posterior ao inicial."
+    : months.length > MAX_MONTHS
+      ? `Escolha no máximo ${MAX_MONTHS} meses por vez.`
+      : clashes.length
+        ? `Já existe escala em ${clashes.map(shortMonthLabel).join(", ")}. Escolha meses ainda não gerados.`
+        : "";
+  const presets = [
+    { count: 1, label: "Próximo mês livre" },
+    { count: 3, label: "3 meses" },
+    { count: 6, label: "6 meses" },
+    { count: 12, label: "12 meses" },
+  ];
   return (
     <form
       className="sc-form"
@@ -351,6 +417,26 @@ export function GenerationForm({ revision }: { revision: number }) {
     >
       <section className="sc-card sc-form-card">
         <h2>Período</h2>
+        <div
+          className="sc-presets"
+          role="group"
+          aria-label="Atalhos de período"
+        >
+          {presets.map((p) => (
+            <button
+              type="button"
+              key={p.count}
+              className="sc-chip sc-preset"
+              aria-pressed={start === first && end === shiftMonth(first, p.count - 1)}
+              onClick={() => {
+                setValue("start", first);
+                setValue("end", shiftMonth(first, p.count - 1));
+              }}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
         <div className="sc-fields">
           <label>
             Mês inicial
@@ -361,8 +447,32 @@ export function GenerationForm({ revision }: { revision: number }) {
             <input type="month" {...register("end")} required />
           </label>
         </div>
+        <div
+          className={`sc-range-preview ${problem ? "is-error" : ""}`}
+          role="status"
+          aria-live="polite"
+        >
+          {problem ? (
+            <strong>{problem}</strong>
+          ) : (
+            <>
+              <strong>
+                {months.length}{" "}
+                {months.length === 1 ? "mês será gerado" : "meses serão gerados"}
+              </strong>
+              <ul className="sc-pills">
+                {months.map((m) => (
+                  <li key={m}>{shortMonthLabel(m)}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </section>
+      <section className="sc-card sc-form-card">
+        <h2>Categorias</h2>
         <fieldset>
-          <legend>Categorias</legend>
+          <legend>Quem entra na escala</legend>
           {categories.map((c) => (
             <label className="sc-check" key={c}>
               <input type="checkbox" value={c} {...register("categories")} />
@@ -371,8 +481,8 @@ export function GenerationForm({ revision }: { revision: number }) {
           ))}
         </fieldset>
         <p className="sc-muted">
-          Até 12 meses. As escalas existentes não serão substituídas. Inclua as
-          categorias dos membros vinculados para permitir combinações válidas.
+          As escalas existentes não serão substituídas. Inclua as categorias dos
+          membros vinculados para permitir combinações válidas.
         </p>
       </section>
       {Object.values(errors).map((e, i) => (
@@ -381,7 +491,10 @@ export function GenerationForm({ revision }: { revision: number }) {
         </p>
       ))}
       <div className="sc-actions-bar sc-actions-sticky">
-        <button className="sc-btn" disabled={busy}>
+        <button
+          className="sc-btn"
+          disabled={busy || Boolean(problem) || selected.length === 0}
+        >
           {busy ? "Gerando…" : "Gerar rascunhos"}
         </button>
         {feedback}
@@ -399,159 +512,266 @@ export function ScheduleEditor({
   revision: number;
 }) {
   const [draft, setDraft] = useState(period);
+  const [onlyIssues, setOnlyIssues] = useState(false);
+  const router = useRouter();
   const { save, busy, feedback } = useSave(revision);
+  const dirty = JSON.stringify(draft) !== JSON.stringify(period);
+  function cancel() {
+    if (dirty && !window.confirm("Descartar as alterações não salvas?")) return;
+    router.push("/admin/escalas");
+  }
   const conflicts = validatePeriod(draft, context);
+  const sorted = [...draft.events].sort(compareEvents);
+  const dates = [...new Set(sorted.map((e) => e.date))];
+  const conflictsByDate = new Map<string, Conflict[]>();
+  for (const c of conflicts)
+    conflictsByDate.set(c.date, [...(conflictsByDate.get(c.date) ?? []), c]);
+  const slotsOf = (event: Period["events"][number]) =>
+    eventSlots(event, draft.categories, context.rules);
+  const total = sorted.reduce((n, e) => n + slotsOf(e).length, 0);
+  const filled = sorted.reduce(
+    (n, e) =>
+      n +
+      slotsOf(e).filter((r) => e.assignments.some((a) => a.role === r)).length,
+    0,
+  );
+  const percent = total ? Math.round((filled / total) * 100) : 100;
+  const firstConflictDate = dates.find((d) => conflictsByDate.has(d));
+  const visibleDates = onlyIssues
+    ? dates.filter((d) => conflictsByDate.has(d))
+    : dates;
+  function assign(eventId: string, role: Role, memberId: string) {
+    setDraft((prev) => ({
+      ...prev,
+      events: prev.events.map((ev) =>
+        ev.id !== eventId
+          ? ev
+          : {
+              ...ev,
+              assignments: [
+                ...ev.assignments.filter((a) => a.role !== role),
+                ...(memberId ? [{ role, member_id: memberId }] : []),
+              ],
+            },
+      ),
+    }));
+  }
+  function setNotes(eventId: string, notes: string) {
+    setDraft((prev) => ({
+      ...prev,
+      events: prev.events.map((ev) =>
+        ev.id === eventId ? { ...ev, notes } : ev,
+      ),
+    }));
+  }
   return (
     <>
-      <p className="sc-muted">
-        Revise as alterações antes de salvar. Observações dos eventos aparecem
-        na escala pública. Cada salvamento registra autor e horário.
-      </p>
-      <div
-        role="status"
-        aria-live="polite"
-        className={conflicts.length ? "sc-alert" : "sc-card sc-ok"}
-      >
-        <strong>
-          {conflicts.length
-            ? `${conflicts.length} conflito(s). A publicação está bloqueada.`
-            : "Sem conflitos obrigatórios."}
-        </strong>
-        <ul>
-          {conflicts.map((c, i) => (
-            <li key={i}>
-              {c.date} · {c.category}: {c.rule} {c.solutions}
-            </li>
-          ))}
-        </ul>
-      </div>
-      {draft.events.map((event) => (
-        <section className="sc-card sc-event-card" key={event.id}>
-          <h2>
-            {dayLabel(event.date)}
-            <span className={`sc-badge sc-kind-badge sc-kind-${event.kind}`}>
-              {KIND_NAMES[event.kind] ?? event.kind}
-            </span>
-          </h2>
-          <div className="sc-fields">
-            {roles
-              .filter(
-                (role) =>
-                  role.startsWith(`${event.kind}_`) ||
-                  (event.kind === "culto" &&
-                    [
-                      "primeiro",
-                      "segundo",
-                      "porteira",
-                      "meia_hora",
-                      "culto",
-                    ].includes(role)),
-              )
-              .filter(
-                (role) =>
-                  draft.categories.includes(categoryOf(role)) &&
-                  (event.kind !== "ensaio" ||
-                    context.rules.rehearsal_categories.includes(
-                      categoryOf(role),
-                    )),
-              )
-              .map((role) => {
-                const current =
-                  event.assignments.find((a) => a.role === role)?.member_id ??
-                  "";
-                return (
-                  <label key={role}>
-                    {labels[role]}
-                    <select
-                      value={current}
-                      onChange={(e) =>
-                        setDraft({
-                          ...draft,
-                          events: draft.events.map((ev) =>
-                            ev.id !== event.id
-                              ? ev
-                              : {
-                                  ...ev,
-                                  assignments: [
-                                    ...ev.assignments.filter(
-                                      (a) => a.role !== role,
-                                    ),
-                                    ...(e.target.value
-                                      ? [{ role, member_id: e.target.value }]
-                                      : []),
-                                  ],
-                                },
-                          ),
-                        })
-                      }
-                    >
-                      <option value="">Não atribuído</option>
-                      {context.members
-                        .filter(
-                          (m) =>
-                            eligible(m, role, event.date) || m.id === current,
-                        )
-                        .map((m) => (
-                          <option
-                            key={m.id}
-                            value={m.id}
-                            disabled={!eligible(m, role, event.date)}
-                          >
-                            {m.name}
-                            {!eligible(m, role, event.date)
-                              ? " (indisponível/inativo)"
-                              : ""}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                );
-              })}
-            <label>
-              Observação pública
-              <textarea
-                value={event.notes}
-                maxLength={2000}
-                onChange={(e) =>
-                  setDraft({
-                    ...draft,
-                    events: draft.events.map((ev) =>
-                      ev.id === event.id
-                        ? { ...ev, notes: e.target.value }
-                        : ev,
-                    ),
-                  })
-                }
-              />
-            </label>
+      <section className="sc-card sc-editor-summary">
+        <div className="sc-progress">
+          <div className="sc-progress-head">
+            <strong>
+              {filled} de {total} funções preenchidas
+            </strong>
+            <span>{percent}%</span>
           </div>
-        </section>
-      ))}
-      <div className="sc-actions-bar sc-actions-sticky">
-        <button
-          type="button"
-          className="sc-btn"
-          disabled={busy || conflicts.length > 0}
-          onClick={() => save("period", { ...draft, status: "published" })}
-        >
-          Salvar e publicar
-        </button>
-        <button
-          type="button"
-          className="sc-btn sc-btn-ghost"
-          disabled={busy}
-          onClick={() => save("period", { ...draft, status: "draft" })}
-        >
-          Salvar rascunho / despublicar
-        </button>
-        <button
-          type="button"
-          className="sc-btn sc-btn-ghost sc-print"
-          onClick={() => window.print()}
-        >
-          Imprimir / PDF
-        </button>
-        {feedback}
+          <div
+            className="sc-progress-bar"
+            role="progressbar"
+            aria-valuenow={percent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Funções preenchidas"
+          >
+            <i style={{ width: `${percent}%` }} />
+          </div>
+        </div>
+        <p className="sc-muted">
+          Revise as alterações antes de salvar. Observações dos eventos
+          aparecem na escala pública. Cada salvamento registra autor e horário.
+        </p>
+        <label className="sc-check">
+          <input
+            type="checkbox"
+            checked={onlyIssues}
+            onChange={(e) => setOnlyIssues(e.target.checked)}
+          />
+          Mostrar só dias com conflitos
+        </label>
+      </section>
+      {!visibleDates.length && (
+        <div className="sc-card sc-notice sc-ok">
+          <strong>Nenhum dia com conflitos.</strong>
+          <p>Desmarque o filtro para ver todos os dias.</p>
+        </div>
+      )}
+      {visibleDates.map((date) => {
+        const events = sorted.filter((e) => e.date === date);
+        const dayConflicts = conflictsByDate.get(date) ?? [];
+        const dayTotal = events.reduce((n, e) => n + slotsOf(e).length, 0);
+        const dayFilled = events.reduce(
+          (n, e) =>
+            n +
+            slotsOf(e).filter((r) => e.assignments.some((a) => a.role === r))
+              .length,
+          0,
+        );
+        return (
+          <section
+            id={`dia-${date}`}
+            className={`sc-card sc-day-card ${dayConflicts.length ? "has-conflict" : ""}`}
+            key={date}
+          >
+            <header className="sc-day-card-head">
+              <h2>{dayLabel(date)}</h2>
+              <div className="sc-day-card-meta">
+                {dayConflicts.length > 0 && (
+                  <span className="sc-badge sc-badge-danger">
+                    {dayConflicts.length}{" "}
+                    {dayConflicts.length === 1 ? "conflito" : "conflitos"}
+                  </span>
+                )}
+                <span
+                  className={`sc-badge ${dayFilled === dayTotal ? "sc-badge-ok" : "sc-badge-warn"}`}
+                >
+                  {dayFilled}/{dayTotal} preenchidas
+                </span>
+              </div>
+            </header>
+            {dayConflicts.length > 0 && (
+              <ul className="sc-day-conflicts" role="alert">
+                {dayConflicts.map((c, i) => (
+                  <li key={i}>
+                    <strong>
+                      {CATEGORY_NAMES[c.category as keyof typeof CATEGORY_NAMES] ??
+                        "Evento"}
+                    </strong>{" "}
+                    {c.rule} <em>{c.solutions}</em>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {events.map((event) => (
+              <div className="sc-event-block" key={event.id}>
+                <h3>
+                  <span
+                    className={`sc-badge sc-kind-badge sc-kind-${event.kind}`}
+                  >
+                    {KIND_NAMES[event.kind] ?? event.kind}
+                  </span>
+                </h3>
+                <div className="sc-slots">
+                  {slotsOf(event).map((role) => {
+                    const current =
+                      event.assignments.find((a) => a.role === role)
+                        ?.member_id ?? "";
+                    return (
+                      <label
+                        className={`sc-slot sc-${categoryOf(role)}`}
+                        key={role}
+                      >
+                        <span className="sc-slot-label">
+                          <i aria-hidden="true" />
+                          {labels[role]}
+                        </span>
+                        <select
+                          value={current}
+                          data-empty={!current}
+                          onChange={(e) => assign(event.id, role, e.target.value)}
+                        >
+                          <option value="">Não atribuído</option>
+                          {context.members
+                            .filter(
+                              (m) =>
+                                eligible(m, role, event.date) ||
+                                m.id === current,
+                            )
+                            .map((m) => (
+                              <option
+                                key={m.id}
+                                value={m.id}
+                                disabled={!eligible(m, role, event.date)}
+                              >
+                                {m.name}
+                                {!eligible(m, role, event.date)
+                                  ? " (indisponível/inativo)"
+                                  : ""}
+                              </option>
+                            ))}
+                        </select>
+                      </label>
+                    );
+                  })}
+                  <label className="sc-slot sc-slot-notes">
+                    <span className="sc-slot-label">
+                      Observação pública (opcional)
+                    </span>
+                    <textarea
+                      rows={2}
+                      value={event.notes}
+                      maxLength={2000}
+                      onChange={(e) => setNotes(event.id, e.target.value)}
+                    />
+                  </label>
+                </div>
+              </div>
+            ))}
+          </section>
+        );
+      })}
+      <div className="sc-editor-bar">
+        <div className="sc-bar-status" aria-live="polite">
+          {conflicts.length ? (
+            <a
+              className="sc-status sc-status-bad"
+              href={`#dia-${firstConflictDate}`}
+            >
+              <span aria-hidden="true">●</span> {conflicts.length}{" "}
+              {conflicts.length === 1 ? "conflito" : "conflitos"} · publicação
+              bloqueada
+              <span className="sc-status-go"> Ver →</span>
+            </a>
+          ) : (
+            <span className="sc-status sc-status-ok">
+              <span aria-hidden="true">✓</span> Sem conflitos
+            </span>
+          )}
+          {feedback}
+        </div>
+        <div className="sc-bar-actions">
+          <button
+            type="button"
+            className="sc-btn"
+            disabled={busy || conflicts.length > 0}
+            onClick={() => save("period", { ...draft, status: "published" })}
+          >
+            Salvar e publicar
+          </button>
+          <button
+            type="button"
+            className="sc-btn sc-btn-ghost"
+            disabled={busy}
+            onClick={() => save("period", { ...draft, status: "draft" })}
+          >
+            {period.status === "published"
+              ? "Despublicar e salvar"
+              : "Salvar rascunho"}
+          </button>
+          <button
+            type="button"
+            className="sc-btn sc-btn-ghost"
+            disabled={busy}
+            onClick={cancel}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className="sc-btn sc-btn-ghost sc-print"
+            onClick={() => window.print()}
+          >
+            Imprimir / PDF
+          </button>
+        </div>
       </div>
     </>
   );

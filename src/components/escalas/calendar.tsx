@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   categories,
   categoryOf,
+  compareEvents,
   labels,
   shiftMonth,
   weekday,
@@ -44,14 +45,11 @@ const longDate = new Intl.DateTimeFormat("pt-BR", {
   timeZone: "UTC",
 });
 
-// Ordem de apresentação preferida: jovens, ensaio e culto.
-const KIND_ORDER = ["jovens", "ensaio", "culto"];
+// Ordem de apresentação das funções dentro do evento.
 const ROLE_ORDER: Role[] = ["primeiro", "segundo", "porteira", "culto", "meia_hora"];
 
-function sortEvents<T extends { kind: string }>(items: T[]) {
-  return [...items].sort(
-    (a, b) => KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind),
-  );
+function sortEvents<T extends { date: string; kind: string }>(items: T[]) {
+  return [...items].sort(compareEvents);
 }
 
 function sortAssignments<T extends { role: Role }>(items: T[]) {

@@ -91,6 +91,17 @@ export const eventSchema = z.object({
   assignments: z.array(z.object({ role: roleSchema, member_id: z.uuid() })),
 });
 export type Event = z.infer<typeof eventSchema>;
+// Ordem dos eventos no mesmo dia: jovens, ensaio e depois o culto.
+export const KIND_ORDER = ["jovens", "ensaio", "culto"];
+export function compareEvents(
+  a: { date: string; kind: string },
+  b: { date: string; kind: string },
+) {
+  return (
+    a.date.localeCompare(b.date) ||
+    KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind)
+  );
+}
 export const periodSchema = z.object({
   id: z.uuid(),
   month: monthSchema,

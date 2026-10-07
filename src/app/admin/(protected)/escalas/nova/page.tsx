@@ -10,7 +10,10 @@ export default async function Page() {
         title="Gerar escalas"
         description="Os meses gerados ficam como rascunho até você publicar."
       />
-      <GenerationForm revision={state.revision} />
+      <GenerationForm
+        revision={state.revision}
+        existingMonths={state.periods.map((p) => p.month)}
+      />
     </>
   );
 }
