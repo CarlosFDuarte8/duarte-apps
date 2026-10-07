@@ -1130,6 +1130,30 @@
   align-items: center;
   gap: 8px;
 }
+.sc .sc-sort-field {
+  display: none;
+}
+.sc-table th a.sc-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+}
+.sc-table th a.sc-sort:hover,
+.sc-table th a.sc-sort[data-dir] {
+  color: #16677b;
+}
+.sc-sort-icon svg {
+  display: block;
+  width: 9px;
+  height: 13px;
+  fill: #b8c4cb;
+}
+.sc-sort[data-dir="asc"] .up,
+.sc-sort[data-dir="desc"] .down {
+  fill: #16677b;
+}
 .sc-period-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1501,8 +1525,12 @@
     align-items: end;
   }
   .sc-member-filters .sc-search,
-  .sc-member-filters .sc-panel-actions {
+  .sc-member-filters .sc-panel-actions,
+  .sc .sc-member-filters .sc-sort-field {
     grid-column: 1 / -1;
+  }
+  .sc .sc-member-filters .sc-sort-field {
+    display: grid;
   }
   .sc-panel-actions .sc-btn {
     flex: 1;
