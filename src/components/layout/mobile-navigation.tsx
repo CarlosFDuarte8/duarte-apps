@@ -13,6 +13,7 @@ export function MobileNavigation() {
     pathname: "/",
     id: "inicio",
   });
+  const isAdmin = (pathname ?? "").startsWith("/admin");
 
   useEffect(() => {
     if (pathname !== "/") return;
@@ -63,6 +64,8 @@ export function MobileNavigation() {
       window.removeEventListener("pageshow", scheduleUpdate);
     };
   }, [pathname]);
+
+  if (isAdmin) return null;
 
   return (
     <nav className="mobile-navigation" aria-label="Navegação principal no celular">

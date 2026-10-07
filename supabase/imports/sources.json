@@ -1,0 +1,12 @@
+{
+  "sources": [
+    "ESCALA_PORTEIROS_OUTUBRO_NOVEMBRO_DEZEMBRO_2026.pdf",
+    "ESCALA_PORTEIRAS_OUTUBRO_NOVEMBRO_DEZEMBRO_2026.pdf",
+    "ESCALA_ORGANISTAS_OUTUBRO_NOVEMBRO_DEZEMBRO_2026.pdf"
+  ],
+  "excluded": {
+    "CALENDARIO PORTEIRAS 2026.pdf": "Cabeçalho e dias da semana referem-se a 2025; não importar como 2026."
+  },
+  "joined_on": "Não informada; mantida nula.",
+  "phones": "Extraídos somente para supabase/private/phones.json; não versionar."
+}

@@ -1,0 +1,205 @@
+/* The login page has no site header/footer, so it owns full-viewport centering. */
+.sc:has(> .sc-login) {
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  display: grid;
+  padding: 20px;
+}
+.sc-login {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-height: 660px;
+  padding: 48px 20px;
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse at 20% 0%, #dceeed 0, transparent 55%),
+    radial-gradient(ellipse at 95% 100%, #e6edf9 0, transparent 50%), #f6f8fa;
+}
+.sc-login-card {
+  width: min(100%, 460px);
+  padding: 36px;
+  border: 1px solid #e0e8eb;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow:
+    0 16px 48px #173e4a0b,
+    0 2px 6px #173e4a04;
+}
+.sc-login-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sc-login-brand strong {
+  display: block;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+.sc-login-brand div > span {
+  display: block;
+  color: #617580;
+  font-size: 12px;
+}
+.sc-login-mark {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid #d3e8e7;
+  border-radius: 13px;
+  color: #16677b;
+  background: #edf7f6;
+}
+.sc-login-mark svg {
+  width: 26px;
+  height: 26px;
+}
+.sc-login-heading {
+  margin: 32px 0 26px;
+}
+.sc-login .sc-login-eyebrow {
+  margin: 0 0 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  color: #16677b;
+}
+.sc-login h1 {
+  margin: 0 0 12px;
+  font-size: clamp(25px, 4vw, 30px);
+  line-height: 1.2;
+  letter-spacing: -0.9px;
+}
+.sc-login-heading > p:last-child {
+  margin: 0;
+  color: #617580;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.sc-login-form {
+  gap: 20px;
+}
+.sc-login-form label {
+  margin-bottom: 7px;
+  font-size: 13px;
+}
+.sc-login-form input {
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid #cbd7df;
+  border-radius: 9px;
+  background: #fcfdfe;
+  font-size: 16px;
+}
+.sc-login-form input::placeholder {
+  color: #71818d;
+  font-size: 14px;
+}
+.sc-login-form input:focus-visible {
+  outline: 3px solid #16677b33;
+  outline-offset: 1px;
+  border-color: #16677b;
+}
+.sc-password-field {
+  position: relative;
+}
+.sc-password-field input {
+  padding-right: 112px;
+}
+.sc button.sc-password-toggle {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 96px;
+  min-height: 44px;
+  padding: 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #365d6b !important;
+  font-size: 12px;
+  font-weight: 600;
+}
+.sc button.sc-password-toggle:hover {
+  background: #edf4f6;
+}
+.sc-password-toggle svg {
+  width: 19px;
+  height: 19px;
+  flex: none;
+}
+.sc button.sc-login-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 50px;
+  margin-top: 4px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px #16677b1a;
+}
+.sc button.sc-login-submit:hover:not(:disabled) {
+  background: #115365;
+}
+.sc-login-error {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #f0cbc6;
+  border-radius: 8px;
+  background: #fff3f1;
+  color: #9b3026;
+  font-size: 13px;
+}
+.sc-login-card > .sc-login-error {
+  margin-bottom: 20px;
+}
+.sc-login-help {
+  margin: 22px 0;
+  color: #617580;
+  text-align: center;
+  font-size: 12px;
+}
+.sc-login-footer {
+  border-top: 1px solid #e7edf0;
+  padding-top: 20px;
+  text-align: center;
+}
+.sc-login-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.sc-login-footer a:hover {
+  text-decoration: underline;
+}
+.sc-login-caption {
+  margin: 22px 0 0;
+  color: #617580;
+  text-align: center;
+  font-size: 11px;
+}
+@media (max-width: 520px) {
+  .sc-login {
+    min-height: auto;
+    padding: 24px 12px;
+    border-radius: 18px;
+  }
+  .sc-login-card {
+    padding: 26px 20px;
+    border-radius: 14px;
+  }
+  .sc-login-heading {
+    margin-top: 26px;
+  }
+}

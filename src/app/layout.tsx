@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "./refinements.css";
-import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteChrome } from "@/components/layout/site-chrome";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
@@ -29,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col"><SiteHeader />{children}<SiteFooter /><MobileNavigation /></body>
+      <body className="min-h-full flex flex-col"><SiteChrome>{children}</SiteChrome><MobileNavigation /></body>
     </html>
   );
 }

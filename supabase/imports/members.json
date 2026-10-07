@@ -1,0 +1,288 @@
+[
+  {
+    "id": "e0f2b634-0144-50d6-a070-a7fe37303c93",
+    "name": "Fidel",
+    "phone": "",
+    "category": "porteiro",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "primeiro",
+      "segundo",
+      "jovens_porteiro",
+      "ensaio_porteiro"
+    ]
+  },
+  {
+    "id": "ef437602-7a60-5ab8-ba58-1cbc50e70514",
+    "name": "Hélio",
+    "phone": "",
+    "category": "porteiro",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [
+      5
+    ],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "primeiro",
+      "segundo",
+      "jovens_porteiro",
+      "ensaio_porteiro"
+    ]
+  },
+  {
+    "id": "de2af740-3431-5deb-a5e6-d9a585d187fa",
+    "name": "Nelson",
+    "phone": "",
+    "category": "porteiro",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "primeiro",
+      "segundo",
+      "jovens_porteiro",
+      "ensaio_porteiro"
+    ]
+  },
+  {
+    "id": "17bd51d5-6992-5e2d-8e67-79bb97722aec",
+    "name": "Nazário",
+    "phone": "",
+    "category": "porteiro",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "primeiro",
+      "segundo",
+      "jovens_porteiro",
+      "ensaio_porteiro"
+    ]
+  },
+  {
+    "id": "06bd01e1-86d8-57c9-8581-13626dd4d99d",
+    "name": "Gilberto",
+    "phone": "",
+    "category": "porteiro",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "primeiro",
+      "segundo",
+      "jovens_porteiro",
+      "ensaio_porteiro"
+    ]
+  },
+  {
+    "id": "ee00a2ba-c3c8-5564-95fc-71a515cf9af6",
+    "name": "Analdir",
+    "phone": "",
+    "category": "porteira",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "porteira",
+      "jovens_porteira",
+      "ensaio_porteira"
+    ]
+  },
+  {
+    "id": "2d7c6981-794a-58d7-8b49-4255b8a53110",
+    "name": "Patrícia",
+    "phone": "",
+    "category": "porteira",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "porteira",
+      "jovens_porteira",
+      "ensaio_porteira"
+    ]
+  },
+  {
+    "id": "69a6f2f8-7eae-5ed9-b1ab-dfd97eb685cd",
+    "name": "Shirley",
+    "phone": "",
+    "category": "porteira",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "porteira",
+      "jovens_porteira",
+      "ensaio_porteira"
+    ]
+  },
+  {
+    "id": "3ac0c86f-20a6-5dc3-a538-3c667796745a",
+    "name": "Eliene",
+    "phone": "",
+    "category": "porteira",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "porteira",
+      "jovens_porteira",
+      "ensaio_porteira"
+    ]
+  },
+  {
+    "id": "a0ee7409-dcdd-526d-a369-2dbd84ae0039",
+    "name": "Míria",
+    "phone": "",
+    "category": "porteira",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "porteira",
+      "jovens_porteira",
+      "ensaio_porteira"
+    ]
+  },
+  {
+    "id": "d6647412-d7f4-5a0c-85e7-c22b53a0fd2b",
+    "name": "Glenia",
+    "phone": "",
+    "category": "organista",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "meia_hora",
+      "culto",
+      "jovens_organista",
+      "ensaio_organista"
+    ]
+  },
+  {
+    "id": "4d374988-8616-51a5-a5f4-665dc4e38fa0",
+    "name": "Cecília",
+    "phone": "",
+    "category": "organista",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "meia_hora",
+      "culto",
+      "jovens_organista",
+      "ensaio_organista"
+    ]
+  },
+  {
+    "id": "337a2826-7a10-5786-9f03-7d8522147a7a",
+    "name": "Pabline",
+    "phone": "",
+    "category": "organista",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "meia_hora",
+      "culto",
+      "jovens_organista",
+      "ensaio_organista"
+    ]
+  },
+  {
+    "id": "987072f1-e44c-5c51-b79c-45c6ba28ac32",
+    "name": "Marlene",
+    "phone": "",
+    "category": "organista",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "meia_hora",
+      "culto",
+      "jovens_organista",
+      "ensaio_organista"
+    ]
+  },
+  {
+    "id": "f19ca0a5-13b9-5e4a-a4b3-367c083cf2c8",
+    "name": "Concelita",
+    "phone": "",
+    "category": "organista",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "meia_hora",
+      "culto",
+      "jovens_organista",
+      "ensaio_organista"
+    ]
+  },
+  {
+    "id": "5149220f-99fb-5238-aa1c-8f8228b80aef",
+    "name": "Iracema",
+    "phone": "",
+    "category": "organista",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "meia_hora",
+      "culto",
+      "jovens_organista",
+      "ensaio_organista"
+    ]
+  },
+  {
+    "id": "2005e8ed-8567-51fd-9600-d7aca2c977c1",
+    "name": "Joina",
+    "phone": "",
+    "category": "organista",
+    "is_active": true,
+    "joined_on": null,
+    "notes": "",
+    "unavailable_weekdays": [],
+    "unavailable_dates": [],
+    "allowed_roles": [
+      "meia_hora",
+      "culto",
+      "jovens_organista",
+      "ensaio_organista"
+    ]
+  }
+]
