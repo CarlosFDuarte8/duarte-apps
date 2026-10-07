@@ -1,7 +1,6 @@
+import { BrandLoader } from "@/components/loaders";
+
+// Entrada na área pública (inclui o redirecionamento para o mês atual).
 export default function Loading() {
-  return (
-    <p className="sc-summary" role="status">
-      Carregando escalas…
-    </p>
-  );
+  return <BrandLoader label="Carregando escalas…" />;
 }
