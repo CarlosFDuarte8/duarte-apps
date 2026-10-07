@@ -1,14 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { snapshot } from "@/lib/escalas/repository";
-import { labels } from "@/lib/escalas/domain";
+import { compareEvents, labels } from "@/lib/escalas/domain";
 import { MemberForm } from "@/components/escalas/forms";
 import {
-  CATEGORY_NAMES,
-  KIND_NAMES,
   PageHeader,
   StatusBadge,
 } from "@/components/escalas/admin-ui";
+import { CATEGORY_NAMES, KIND_NAMES } from "@/lib/escalas/names";
 export default async function Page({
   params,
 }: {
@@ -21,11 +20,13 @@ export default async function Page({
   const links = state.dependencies.filter(
     (d) => d.trigger_member === id || d.required_member === id,
   );
-  const history = state.periods.flatMap((p) =>
-    p.events
-      .filter((e) => e.assignments.some((a) => a.member_id === id))
-      .map((e) => ({ period: p, event: e })),
-  );
+  const history = state.periods
+    .flatMap((p) =>
+      p.events
+        .filter((e) => e.assignments.some((a) => a.member_id === id))
+        .map((e) => ({ period: p, event: e })),
+    )
+    .sort((a, b) => compareEvents(a.event, b.event));
   return (
     <>
       <PageHeader

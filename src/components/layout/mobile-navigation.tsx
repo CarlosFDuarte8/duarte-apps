@@ -13,7 +13,9 @@ export function MobileNavigation() {
     pathname: "/",
     id: "inicio",
   });
-  const isAdmin = (pathname ?? "").startsWith("/admin");
+  const isAdmin =
+    (pathname ?? "").startsWith("/admin") ||
+    (pathname ?? "").startsWith("/escalas");
 
   useEffect(() => {
     if (pathname !== "/") return;

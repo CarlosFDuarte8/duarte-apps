@@ -1,27 +1,6 @@
 import type { ReactNode } from "react";
-import { weekday, type Category } from "@/lib/escalas/domain";
-
-export const CATEGORY_NAMES: Record<Category, string> = {
-  porteiro: "Porteiro",
-  porteira: "Porteira",
-  organista: "Organista",
-};
-
-export const KIND_NAMES: Record<string, string> = {
-  culto: "Culto oficial",
-  jovens: "Jovens e menores",
-  ensaio: "Ensaio local",
-};
-
-export const WEEKDAY_NAMES = [
-  "Domingo",
-  "Segunda-feira",
-  "Terça-feira",
-  "Quarta-feira",
-  "Quinta-feira",
-  "Sexta-feira",
-  "Sábado",
-];
+import { weekday } from "@/lib/escalas/domain";
+import { WEEKDAY_NAMES } from "@/lib/escalas/names";
 
 const monthFormat = new Intl.DateTimeFormat("pt-BR", {
   month: "long",

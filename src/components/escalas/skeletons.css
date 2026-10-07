@@ -1,0 +1,46 @@
+.sc-skel-head {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.sc-skel-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.sc-skel-list {
+  display: grid;
+  gap: 12px;
+}
+.sc-skel-title {
+  margin: 20px 0;
+}
+.sc-skel-hero {
+  height: 170px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+}
+.sc-skel-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+.sc-skel-cell {
+  height: 110px;
+}
+@media (max-width: 900px) {
+  .sc-skel-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sc-skel-grid {
+    grid-template-columns: 1fr;
+  }
+  .sc-skel-cell {
+    height: 84px;
+  }
+  .sc-skel-cell:nth-child(n + 6) {
+    display: none;
+  }
+}

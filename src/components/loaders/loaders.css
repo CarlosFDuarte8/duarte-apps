@@ -1,0 +1,155 @@
+/* Carregamento */
+.sc-loader {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 20px;
+  min-height: 62vh;
+  padding: 40px 20px;
+}
+.sc-loader-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #edf7f6 0 62%, transparent 63%);
+  color: #16677b;
+}
+.sc-loader-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: sc-spin 1.5s linear infinite;
+}
+.sc-loader-ring circle {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.sc-loader-ring .track {
+  stroke: #dcecee;
+}
+.sc-loader-ring .arc {
+  stroke: #16677b;
+  stroke-dasharray: 64 170;
+}
+.sc-loader-cal {
+  width: 40px;
+  height: 40px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sc-loader-check {
+  stroke-dasharray: 12;
+  stroke-dashoffset: 12;
+  animation: sc-draw 1.5s ease-in-out infinite;
+}
+.sc-loader-week {
+  display: flex;
+  gap: 8px;
+}
+.sc-loader-week span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cfe3e7;
+  animation: sc-dot 1.4s ease-in-out infinite;
+}
+.sc-loader-label {
+  margin: 0;
+  color: #3b5361;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.sc-topbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  height: 3px;
+  overflow: hidden;
+  background: #dcecee;
+}
+.sc-topbar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #16677b, #1d8191, #d28227);
+  animation: sc-slide 1.1s ease-in-out infinite;
+}
+.sc-skel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #e8eff2;
+}
+.sc-skel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, #ffffffb3, transparent);
+  animation: sc-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes sc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes sc-draw {
+  0%,
+  15% {
+    stroke-dashoffset: 12;
+  }
+  55%,
+  85% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 12;
+  }
+}
+@keyframes sc-dot {
+  0%,
+  100% {
+    background: #cfe3e7;
+    transform: scale(1);
+  }
+  40% {
+    background: #16677b;
+    transform: scale(1.4);
+  }
+}
+@keyframes sc-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+@keyframes sc-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-loader-ring,
+  .sc-loader-check,
+  .sc-loader-week span,
+  .sc-topbar::after,
+  .sc-skel::after {
+    animation: none;
+  }
+  .sc-loader-check {
+    stroke-dashoffset: 0;
+  }
+}

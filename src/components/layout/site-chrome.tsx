@@ -4,14 +4,15 @@ import { usePathname } from "next/navigation";
 import { SiteFooter } from "./site-footer";
 import { SiteHeader } from "./site-header";
 
-// Admin routes render their own nav/branding, so the marketing chrome is hidden there.
+// Escalas e admin têm navegação própria, então o cabeçalho e o rodapé do portfólio ficam ocultos.
 export function SiteChrome({ children }: { children: React.ReactNode }) {
-  const isAdmin = (usePathname() ?? "").startsWith("/admin");
+  const pathname = usePathname() ?? "";
+  const ownNav = pathname.startsWith("/admin") || pathname.startsWith("/escalas");
   return (
     <>
-      {!isAdmin && <SiteHeader />}
+      {!ownNav && <SiteHeader />}
       {children}
-      {!isAdmin && <SiteFooter />}
+      {!ownNav && <SiteFooter />}
     </>
   );
 }

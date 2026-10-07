@@ -91,6 +91,17 @@ export const eventSchema = z.object({
   assignments: z.array(z.object({ role: roleSchema, member_id: z.uuid() })),
 });
 export type Event = z.infer<typeof eventSchema>;
+// Ordem dos eventos no mesmo dia: jovens, ensaio e depois o culto.
+export const KIND_ORDER = ["jovens", "ensaio", "culto"];
+export function compareEvents(
+  a: { date: string; kind: string },
+  b: { date: string; kind: string },
+) {
+  return (
+    a.date.localeCompare(b.date) ||
+    KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind)
+  );
+}
 export const periodSchema = z.object({
   id: z.uuid(),
   month: monthSchema,
@@ -132,6 +143,34 @@ export function today() {
 export function shiftMonth(month: string, amount: number) {
   const [y, m] = month.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1 + amount, 1)).toISOString().slice(0, 7);
+}
+/** Meses de `start` a `end` (inclusive). Vazio se o intervalo for inválido; corta em `limit + 1` itens. */
+export function monthRange(start: string, end: string, limit = 24) {
+  const months: string[] = [];
+  if (!monthSchema.safeParse(start).success || !monthSchema.safeParse(end).success)
+    return months;
+  for (let m = start; m <= end && months.length <= limit; m = shiftMonth(m, 1))
+    months.push(m);
+  return months;
+}
+/** Primeiro mês a partir de `from` que ainda não está em `taken`. */
+export function firstFreeMonth(from: string, taken: string[]) {
+  let month = from;
+  while (taken.includes(month)) month = shiftMonth(month, 1);
+  return month;
+}
+/** Funções esperadas nos eventos e quantas já têm alguém atribuído. */
+export function slotProgress(events: Event[], cats: Category[], rules: Rules) {
+  let total = 0;
+  let filled = 0;
+  for (const event of events) {
+    const slots = eventRoles(event.kind, cats, rules);
+    total += slots.length;
+    filled += slots.filter((r) =>
+      event.assignments.some((a) => a.role === r),
+    ).length;
+  }
+  return { total, filled };
 }
 export function eventRoles(
   kind: Event["kind"],

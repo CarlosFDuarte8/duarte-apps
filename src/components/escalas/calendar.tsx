@@ -4,11 +4,18 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   categories,
   categoryOf,
+  compareEvents,
   labels,
   shiftMonth,
   weekday,
   type Role,
 } from "@/lib/escalas/domain";
+import {
+  CATEGORY_PLURAL_NAMES,
+  KIND_NAMES,
+  WEEKDAY_NAMES,
+  WEEKDAY_SHORT_NAMES,
+} from "@/lib/escalas/names";
 export type PublicEvent = {
   id: string;
   date: string;
@@ -17,26 +24,6 @@ export type PublicEvent = {
   assignments: { role: Role; name: string }[];
 };
 
-const WEEKDAYS_SHORT = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-const WEEKDAYS_LONG = [
-  "Domingo",
-  "Segunda-feira",
-  "Terça-feira",
-  "Quarta-feira",
-  "Quinta-feira",
-  "Sexta-feira",
-  "Sábado",
-];
-const CATEGORY_LABELS: Record<(typeof categories)[number], string> = {
-  porteiro: "Porteiros",
-  porteira: "Porteiras",
-  organista: "Organistas",
-};
-const KIND_LABELS: Record<string, string> = {
-  culto: "Culto oficial",
-  jovens: "Jovens e menores",
-  ensaio: "Ensaio local",
-};
 const longDate = new Intl.DateTimeFormat("pt-BR", {
   weekday: "long",
   day: "numeric",
@@ -44,14 +31,11 @@ const longDate = new Intl.DateTimeFormat("pt-BR", {
   timeZone: "UTC",
 });
 
-// Ordem de apresentação preferida: jovens, ensaio e culto.
-const KIND_ORDER = ["jovens", "ensaio", "culto"];
+// Ordem de apresentação das funções dentro do evento.
 const ROLE_ORDER: Role[] = ["primeiro", "segundo", "porteira", "culto", "meia_hora"];
 
-function sortEvents<T extends { kind: string }>(items: T[]) {
-  return [...items].sort(
-    (a, b) => KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind),
-  );
+function sortEvents<T extends { date: string; kind: string }>(items: T[]) {
+  return [...items].sort(compareEvents);
 }
 
 function sortAssignments<T extends { role: Role }>(items: T[]) {
@@ -155,7 +139,7 @@ export function PublicCalendar({
           <div className="sc-hero-events">
             {sortEvents(heroEvents).map((e) => (
               <div key={e.id} className="sc-hero-event">
-                <h3>{KIND_LABELS[e.kind] ?? e.kind}</h3>
+                <h3>{KIND_NAMES[e.kind] ?? e.kind}</h3>
                 <ul>
                   {sortAssignments(e.assignments).map((a) => (
                     <li key={a.role} className={`sc-${categoryOf(a.role)}`}>
@@ -297,7 +281,7 @@ export function PublicCalendar({
                 onClick={() => toggle(c)}
               >
                 <i aria-hidden="true" />
-                {CATEGORY_LABELS[c]}
+                {CATEGORY_PLURAL_NAMES[c]}
               </button>
             ))}
           </div>
@@ -335,7 +319,7 @@ export function PublicCalendar({
           </p>
           <div className={list ? "sc-list" : ""}>
             <div className="sc-calendar">
-              {WEEKDAYS_SHORT.map((d) => (
+              {WEEKDAY_SHORT_NAMES.map((d) => (
                 <div className="sc-weekday" key={d}>
                   {d}
                 </div>
@@ -357,7 +341,7 @@ export function PublicCalendar({
                     <header className="sc-day-head">
                       <time dateTime={date}>
                         <span className="sc-day-num">{i + 1}</span>
-                        <span className="sc-wd-long">{WEEKDAYS_LONG[w]}</span>
+                        <span className="sc-wd-long">{WEEKDAY_NAMES[w]}</span>
                       </time>
                       {date === currentDate && (
                         <span className="sc-tag sc-tag-today">Hoje</span>
@@ -372,7 +356,7 @@ export function PublicCalendar({
                           key={e.id}
                           className={`sc-event sc-kind-${e.kind}`}
                         >
-                          <h3>{KIND_LABELS[e.kind] ?? e.kind}</h3>
+                          <h3>{KIND_NAMES[e.kind] ?? e.kind}</h3>
                           {sortAssignments(e.assignments).map((a) => (
                             <p
                               key={a.role}

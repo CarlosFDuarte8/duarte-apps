@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/escalas/supabase";
 import { AdminNav } from "@/components/escalas/admin-nav";
+import { BrandMark, NavIcon } from "@/components/escalas/nav-icons";
 import { logout } from "../actions";
 export default async function Layout({
   children,
@@ -8,41 +9,50 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   await requireAdmin();
+  const brand = (
+    <Link className="sc-brand" href="/admin">
+      <BrandMark />
+      <span>
+        <strong>CCB · INCRA-08</strong>
+        <small>Gestão de escalas</small>
+      </span>
+    </Link>
+  );
   return (
-    <>
-      <header className="sc-admin-bar">
-        <div className="sc-admin-bar-top">
-          <Link className="sc-admin-brand" href="/admin">
-            <span className="sc-admin-mark" aria-hidden="true">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="4" y="5" width="16" height="16" rx="3" />
-                <path d="M8 3v4m8-4v4M4 10h16m-12 5 2 2 5-5" />
-              </svg>
-            </span>
-            <span>
-              <strong>CCB · INCRA-08</strong>
-              <small>Gestão de escalas</small>
-            </span>
+    <div className="sc-app">
+      <aside className="sc-sidebar">
+        {brand}
+        <AdminNav variant="side" />
+        <div className="sc-sidebar-foot">
+          <Link href="/escalas">
+            <NavIcon name="globe" />
+            <span>Área pública</span>
           </Link>
-          <div className="sc-admin-bar-actions">
-            <Link className="sc-admin-public" href="/escalas">
-              Área pública
+          <form action={logout}>
+            <button type="submit" className="sc-sideitem">
+              <NavIcon name="logout" />
+              <span>Sair</span>
+            </button>
+          </form>
+        </div>
+      </aside>
+      <div className="sc-app-main">
+        <header className="sc-mobilebar">
+          {brand}
+          <div className="sc-mobilebar-actions">
+            <Link href="/escalas" aria-label="Área pública">
+              <NavIcon name="globe" />
             </Link>
             <form action={logout}>
-              <button className="sc-btn sc-btn-ghost">Sair</button>
+              <button type="submit" className="sc-sideitem" aria-label="Sair">
+                <NavIcon name="logout" />
+              </button>
             </form>
           </div>
-        </div>
-        <AdminNav />
-      </header>
-      {children}
-    </>
+        </header>
+        <div className="sc-app-content">{children}</div>
+      </div>
+      <AdminNav variant="bottom" />
+    </div>
   );
 }
