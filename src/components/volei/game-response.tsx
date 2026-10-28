@@ -20,6 +20,7 @@ export type MyGame = {
   blocked: boolean;
   active: boolean;
   membershipStatus: "approved" | "pending" | "rejected";
+  canReport?: boolean;
   status?: AttendanceStatus;
   guest?: { name: string; status: AttendanceStatus; profileToken?: string };
 };
@@ -112,6 +113,13 @@ export function GameResponse({
               Meu cadastro · foto e nascimento
             </Link>
           </Button>
+          {mine.canReport && (
+            <Button asChild variant="ghost">
+              <Link href="/volei/relatar">
+                Relatar uma situação ao responsável
+              </Link>
+            </Button>
+          )}
           {!approved ? (
             <div className="game-notice is-warning">
               <VolleyIcon name="clock" />

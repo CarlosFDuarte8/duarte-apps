@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { logoutVolei as logout } from "@/app/volei/entrar/actions";
 import { VolleyIcon } from "./volley-icon";
+import { NotificationBell } from "./notification-bell";
 import "./shell.css";
 import "@/components/ui/shadcn.css";
 export function VoleiShell({
@@ -67,6 +68,7 @@ export function VoleiShell({
                   path?.startsWith("/admin/volei/") &&
                   !path?.startsWith("/admin/volei/membros") &&
                   !path?.startsWith("/admin/volei/convidados") &&
+                  !path?.startsWith("/admin/volei/notificacoes") &&
                   !path?.startsWith("/admin/volei/frequencia")) ||
                 ((href === "/admin/volei/membros" ||
                   href === "/admin/volei/convidados" ||
@@ -103,12 +105,15 @@ export function VoleiShell({
       <div className="volley-body">
         <header className="volley-top">
           <span>{admin ? "PAINEL ADMINISTRATIVO" : "ÁREA PÚBLICA"}</span>
-          <span className="volley-tag">● Vôlei</span>
-          {admin && (
-            <form action={logout} className="volley-mobile-logout">
-              <button type="submit">Sair</button>
-            </form>
-          )}
+          <div className="vn-header-actions">
+            {admin && <NotificationBell />}
+            <span className="volley-tag">● Vôlei</span>
+            {admin && (
+              <form action={logout} className="volley-mobile-logout">
+                <button type="submit">Sair</button>
+              </form>
+            )}
+          </div>
         </header>
         <div className="volley-content">{children}</div>
       </div>

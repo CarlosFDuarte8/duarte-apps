@@ -15,6 +15,7 @@ export function useRun() {
         const result = await action();
         setError(result.error);
         if (!result.error) {
+          window.dispatchEvent(new Event("volley-notifications-changed"));
           router.refresh();
           after?.();
         }

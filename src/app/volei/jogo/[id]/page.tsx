@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { publicEvent } from "@/lib/volei/repository";
 import { formatDate, isEventOpen } from "@/lib/volei/domain";
 import { currentPlayer } from "@/lib/volei/player-session";
+import { canSubmitComplaint } from "@/lib/volei/complaints";
 import { serviceClient } from "@/lib/escalas/supabase";
 import { GameResponse, type MyGame } from "@/components/volei/game-response";
 import { GameRoster } from "@/components/volei/game-roster";
@@ -38,6 +39,7 @@ export default async function Page({
         blocked: player.blocked,
         active: player.is_active,
         membershipStatus: player.membership_status,
+        canReport: canSubmitComplaint(player),
         status: attendance.find((p) => p.member_id === player.id)?.status,
         guest: ownGuest?.data
           ? {

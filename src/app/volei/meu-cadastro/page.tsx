@@ -4,6 +4,8 @@ import { signPhotos } from "@/lib/volei/photos";
 import { today } from "@/lib/volei/domain";
 import { displayPhone } from "@/lib/volei/phone";
 import { ProfileForm } from "@/components/volei/profile-form";
+import { canSubmitComplaint } from "@/lib/volei/complaints";
+import { Button } from "@/components/ui/button";
 import { saveOwnProfile } from "../profile-actions";
 import "@/components/volei/profile.css";
 export const dynamic = "force-dynamic";
@@ -33,6 +35,13 @@ export default async function Page() {
       <section className="volley-card">
         <h1>{person.name}</h1>
         <p>{displayPhone(person.phone)}</p>
+        {canSubmitComplaint(player) && (
+          <Button asChild variant="outline">
+            <Link href="/volei/relatar">
+              Relatar uma situação ao responsável
+            </Link>
+          </Button>
+        )}
         <ProfileForm
           name={person.name}
           birthDate={person.birth_date}

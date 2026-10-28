@@ -1018,3 +1018,247 @@ describe("Perfis privados e bloqueio de convidados", () => {
     ).toBe("confirmado");
   });
 });
+
+describe("Relatos privados e fila de atendimento", () => {
+  const secret = "81".repeat(32),
+    regularSecret = "82".repeat(32),
+    blockedSecret = "83".repeat(32),
+    pendingSecret = "84".repeat(32);
+  let reporter: string,
+    target: string,
+    guest: string,
+    event: string,
+    complaint: string;
+  const description =
+    "Um relato detalhado de um ocorrido durante o jogo, para ser avaliado pelo responsavel.";
+  async function submit(
+    type = "member",
+    id = target,
+    hash = secret,
+    key = "00000000-0000-4000-8000-000000000711",
+    eventId: string | null = null,
+  ) {
+    return db.query<{ volei_submit_complaint: string }>(
+      "select public.volei_submit_complaint($1,$2,$3,$4,$5,$6,$7)",
+      [hash, type, id, eventId, "Situacao durante o jogo", description, key],
+    );
+  }
+  beforeAll(async () => {
+    await db.exec(
+      await readFile(
+        new URL(
+          "./migrations/202610280007_volei_complaints.sql",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    );
+    reporter = (
+      await db.query<{ id: string }>(
+        "insert into public.volei_members(name,is_core,membership_status,device_secret_hash) values('Autor principal',true,'approved',$1) returning id",
+        [secret],
+      )
+    ).rows[0].id;
+    target = (
+      await db.query<{ id: string }>(
+        "insert into public.volei_members(name,membership_status,device_secret_hash) values('Membro mencionado','approved',$1) returning id",
+        [regularSecret],
+      )
+    ).rows[0].id;
+    await db.query(
+      "insert into public.volei_members(name,is_core,membership_status,blocked,device_secret_hash) values('Principal bloqueado',true,'approved',true,$1),('Principal pendente',true,'pending',false,$2)",
+      [blockedSecret, pendingSecret],
+    );
+    event = (
+      await db.query<{ id: string }>(
+        "insert into public.volei_events(date) values('2000-01-17') returning id",
+      )
+    ).rows[0].id;
+    guest = (
+      await db.query<{ id: string }>(
+        "insert into public.volei_guests(event_id,member_id,name,status) values($1,$2,'Convidado mencionado','confirmado') returning id",
+        [event, target],
+      )
+    ).rows[0].id;
+  });
+  it("recusa nao principais, pendentes, bloqueados e credenciais desconhecidas", async () => {
+    for (const hash of [
+      regularSecret,
+      blockedSecret,
+      pendingSecret,
+      "ff".repeat(32),
+    ])
+      await expect(submit("member", target, hash)).rejects.toThrow("acesso");
+    await expect(submit("member", reporter)).rejects.toThrow("outro membro");
+    await expect(
+      as(
+        null,
+        "select public.volei_submit_complaint(null,null,null,null,null,null,null)",
+      ),
+    ).rejects.toThrow();
+  });
+  it("registra o autor e nao duplica um envio repetido", async () => {
+    complaint = (await submit()).rows[0].volei_submit_complaint;
+    expect((await submit()).rows[0].volei_submit_complaint).toBe(complaint);
+    const rows = (
+      await db.query<{
+        reporter_id: string;
+        status: string;
+        read_at: string | null;
+      }>(
+        "select reporter_id,status,read_at from public.volei_complaints where id=$1",
+        [complaint],
+      )
+    ).rows;
+    expect(rows).toEqual([
+      { reporter_id: reporter, status: "open", read_at: null },
+    ]);
+  });
+  it("permite apenas ao responsavel ler e atender", async () => {
+    expect(
+      (
+        await as(
+          stranger,
+          "select * from public.volei_complaints where id='" + complaint + "'",
+        )
+      ).rows,
+    ).toHaveLength(0);
+    await expect(
+      as(null, "select * from public.volei_complaints"),
+    ).rejects.toThrow();
+    await expect(
+      as(
+        stranger,
+        "select public.volei_review_complaint('" +
+          complaint +
+          "','resolved','Sem acao')",
+      ),
+    ).rejects.toThrow("restrito");
+    expect(
+      (
+        await as(
+          admin,
+          "select * from public.volei_complaints where id='" + complaint + "'",
+        )
+      ).rows,
+    ).toHaveLength(1);
+    await expect(
+      as(
+        admin,
+        "update public.volei_complaints set status='resolved' where id='" +
+          complaint +
+          "'",
+      ),
+    ).rejects.toThrow();
+  });
+  it("a leitura nao conclui nem remove a pendencia", async () => {
+    await as(admin, "select public.volei_read_complaint('" + complaint + "')");
+    const row = (
+      await db.query<{ status: string; read_at: string | null }>(
+        "select status,read_at from public.volei_complaints where id=$1",
+        [complaint],
+      )
+    ).rows[0];
+    expect(row.status).toBe("open");
+    expect(row.read_at).not.toBeNull();
+    expect(
+      (
+        await db.query(
+          "select id from public.volei_complaints where id=$1 and status<>'resolved'",
+          [complaint],
+        )
+      ).rows,
+    ).toHaveLength(1);
+  });
+  it("mantem em analise e exige registro do atendimento para concluir", async () => {
+    await as(
+      admin,
+      "select public.volei_review_complaint('" +
+        complaint +
+        "','in_review','Conversa agendada')",
+    );
+    await expect(
+      as(
+        admin,
+        "select public.volei_review_complaint('" +
+          complaint +
+          "','resolved','')",
+      ),
+    ).rejects.toThrow("atendido");
+    await as(
+      admin,
+      "select public.volei_review_complaint('" +
+        complaint +
+        "','resolved','Conversa realizada, orientacoes registradas')",
+    );
+    expect(
+      (
+        await db.query(
+          "select id from public.volei_complaints where id=$1 and status<>'resolved'",
+          [complaint],
+        )
+      ).rows,
+    ).toHaveLength(0);
+    const history = (
+      await db.query<{ to_status: string }>(
+        "select to_status from public.volei_complaint_updates where complaint_id=$1 order by created_at",
+        [complaint],
+      )
+    ).rows;
+    expect(history.map((row) => row.to_status)).toEqual([
+      "in_review",
+      "resolved",
+    ]);
+    expect(
+      (
+        await db.query<{ blocked: boolean }>(
+          "select blocked from public.volei_members where id=$1",
+          [target],
+        )
+      ).rows[0].blocked,
+    ).toBe(false);
+  });
+  it("pode reabrir um atendimento e voltar a sinalizar a pendencia", async () => {
+    await as(
+      admin,
+      "select public.volei_review_complaint('" +
+        complaint +
+        "','open','Reabrir para nova analise')",
+    );
+    expect(
+      (
+        await db.query<{ status: string; resolved_at: string | null }>(
+          "select status,resolved_at from public.volei_complaints where id=$1",
+          [complaint],
+        )
+      ).rows[0],
+    ).toEqual({ status: "open", resolved_at: null });
+  });
+  it("vincula relato de convidado ao membro responsavel e preserva o historico", async () => {
+    const id = (
+      await submit(
+        "guest",
+        guest,
+        secret,
+        "00000000-0000-4000-8000-000000000712",
+      )
+    ).rows[0].volei_submit_complaint;
+    await db.query("delete from public.volei_guests where id=$1", [guest]);
+    expect(
+      (
+        await db.query<{
+          target_name: string;
+          sponsor_name: string;
+          target_guest_id: string | null;
+        }>(
+          "select target_name,sponsor_name,target_guest_id from public.volei_complaints where id=$1",
+          [id],
+        )
+      ).rows[0],
+    ).toEqual({
+      target_name: "Convidado mencionado",
+      sponsor_name: "Membro mencionado",
+      target_guest_id: null,
+    });
+  });
+});
