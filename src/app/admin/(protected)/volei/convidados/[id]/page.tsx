@@ -8,6 +8,7 @@ import { ageLabel } from "@/lib/volei/profile";
 import { PageHeader } from "@/components/escalas/admin-ui";
 import { ProfileForm } from "@/components/volei/profile-form";
 import { GuestAdminControls } from "@/components/volei/guest-admin-controls";
+import { SkillLevelForm } from "@/components/volei/skill-level-form";
 import { saveAdminGuestProfile } from "@/app/admin/volei-profile-actions";
 export default async function Page({
   params,
@@ -51,6 +52,7 @@ export default async function Page({
           )}
         </p>
         <ProfileForm
+          emergency={guest}
           name={guest.name}
           birthDate={guest.birth_date}
           photoUrl={guest.photo_url}
@@ -63,6 +65,7 @@ export default async function Page({
           blocked={guest.blocked}
           reason={guest.blocked_reason}
         />
+        <SkillLevelForm id={id} guest level={guest.skill_level} />
       </section>
     </>
   );

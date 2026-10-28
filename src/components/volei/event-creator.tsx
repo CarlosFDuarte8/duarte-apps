@@ -4,6 +4,7 @@ import { createEvents } from "@/app/admin/volei-actions";
 import { daysInMonth, weekdayOf } from "@/lib/volei/domain";
 import { useRun } from "./use-run";
 import "./volei.css";
+import { NativeSelect } from "@/components/ui/native-select";
 
 const SHORT = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 
@@ -31,6 +32,7 @@ export function EventCreator({ month }: { month: string }) {
               location: form.get("location"),
               notes: form.get("notes"),
               registration_time: form.get("registration_time"),
+              max_teams: Number(form.get("max_teams")),
             }),
           () => setSelected([]),
         );
@@ -60,6 +62,13 @@ export function EventCreator({ month }: { month: string }) {
         })}
       </div>
       <div className="sc-fields">
+        <label>
+          Times e vagas
+          <NativeSelect name="max_teams" defaultValue="3">
+            <option value="3">3 times · 18 vagas (padrão)</option>
+            <option value="4">4 times · 24 vagas (exceção)</option>
+          </NativeSelect>
+        </label>
         <label>
           Confirmar presença até (Brasília)
           <input

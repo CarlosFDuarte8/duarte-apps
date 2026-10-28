@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { publicEvent } from "@/lib/volei/repository";
-import { formatDate, isEventOpen } from "@/lib/volei/domain";
+import { formatDate, isEventOpen, eventCapacity } from "@/lib/volei/domain";
 import { currentPlayer } from "@/lib/volei/player-session";
 import { canSubmitComplaint } from "@/lib/volei/complaints";
 import { serviceClient } from "@/lib/escalas/supabase";
@@ -116,11 +116,14 @@ export default async function Page({
         </span>
         <span>
           <span className="game-available-dot" />
-          <strong>{Math.max(0, 18 - confirmed - reserved)}</strong> vagas
-          disponíveis
+          <strong>
+            {Math.max(0, eventCapacity(event) - confirmed - reserved)}
+          </strong>{" "}
+          vagas disponíveis
         </span>
         <span>
-          <VolleyIcon name="ball" />3 times de 6 jogadores
+          <VolleyIcon name="ball" />
+          {event.max_teams ?? 3} times de 6 jogadores
         </span>
       </div>
       <div className="game-page-grid">
@@ -129,7 +132,7 @@ export default async function Page({
           open={open}
           finished={!!event.presence_closed_at}
           mine={mine}
-          free={Math.max(0, 18 - confirmed - reserved)}
+          free={Math.max(0, eventCapacity(event) - confirmed - reserved)}
         />
         <GameRoster game={game} />
       </div>

@@ -23,6 +23,7 @@ function done(error: { message: string; code?: string } | null): Result {
     return ok;
   }
   if (error.code === "23505") return { error: "Já existe um registro igual." };
+  if (error.code === "P0001") return { error: error.message };
   return { error: "Não foi possível salvar. Tente novamente." };
 }
 
@@ -60,6 +61,7 @@ export async function updateEvent(
       location: z.string().trim().max(120),
       notes: z.string().trim().max(500),
       closed: z.boolean(),
+      max_teams: z.union([z.literal(3), z.literal(4)]).optional(),
       registration_deadline: z
         .string()
         .datetime({ offset: true })
@@ -330,6 +332,37 @@ export async function recordPresence(input: unknown): Promise<Result> {
     .safeParse(input);
   if (!parsed.success) return { error: "Dados de presença inválidos." };
   const p = parsed.data;
+  const session = await client
+    .from("volei_court_sessions")
+    .select("event_id")
+    .eq("event_id", p.eventId)
+    .maybeSingle();
+  if (session.error) return done(session.error);
+  if (session.data) {
+    const game = await client
+      .from("volei_events")
+      .select("presence_closed_at")
+      .eq("id", p.eventId)
+      .single();
+    if (game.error) return done(game.error);
+    if (!game.data.presence_closed_at) {
+      const guest = p.guest
+        ? await client
+            .from("volei_guests")
+            .select("id")
+            .eq("event_id", p.eventId)
+            .eq("member_id", p.memberId)
+            .single()
+        : null;
+      if (guest?.error) return done(guest.error);
+      const { mutateCourt } = await import("@/lib/volei/court-repository");
+      const result = await mutateCourt(client, p.eventId, {
+        type: p.present ? "arrive" : "undo",
+        key: `${p.guest ? "g" : "m"}:${guest?.data?.id ?? p.memberId}`,
+      });
+      return result.error ? result : done(null);
+    }
+  }
   const { error } = await client.rpc("volei_record_presence", {
     p_event: p.eventId,
     p_member: p.memberId,

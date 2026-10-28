@@ -1,5 +1,28 @@
 import { z } from "zod";
 import { today } from "./domain";
+import { phoneSchema } from "./phone";
+export const emergencyContactSchema = z
+  .object({
+    emergency_name: z.string().trim().max(100),
+    emergency_phone: z.union([z.literal(""), phoneSchema]),
+    emergency_relationship: z.string().trim().max(60),
+  })
+  .refine(
+    (value) =>
+      (!value.emergency_name &&
+        !value.emergency_phone &&
+        !value.emergency_relationship) ||
+      !!(value.emergency_name && value.emergency_phone),
+    "Preencha nome e telefone do contato de emergência, ou deixe os campos vazios.",
+  );
+export const skillLabels = [
+  "Sem avaliação",
+  "Iniciante",
+  "Básico",
+  "Intermediário",
+  "Avançado",
+  "Muito avançado",
+] as const;
 
 export function ageOn(birthDate: string | null | undefined, on = today()) {
   if (!birthDate || !/^\d{4}-\d{2}-\d{2}$/.test(birthDate) || birthDate > on)

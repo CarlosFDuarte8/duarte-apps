@@ -9,6 +9,7 @@ import {
   formatMonth,
   monthPattern,
   shiftMonth,
+  eventCapacity,
 } from "@/lib/volei/domain";
 
 export default async function Page({
@@ -100,7 +101,7 @@ export default async function Page({
                     <td data-label="Reservadas">{reserved}</td>
                     <td data-label="Não vão">{declined}</td>
                     <td data-label="Vagas livres">
-                      {Math.max(0, 18 - confirmed - reserved)}
+                      {Math.max(0, eventCapacity(event) - confirmed - reserved)}
                     </td>
                     <td data-label="Membros na fila">{waiting}</td>
                     <td data-label="Convidados na fila">{guestsWaiting}</td>

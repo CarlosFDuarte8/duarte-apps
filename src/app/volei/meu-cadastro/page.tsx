@@ -43,6 +43,7 @@ export default async function Page() {
           </Button>
         )}
         <ProfileForm
+          emergency={person}
           name={person.name}
           birthDate={person.birth_date}
           photoUrl={person.photo_url}

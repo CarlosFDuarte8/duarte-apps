@@ -15,6 +15,7 @@ import { useCopy, useRun } from "./use-run";
 import { useRouter } from "next/navigation";
 import { defaultDeadline } from "@/lib/volei/phone";
 import "./volei.css";
+import { NativeSelect } from "@/components/ui/native-select";
 
 type Status = AttendanceStatus | "limpar";
 
@@ -83,6 +84,7 @@ export function EventManager({
                 location: f.get("location"),
                 notes: f.get("notes"),
                 closed: f.get("closed") === "on",
+                max_teams: Number(f.get("max_teams")),
                 registration_deadline: f.get("registration_deadline")
                   ? new Date(
                       `${f.get("registration_deadline")}:00-03:00`,
@@ -98,6 +100,16 @@ export function EventManager({
           }}
         >
           <div className="sc-fields">
+            <label>
+              Times e capacidade
+              <NativeSelect
+                name="max_teams"
+                defaultValue={String(event.max_teams ?? 3)}
+              >
+                <option value="3">3 times · 18 vagas</option>
+                <option value="4">4 times · 24 vagas (exceção)</option>
+              </NativeSelect>
+            </label>
             <label>
               Prazo de inscrição (Brasília)
               <input
@@ -229,7 +241,7 @@ export function EventManager({
           </thead>
           <tbody>
             {members
-              .filter((m) => m.is_active && m.membership_status==="approved")
+              .filter((m) => m.is_active && m.membership_status === "approved")
               .map((m) => (
                 <tr key={m.id}>
                   <td data-label="Membro">
@@ -256,7 +268,9 @@ export function EventManager({
                       }
                     >
                       <option value="limpar">Pendente</option>
-                      <option value="reservado" disabled>Vaga reservada</option>
+                      <option value="reservado" disabled>
+                        Vaga reservada
+                      </option>
                       <option value="confirmado">Confirmado</option>
                       <option value="espera" disabled>
                         Em espera

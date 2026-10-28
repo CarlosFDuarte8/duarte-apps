@@ -12,9 +12,9 @@ import {
 } from "./domain";
 
 const eventColumns =
-  "id,date,title,start_time,location,notes,closed,registration_deadline,guests_open_at,presence_closed_at";
+  "id,date,title,start_time,location,notes,closed,registration_deadline,guests_open_at,presence_closed_at,max_teams";
 const memberColumns =
-  "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status,birth_date,photo_path";
+  "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status,birth_date,photo_path,skill_level,emergency_name,emergency_phone,emergency_relationship";
 
 function fail(error: { message: string } | null): asserts error is null {
   if (error) throw new Error(error.message);
@@ -286,13 +286,18 @@ export type GuestProfileRow = GuestRow & {
   } | null;
   blocked: boolean;
   blocked_reason: string;
+  skill_level: number | null;
+  emergency_name: string;
+  emergency_phone: string;
+  emergency_relationship: string;
 };
 const guestProfileColumns =
-  "id,event_id,member_id,name,status,registered_at,queue_order,phone,birth_date,photo_path,volei_members(id,name),volei_events(id,date,title,closed,presence_closed_at)";
+  "id,event_id,member_id,name,status,registered_at,queue_order,phone,birth_date,photo_path,skill_level,emergency_name,emergency_phone,emergency_relationship,volei_members(id,name),volei_events(id,date,title,closed,presence_closed_at)";
 
 export async function listGuestProfiles(
   client: SupabaseClient,
   memberId?: string,
+  eventId?: string,
 ) {
   let query = client
     .from("volei_guests")
@@ -300,6 +305,7 @@ export async function listGuestProfiles(
     .order("registered_at", { ascending: false })
     .limit(200);
   if (memberId) query = query.eq("member_id", memberId);
+  if (eventId) query = query.eq("event_id", eventId);
   const [{ data, error }, blocks] = await Promise.all([
     query,
     client.from("volei_guest_blocks").select("phone,reason"),

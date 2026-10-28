@@ -32,6 +32,7 @@ export default async function Page({
             : "Você está aguardando uma vaga. O cadastro não confirma sua participação; membros têm prioridade."}
         </p>
         <ProfileForm
+          emergency={guest}
           name={guest.name}
           birthDate={guest.birth_date}
           photoUrl={guest.photo_url}

@@ -15,6 +15,10 @@ export type VoleiMember = {
   birth_date?: string | null;
   photo_path?: string | null;
   photo_url?: string | null;
+  skill_level?: number | null;
+  emergency_name?: string;
+  emergency_phone?: string;
+  emergency_relationship?: string;
   is_core?: boolean;
   membership_status?: "approved" | "pending" | "rejected";
   preferred_weekdays?: number[];
@@ -24,6 +28,7 @@ export type VoleiMember = {
 };
 
 export type VoleiEvent = {
+  max_teams?: 3 | 4;
   id: string;
   date: string;
   title: string;
@@ -35,11 +40,15 @@ export type VoleiEvent = {
   guests_open_at?: string | null;
   presence_closed_at?: string | null;
 };
+export function eventCapacity(event: Pick<VoleiEvent, "max_teams">) {
+  return (event.max_teams ?? 3) * 6;
+}
 
 export const monthPattern = /^20\d{2}-(0[1-9]|1[0-2])$/;
 export const datePattern = /^20\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 
 export const eventSchema = z.object({
+  max_teams: z.union([z.literal(3), z.literal(4)]).default(3),
   dates: z.array(z.string().regex(datePattern)).min(1).max(31),
   title: z.string().trim().min(1).max(100),
   start_time: z.string().trim().max(20),

@@ -8,6 +8,7 @@ import { MemberPreferences } from "./member-preferences";
 import { PhoneInput } from "./phone-input";
 import { displayPhone } from "@/lib/volei/phone";
 import { ProfileForm } from "./profile-form";
+import { SkillLevelForm } from "./skill-level-form";
 import { PersonAvatar } from "./person-avatar";
 import { saveAdminMemberProfile } from "@/app/admin/volei-profile-actions";
 import { today } from "@/lib/volei/domain";
@@ -202,6 +203,7 @@ export function MemberEditor({
           <section className="vl-box">
             <h2 className="vm-editor-heading">Foto e nascimento</h2>
             <ProfileForm
+              emergency={member}
               name={member.name}
               birthDate={member.birth_date}
               photoUrl={member.photo_url}
@@ -211,6 +213,7 @@ export function MemberEditor({
           </section>
 
           <MemberPreferences member={member} />
+          <SkillLevelForm id={member.id} level={member.skill_level} />
 
           <fieldset className="vl-box">
             <legend>Pontos</legend>

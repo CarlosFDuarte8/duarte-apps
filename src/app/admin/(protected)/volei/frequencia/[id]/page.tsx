@@ -49,6 +49,11 @@ export default async function Page({
       <Button asChild variant="ghost">
         <Link href="/admin/volei/frequencia">← Voltar para frequência</Link>
       </Button>
+      <Button asChild variant="outline">
+        <Link href={`/admin/volei/${id}/quadra`}>
+          Times e controle da quadra
+        </Link>
+      </Button>
       <section className="volley-hero">
         <span className="volley-eyebrow">CHAMADA DO ENCONTRO</span>
         <h1>{formatDate(found.event.date)}</h1>

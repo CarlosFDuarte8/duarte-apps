@@ -16,7 +16,7 @@ export async function currentPlayer() {
   const { data, error } = await serviceClient()
     .from("volei_members")
     .select(
-      "id,name,phone,is_active,blocked,is_core,membership_status,birth_date,photo_path",
+      "id,name,phone,is_active,blocked,is_core,membership_status,birth_date,photo_path,emergency_name,emergency_phone,emergency_relationship",
     )
     .eq("device_secret_hash", hashDevice(secret))
     .maybeSingle();
@@ -31,5 +31,8 @@ export async function currentPlayer() {
     membership_status: "approved" | "pending" | "rejected";
     birth_date: string | null;
     photo_path: string | null;
+    emergency_name: string;
+    emergency_phone: string;
+    emergency_relationship: string;
   } | null;
 }

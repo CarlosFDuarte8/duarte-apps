@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PersonAvatar } from "./person-avatar";
 import { PhotoCropper } from "./photo-cropper";
+import { PhoneInput } from "./phone-input";
 import "./profile.css";
 
 export function ProfileForm({
@@ -13,14 +14,29 @@ export function ProfileForm({
   photoUrl,
   maxDate,
   save,
+  emergency,
 }: {
   name: string;
   birthDate?: string | null;
   photoUrl?: string | null;
   maxDate: string;
   save: (form: FormData) => Promise<{ error: string }>;
+  emergency?: {
+    emergency_name?: string;
+    emergency_phone?: string;
+    emergency_relationship?: string;
+  };
 }) {
   const [birth, setBirth] = useState(birthDate ?? "");
+  const [contactName, setContactName] = useState(
+    emergency?.emergency_name ?? "",
+  );
+  const [contactPhone, setContactPhone] = useState(
+    emergency?.emergency_phone ?? "",
+  );
+  const [contactRelationship, setContactRelationship] = useState(
+    emergency?.emergency_relationship ?? "",
+  );
   const [photo, setPhoto] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
   const [remove, setRemove] = useState(false);
@@ -46,6 +62,9 @@ export function ProfileForm({
           setMessage("");
           const form = new FormData();
           form.set("birth_date", birth);
+          form.set("emergency_name", contactName);
+          form.set("emergency_phone", contactPhone);
+          form.set("emergency_relationship", contactRelationship);
           form.set("remove_photo", String(remove));
           if (photo) form.set("photo", photo);
           start(async () => {
@@ -145,12 +164,40 @@ export function ProfileForm({
             Ajuda o responsável a identificar participantes menores de 18 anos.
           </small>
         </label>
+        <fieldset className="vp-emergency">
+          <legend>Contato de emergência (opcional)</legend>
+          <p>
+            Uma pessoa para o responsável contatar se precisar. Para menores,
+            pode ser o pai, a mãe ou outro responsável.
+          </p>
+          <label>
+            Nome do contato
+            <Input
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              maxLength={100}
+            />
+          </label>
+          <label>
+            Telefone do contato
+            <PhoneInput value={contactPhone} onChange={setContactPhone} />
+          </label>
+          <label>
+            Vínculo com você
+            <Input
+              value={contactRelationship}
+              onChange={(e) => setContactRelationship(e.target.value)}
+              maxLength={60}
+              placeholder="Ex.: mãe, pai, cônjuge"
+            />
+          </label>
+        </fieldset>
         <p className="vp-private-note">
           Foto e nascimento ficam disponíveis apenas neste cadastro e no painel
-          administrativo. Não aparecem na lista pública do jogo.
+          administrativo. O contato de emergência também é privado.
         </p>
         <Button type="submit" disabled={pending || processing || !!cropImage}>
-          {pending ? "Salvando…" : "Salvar foto e nascimento"}
+          {pending ? "Salvando…" : "Salvar dados do cadastro"}
         </Button>
         {message && (
           <p

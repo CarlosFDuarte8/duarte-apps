@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { publicEvents } from "@/lib/volei/repository";
-import { currentMonth, formatDate, today } from "@/lib/volei/domain";
+import {
+  currentMonth,
+  formatDate,
+  today,
+  eventCapacity,
+} from "@/lib/volei/domain";
 export const dynamic = "force-dynamic";
 export default async function Page() {
   const months = [
@@ -20,7 +25,7 @@ export default async function Page() {
         <h1>Seu lugar na quadra.</h1>
         <p>
           Acompanhe os confirmados, veja as vagas disponíveis e entre na próxima
-          partida. São 18 jogadores, em 3 times de 6.
+          partida. Confira a quantidade de vagas em cada encontro.
         </p>
       </section>
       <div className="volley-grid">
@@ -46,7 +51,7 @@ export default async function Page() {
                   <strong>
                     {Math.max(
                       0,
-                      18 -
+                      eventCapacity(event) -
                         confirmed -
                         attendance.filter((p) => p.status === "reservado")
                           .length,

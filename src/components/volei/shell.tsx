@@ -86,8 +86,8 @@ export function VoleiShell({
           ))}
         </nav>
         <div className="volley-sidebar-note">
-          <strong>18 jogadores. Um só grupo.</strong>
-          <p>3 times de 6, com inscrição por ordem de confirmação.</p>
+          <strong>Um só grupo. Uma só quadra.</strong>
+          <p>Confira as vagas disponíveis em cada dia de jogo.</p>
         </div>
         <footer>
           {admin ? (

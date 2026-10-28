@@ -3,8 +3,10 @@ import { useState } from "react";
 import type { publicEvent } from "@/lib/volei/repository";
 import { VolleyIcon } from "./volley-icon";
 import "./game.css";
+import { eventCapacity } from "@/lib/volei/domain";
 type Game = NonNullable<Awaited<ReturnType<typeof publicEvent>>>;
 export function GameRoster({ game }: { game: Game }) {
+  const capacity = eventCapacity(game.event);
   const [tab, setTab] = useState<"confirmed" | "waiting" | "guests">(
     "confirmed",
   );
@@ -60,16 +62,18 @@ export function GameRoster({ game }: { game: Game }) {
         <div>
           <strong>
             {confirmed.length}
-            <span> / 18 jogadores</span>
+            <span> / {capacity} jogadores</span>
           </strong>
-          <span>{Math.max(0, 18 - confirmed.length)} vagas livres</span>
+          <span>{Math.max(0, capacity - confirmed.length)} vagas livres</span>
         </div>
         <progress
-          max={18}
+          max={capacity}
           value={confirmed.length}
-          aria-label={`${confirmed.length} de 18 vagas ocupadas`}
+          aria-label={`${confirmed.length} de ${capacity} vagas ocupadas`}
         />
-        <small>3 times de 6 · 18 jogadores</small>
+        <small>
+          {game.event.max_teams ?? 3} times de 6 · {capacity} jogadores
+        </small>
       </div>
       <div
         className="game-roster-filters"

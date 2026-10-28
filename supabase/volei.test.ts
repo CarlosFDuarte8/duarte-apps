@@ -1,6 +1,12 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
+import {
+  emptyCourt,
+  applyCourtAction,
+  type CourtRosterPerson,
+  type CourtState,
+} from "../src/lib/volei/court";
 
 const db = new PGlite();
 const admin = "00000000-0000-4000-8000-000000000001";
@@ -1260,5 +1266,283 @@ describe("Relatos privados e fila de atendimento", () => {
       sponsor_name: "Membro mencionado",
       target_guest_id: null,
     });
+  });
+});
+
+describe("Quadra, capacidade excepcional e presença", () => {
+  let capacityEvent: string,
+    courtEvent: string,
+    people: string[],
+    state: CourtState,
+    roster: CourtRosterPerson[];
+  let version = 0;
+  async function save(
+    next: CourtState,
+    expected = version,
+    undo: string | null = null,
+    user = admin,
+  ) {
+    const sql =
+      "select public.volei_save_court('" +
+      courtEvent +
+      "'," +
+      expected +
+      ",'" +
+      JSON.stringify(next).replaceAll("'", "''") +
+      "'::jsonb," +
+      (undo ? "'" + undo + "'" : "null") +
+      ")";
+    return as(user, sql);
+  }
+  beforeAll(async () => {
+    for (const migration of [
+      "202610280008_volei_levels_capacity_emergency.sql",
+      "202610280009_volei_court.sql",
+    ])
+      await db.exec(
+        await readFile(
+          new URL("./migrations/" + migration, import.meta.url),
+          "utf8",
+        ),
+      );
+    await db.exec("update public.volei_members set is_core=false");
+    people = (
+      await db.query<{ id: string }>(
+        "insert into public.volei_members(name,membership_status,skill_level) select 'Atleta '||i,'approved',(i%5)+1 from generate_series(1,25)i returning id",
+      )
+    ).rows.map((row) => row.id);
+    capacityEvent = (
+      await db.query<{ id: string }>(
+        "insert into public.volei_events(date) values('2098-08-01') returning id",
+      )
+    ).rows[0].id;
+    courtEvent = (
+      await db.query<{ id: string }>(
+        "insert into public.volei_events(date) values('2000-01-23') returning id",
+      )
+    ).rows[0].id;
+    for (const id of people)
+      await as(
+        admin,
+        "select public.volei_respond('" +
+          capacityEvent +
+          "','" +
+          id +
+          "','confirmado')",
+      );
+    for (const id of people.slice(0, 6))
+      await db.query(
+        "insert into public.volei_attendance(event_id,member_id,status) values($1,$2,'confirmado')",
+        [courtEvent, id],
+      );
+    roster = people.slice(0, 6).map((id, i) => ({
+      key: "m:" + id,
+      id,
+      guest: false,
+      memberId: id,
+      name: "Atleta " + i,
+      skill: (i % 5) + 1,
+      checkedInAt: null,
+    }));
+    state = emptyCourt();
+    for (const person of roster.slice(0, 4))
+      state = applyCourtAction(state, roster, {
+        type: "arrive",
+        key: person.key,
+      });
+    state = applyCourtAction(state, roster, { type: "shuffle" }, () => 0.5);
+  });
+  it("mantem 18 como padrao e libera 24 com quatro times, promovendo a fila", async () => {
+    expect(
+      (
+        await db.query(
+          "select * from public.volei_attendance where event_id=$1 and status='confirmado'",
+          [capacityEvent],
+        )
+      ).rows,
+    ).toHaveLength(18);
+    await as(
+      admin,
+      "update public.volei_events set max_teams=4 where id='" +
+        capacityEvent +
+        "'",
+    );
+    expect(
+      (
+        await db.query(
+          "select * from public.volei_attendance where event_id=$1 and status='confirmado'",
+          [capacityEvent],
+        )
+      ).rows,
+    ).toHaveLength(24);
+    expect(
+      (
+        await db.query(
+          "select * from public.volei_attendance where event_id=$1 and status='espera'",
+          [capacityEvent],
+        )
+      ).rows,
+    ).toHaveLength(1);
+    await expect(
+      as(
+        admin,
+        "update public.volei_events set max_teams=3 where id='" +
+          capacityEvent +
+          "'",
+      ),
+    ).rejects.toThrow("capacidade");
+    expect(
+      (
+        await db.query<{ max_teams: number }>(
+          "select max_teams from public.volei_events where id=$1",
+          [capacityEvent],
+        )
+      ).rows[0].max_teams,
+    ).toBe(4);
+  });
+  it("privacidade e validacao de niveis e emergencia", async () => {
+    await expect(
+      db.query("update public.volei_members set skill_level=6 where id=$1", [
+        people[0],
+      ]),
+    ).rejects.toThrow();
+    await db.query(
+      "update public.volei_members set emergency_name='Contato',emergency_phone='+5561999991212' where id=$1",
+      [people[0]],
+    );
+    expect(
+      (
+        await as(
+          stranger,
+          "select emergency_phone from public.volei_members where id='" +
+            people[0] +
+            "'",
+        )
+      ).rows,
+    ).toHaveLength(0);
+    await expect(
+      as(null, "select state from public.volei_court_sessions"),
+    ).rejects.toThrow();
+    await expect(save(state, 0, null, stranger)).rejects.toThrow("restrito");
+  });
+  it("salva times apenas com confirmados e integra a chegada com a frequencia", async () => {
+    const result = await save(state);
+    version = Number(
+      (result.rows[0] as { volei_save_court: number }).volei_save_court,
+    );
+    expect(version).toBe(1);
+    expect(
+      (
+        await db.query(
+          "select * from public.volei_attendance where event_id=$1 and checked_in_at is not null",
+          [courtEvent],
+        )
+      ).rows,
+    ).toHaveLength(4);
+    expect(
+      (
+        await as(
+          stranger,
+          "select state from public.volei_court_sessions where event_id='" +
+            courtEvent +
+            "'",
+        )
+      ).rows,
+    ).toHaveLength(0);
+    await expect(save(state, 0)).rejects.toThrow("outro acesso");
+  });
+  it("recusa duplicatas, pessoas sem inscricao e mais de seis no mesmo time", async () => {
+    const duplicate = structuredClone(state);
+    duplicate.teams[1].push(duplicate.teams[0][0]);
+    await expect(save(duplicate)).rejects.toThrow("dois times");
+    const outsider = {
+      ...roster[0],
+      id: "00000000-0000-4000-8000-000000009999",
+      key: "m:00000000-0000-4000-8000-000000009999",
+    };
+    const invalid = applyCourtAction(state, [...roster, outsider], {
+      type: "arrive",
+      key: outsider.key,
+    });
+    await expect(save(invalid)).rejects.toThrow("confirmados");
+  });
+  it("saida antecipada mantem a presenca, enquanto correcao explicita pode desfazer chegada", async () => {
+    const key = state.teams[0][0];
+    state = applyCourtAction(state, roster, { type: "leave", key });
+    version = Number(
+      ((await save(state)).rows[0] as { volei_save_court: number })
+        .volei_save_court,
+    );
+    expect(
+      (
+        await db.query<{ checked_in_at: string | null }>(
+          "select checked_in_at from public.volei_attendance where event_id=$1 and member_id=$2",
+          [courtEvent, key.slice(2)],
+        )
+      ).rows[0].checked_in_at,
+    ).not.toBeNull();
+    state = applyCourtAction(state, roster, { type: "undo", key });
+    version = Number(
+      (
+        (await save(state, version, key)).rows[0] as {
+          volei_save_court: number;
+        }
+      ).volei_save_court,
+    );
+    expect(
+      (
+        await db.query<{ checked_in_at: string | null }>(
+          "select checked_in_at from public.volei_attendance where event_id=$1 and member_id=$2",
+          [courtEvent, key.slice(2)],
+        )
+      ).rows[0].checked_in_at,
+    ).toBeNull();
+  });
+  it("nao deixa cancelamento publico apagar presenca ja registrada", async () => {
+    const person = state.arrivals.find((p) => !p.departedAt)!;
+    await expect(
+      as(
+        stranger,
+        "update public.volei_attendance set checked_in_at=null,status='nao_vai' where event_id='" +
+          courtEvent +
+          "' and member_id='" +
+          person.key.slice(2) +
+          "'",
+      ),
+    ).rejects.toThrow();
+    const token = (
+      await db.query<{ token: string }>(
+        "select token from public.volei_members where id=$1",
+        [person.key.slice(2)],
+      )
+    ).rows[0].token;
+    await db.exec("select set_config('request.jwt.claim.sub','',false)");
+    await expect(
+      db.query("select public.volei_respond($1,$2,'nao_vai',$3)", [
+        courtEvent,
+        person.key.slice(2),
+        token,
+      ]),
+    ).rejects.toThrow("chegada");
+  });
+  it("concluir chamada preserva o historico e impede alterar quadra ou capacidade", async () => {
+    await as(admin, "select public.volei_close_presence('" + courtEvent + "')");
+    await expect(save(state)).rejects.toThrow("concluida".replace("i", "í"));
+    await expect(
+      as(
+        admin,
+        "update public.volei_events set max_teams=4 where id='" +
+          courtEvent +
+          "'",
+      ),
+    ).rejects.toThrow();
+    expect(
+      (
+        await db.query(
+          "select * from public.volei_court_sessions where event_id=$1",
+          [courtEvent],
+        )
+      ).rows,
+    ).toHaveLength(1);
   });
 });

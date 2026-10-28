@@ -9,6 +9,26 @@ function refresh() {
   revalidatePath("/admin/volei", "layout");
   revalidatePath("/volei", "layout");
 }
+export async function saveSkillLevel(
+  id: string,
+  guest: boolean,
+  level: number | null,
+) {
+  const { client } = await requireVoleiAdmin();
+  if (
+    !z.uuid().safeParse(id).success ||
+    typeof guest !== "boolean" ||
+    !z.number().int().min(1).max(5).nullable().safeParse(level).success
+  )
+    return { error: "Nível inválido." };
+  const { error } = await client
+    .from(guest ? "volei_guests" : "volei_members")
+    .update({ skill_level: level })
+    .eq("id", id);
+  if (error) return { error: "Não foi possível salvar o nível." };
+  refresh();
+  return { error: "" };
+}
 async function saveAdminProfile(
   table: "volei_members" | "volei_guests",
   id: string,

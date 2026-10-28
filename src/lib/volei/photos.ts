@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import sharp from "sharp";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { serviceClient } from "@/lib/escalas/supabase";
-import { birthDateSchema } from "./profile";
+import { birthDateSchema, emergencyContactSchema } from "./profile";
 
 const bucket = "volei-profiles";
 export async function deleteStoredPhotos(paths: (string | null | undefined)[]) {
@@ -40,6 +40,15 @@ export async function saveProfilePhoto(
 ) {
   const birth = birthDateSchema.safeParse(form.get("birth_date") ?? "");
   if (!birth.success) return { error: birth.error.issues[0].message };
+  const contact = form.has("emergency_name")
+    ? emergencyContactSchema.safeParse({
+        emergency_name: form.get("emergency_name"),
+        emergency_phone: form.get("emergency_phone"),
+        emergency_relationship: form.get("emergency_relationship"),
+      })
+    : null;
+  if (contact && !contact.success)
+    return { error: contact.error.issues[0].message };
   const file = form.get("photo");
   let photoPath = person.photo_path ?? null;
   let uploaded: string | null = null;
@@ -76,7 +85,11 @@ export async function saveProfilePhoto(
   } else if (form.get("remove_photo") === "true") photoPath = null;
   let query = client
     .from(table)
-    .update({ birth_date: birth.data, photo_path: photoPath })
+    .update({
+      birth_date: birth.data,
+      photo_path: photoPath,
+      ...(contact?.success ? contact.data : {}),
+    })
     .eq("id", person.id);
   if (credential) query = query.eq(credential.column, credential.value);
   const { data, error } = await query.select("id").maybeSingle();

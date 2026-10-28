@@ -37,6 +37,11 @@ export default async function Page({
         }
       />
       <Button asChild variant="outline">
+        <Link href={`/admin/volei/${id}/quadra`}>
+          Montar times e controlar a quadra
+        </Link>
+      </Button>
+      <Button asChild variant="outline">
         <Link href={`/admin/volei/frequencia/${id}`}>
           Conferir quem compareceu
         </Link>
