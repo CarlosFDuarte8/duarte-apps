@@ -15,7 +15,8 @@ export function MobileNavigation() {
   });
   const isAdmin =
     (pathname ?? "").startsWith("/admin") ||
-    (pathname ?? "").startsWith("/escalas");
+    (pathname ?? "").startsWith("/escalas") ||
+    (pathname ?? "").startsWith("/volei");
 
   useEffect(() => {
     if (pathname !== "/") return;

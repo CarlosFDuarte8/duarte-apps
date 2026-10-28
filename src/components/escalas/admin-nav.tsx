@@ -12,6 +12,7 @@ const items: {
   { href: "/admin", label: "Painel", icon: "dashboard", exact: true },
   { href: "/admin/membros", label: "Membros", icon: "members" },
   { href: "/admin/escalas", label: "Escalas", icon: "calendar" },
+  { href: "/admin/volei", label: "Vôlei", icon: "shield" },
   { href: "/admin/regras", label: "Regras", icon: "rules" },
 ];
 

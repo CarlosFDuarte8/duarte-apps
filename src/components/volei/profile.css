@@ -1,0 +1,218 @@
+.vp-avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #edf4e7;
+  color: #678052;
+  font-size: 13px;
+  font-weight: 600;
+}
+.vp-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.vp-avatar-large {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  font-size: 28px;
+}
+.vp-profile-form {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.vp-emergency {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #dce6d3;
+  border-radius: 12px;
+  margin: 0;
+  min-width: 0;
+}
+.vp-emergency legend {
+  font-size: 15px;
+  font-weight: 600;
+  color: #45613c;
+  padding: 0 6px;
+}
+.vp-emergency > label {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+  color: #748868;
+  min-width: 0;
+}
+.vp-profile-form h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  color: #385a38;
+  letter-spacing: 0;
+}
+.vp-profile-form p,
+.vp-profile-form small {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #7c8b72;
+}
+.vp-photo-editor {
+  display: flex;
+  gap: 24px;
+  align-items: start;
+  min-width: 0;
+}
+.vp-photo-editor > div {
+  min-width: 0;
+}
+.vp-photo-editor small {
+  display: block;
+  margin-top: 10px;
+}
+.vp-photo-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #d0ddc6;
+  border-radius: 9px;
+  min-height: 44px;
+  padding: 10px 16px;
+  color: #45613a;
+  font-size: 13px;
+  cursor: pointer;
+  overflow: hidden;
+  background: #fff;
+}
+.volley-app .vp-photo-picker input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.vp-photo-picker:focus-within {
+  outline: 3px solid #93b842;
+  outline-offset: 3px;
+}
+.vp-birth-label {
+  display: grid;
+  gap: 8px;
+  max-width: 320px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5d7154;
+}
+.vp-birth-label small {
+  font-weight: 400;
+}
+.vp-private-note {
+  padding: 12px 16px;
+  background: #f5f8f0;
+  border-radius: 9px;
+}
+.vp-member-person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.vp-member-person > div {
+  min-width: 0;
+}
+.vp-member-person a {
+  font-size: 13px;
+  font-weight: 600;
+  color: #34553b;
+  line-height: 1.5;
+}
+.vp-member-age {
+  display: block;
+  margin-top: 6px;
+  font-size: 10px;
+  color: #84927b;
+  line-height: 1.6;
+}
+.vp-member-age.is-minor {
+  color: #96651f;
+}
+.vp-guest-list {
+  display: grid;
+  gap: 12px;
+}
+.vp-guest-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #e0e8d9;
+  border-radius: 12px;
+  min-width: 0;
+}
+.vp-guest-row > div {
+  min-width: 0;
+  flex: 1;
+}
+.vp-guest-row strong {
+  color: #3f5a37;
+}
+.vp-guest-row small {
+  display: block;
+  line-height: 1.7;
+  color: #819174;
+  font-size: 12px;
+  margin-top: 5px;
+}
+.vp-guest-row a {
+  overflow-wrap: anywhere;
+}
+.vp-page {
+  display: grid;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+.vp-page .volley-card {
+  display: grid;
+  gap: 20px;
+}
+.volley-app .vp-page h1 {
+  font-size: 28px;
+  letter-spacing: -0.6px;
+  line-height: 1.3;
+  margin: 0;
+}
+.volley-app .vp-page h2 {
+  font-size: 20px;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .vp-photo-editor {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .vp-birth-label {
+    max-width: none;
+  }
+  .vp-guest-row {
+    flex-wrap: wrap;
+  }
+  .vp-guest-row > [data-slot="button"] {
+    width: 100%;
+  }
+  .vp-member-person {
+    gap: 8px;
+  }
+  .vp-member-person .vp-avatar {
+    width: 32px;
+    height: 32px;
+  }
+}

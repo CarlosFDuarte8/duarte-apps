@@ -1,0 +1,988 @@
+.game-page {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+.volley-app .game-back {
+  color: #64776b;
+  text-decoration: none;
+  font-size: 13px;
+  width: fit-content;
+  padding-block: 4px;
+}
+.game-event-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 32px;
+  border: 1px solid #dce5dc;
+  border-radius: 20px;
+  background:
+    radial-gradient(ellipse at top right, #edf4e4, transparent 60%), #fff;
+}
+.game-event-intro {
+  min-width: 0;
+}
+.game-event-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.8px;
+  color: #597447;
+}
+.game-event-label > span,
+.game-open-badge > span,
+.game-status-dot,
+.game-live > span,
+.game-available-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #80a741;
+  flex-shrink: 0;
+}
+.volley-app .game-event-header h1 {
+  font-size: clamp(30px, 3.7vw, 42px);
+  font-weight: 750;
+  letter-spacing: -1.5px;
+  line-height: 1.15;
+  margin: 16px 0 22px;
+  color: #203c2e;
+}
+.game-event-header h1 > span {
+  display: block;
+  color: #8a998c;
+  font-size: 0.63em;
+  font-weight: 450;
+  letter-spacing: -0.6px;
+  margin-top: 8px;
+}
+.game-event-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+}
+.game-event-details > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #66786a;
+  font-size: 13px;
+}
+.game-event-details svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.game-event-notes {
+  margin: 16px 0 0;
+  color: #6f7c71;
+  font-size: 13px;
+  max-width: 560px;
+  line-height: 1.7;
+}
+.game-deadline-box {
+  border-left: 1px solid #dce5d3;
+  padding-left: 30px;
+  flex-shrink: 0;
+  min-width: 220px;
+}
+.game-open-badge {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  border: 1px solid #ccddba;
+  color: #4f752e;
+  border-radius: 6px;
+  background: #f1f7e9;
+  padding: 7px 9px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+}
+.game-open-badge.is-closed {
+  color: #7b7463;
+  border-color: #dedbd2;
+  background: #f3f1ec;
+}
+.game-open-badge.is-closed > span {
+  background: #a39c88;
+}
+.game-deadline-box > p {
+  font-size: 12px;
+  color: #758270;
+  margin: 18px 0 4px;
+}
+.game-deadline-box > strong {
+  display: block;
+  color: #2b4432;
+  font-size: 36px;
+  font-weight: 650;
+  letter-spacing: -1px;
+  line-height: 1.15;
+}
+.game-deadline-box > strong small {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #8a9684;
+  margin: 6px 0 12px;
+}
+.game-deadline-box > span:last-child {
+  font-size: 11px;
+  color: #67785e;
+}
+.game-summary-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  padding: 2px 6px;
+}
+.game-summary-strip > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #758071;
+  font-size: 12px;
+}
+.game-summary-strip svg {
+  width: 16px;
+  height: 16px;
+  color: #8c9e81;
+}
+.game-summary-strip strong {
+  color: #294433;
+  font-weight: 700;
+}
+.game-page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.03fr);
+  gap: 24px;
+  align-items: start;
+}
+.volley-app .game-signup,
+.volley-app .game-roster {
+  padding: 28px;
+  border-radius: 18px;
+  gap: 22px;
+  border-color: #dfe6dd;
+  box-shadow: 0 3px 12px #17322003;
+}
+.game-section-heading,
+.game-roster-heading {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.game-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef4e8;
+  color: #6b8b45;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #e2ebd8;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+.game-kicker {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  font-weight: 700;
+  color: #8d9a85;
+  margin-bottom: 7px;
+}
+.volley-app .game-section-heading h2,
+.volley-app .game-roster h2 {
+  font-size: 18px;
+  margin: 0;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  color: #294131;
+}
+.game-description {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #83907e;
+}
+.game-form {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.volley-app .game-form label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4f6150;
+}
+.game-required {
+  color: #a1af97;
+  margin-left: 3px;
+}
+.volley-app .game-form input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 48px;
+  border: 1px solid #dce4d8;
+  border-radius: 9px;
+  background: #fcfdfb;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 9px;
+  color: #253f2e;
+  box-shadow: 0 1px 2px #0f2d1403;
+}
+.volley-app .game-form input::placeholder {
+  color: #a5afa0;
+}
+.volley-app .game-form input:focus {
+  outline: 3px solid #dff0ca;
+  border-color: #8db461;
+  outline-offset: 1px;
+  background: white;
+}
+.game-form label > small {
+  display: block;
+  margin-top: 8px;
+  color: #9aa392;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.game-phone-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #dce4d8;
+  border-radius: 9px;
+  background: #fcfdfb;
+  margin-top: 9px;
+  min-width: 0;
+}
+.game-phone-input > span {
+  color: #71836a;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 0 12px;
+  border-right: 1px solid #e0e7da;
+  white-space: nowrap;
+}
+.volley-app .game-phone-input input {
+  border: 0;
+  box-shadow: none;
+  margin: 0;
+  background: transparent;
+  border-radius: 0 9px 9px 0;
+}
+.volley-app .game-form .game-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e0e7dc;
+  border-radius: 10px;
+  background: #f9fbf6;
+  padding: 14px;
+  cursor: pointer;
+}
+.volley-app .game-checkbox input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #507634;
+  padding: 0;
+}
+.game-checkbox > span {
+  flex: 1;
+  min-width: 0;
+}
+.game-checkbox strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+.game-checkbox small {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: #9aa48f;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.game-checkbox > svg {
+  color: #91a27e;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.game-guest-fields {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  border: 1px dashed #d8e2ca;
+  border-radius: 10px;
+}
+.volley-app .game-primary,
+.volley-app .game-secondary,
+.volley-app .game-danger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.5;
+  background: #264c35;
+  color: white !important;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
+}
+.volley-app .game-primary:hover:not(:disabled) {
+  background: #183e29;
+  box-shadow: 0 4px 10px #244e3320;
+}
+.game-primary > svg:last-child {
+  margin-left: auto;
+}
+.game-primary > svg:first-child {
+  margin-right: auto;
+}
+.game-primary > svg,
+.game-secondary > svg {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+}
+.volley-app .game-secondary {
+  color: #4d6843 !important;
+  background: #f5f8f1;
+  border-color: #d9e4cd;
+}
+.volley-app .game-secondary:hover:not(:disabled) {
+  background: #eaf1e1;
+}
+.volley-app .game-primary:disabled,
+.volley-app .game-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.volley-app .game-danger {
+  background: #a8423c;
+  color: white !important;
+}
+.game-privacy-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding-inline: 4px;
+}
+.game-privacy-note svg {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: #9eab93;
+  margin-top: 2px;
+}
+.game-privacy-note p {
+  font-size: 10px;
+  line-height: 1.7;
+  color: #98a28f;
+  margin: 0;
+}
+.game-notice {
+  display: flex;
+  gap: 10px;
+  border: 1px solid #dce5d5;
+  border-radius: 10px;
+  padding: 13px;
+  background: #f5f8ef;
+  color: #748765;
+}
+.game-notice svg {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+}
+.game-notice p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.game-notice strong {
+  color: #647948;
+  font-weight: 650;
+}
+.game-notice.is-warning {
+  background: #fdfaf0;
+  border-color: #eee4c7;
+  color: #9b895d;
+}
+.game-notice.is-warning strong {
+  color: #8a7241;
+}
+.game-identity {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: #f9fbf7;
+  padding: 14px;
+  border: 1px solid #e7ece3;
+  border-radius: 11px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.game-avatar,
+.game-player-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e6eddf;
+  color: #6b8256;
+  width: 38px;
+  height: 38px;
+  font-size: 12px;
+  font-weight: 650;
+  flex-shrink: 0;
+}
+.game-identity > div {
+  flex: 1;
+  min-width: 0;
+}
+.game-identity strong {
+  display: block;
+  font-size: 13px;
+  color: #3a523d;
+}
+.game-identity > div > span {
+  display: flex;
+  gap: 5px;
+  font-size: 11px;
+  color: #8f9c85;
+  margin-top: 5px;
+  align-items: center;
+}
+.game-identity svg {
+  width: 12px;
+  height: 12px;
+}
+.game-device-badge {
+  font-size: 9px;
+  color: #74905a;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.game-personal-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  background: #f0f7e9;
+  border-radius: 10px;
+  border: 1px solid #dceace;
+}
+.game-personal-status > span {
+  margin-top: 5px;
+}
+.game-personal-status strong {
+  display: block;
+  font-size: 13px;
+  color: #527535;
+}
+.game-personal-status p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #8a9b7e;
+  margin: 5px 0 0;
+}
+.game-personal-status.is-waiting {
+  background: #fcf8eb;
+  border-color: #eee2c3;
+}
+.game-personal-status.is-waiting strong {
+  color: #947838;
+}
+.game-divider {
+  height: 1px;
+  background: #edf0e8;
+}
+.game-guest-heading {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+.volley-app .game-guest-heading h3 {
+  font-size: 14px;
+  margin: 0;
+}
+.game-guest-heading > span {
+  font-size: 10px;
+  color: #9ba68e;
+}
+.game-guest-entry {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.game-guest-entry > div {
+  flex: 1;
+  min-width: 0;
+}
+.game-guest-entry strong {
+  display: block;
+  font-size: 13px;
+}
+.game-guest-entry > div > span {
+  display: block;
+  font-size: 10px;
+  margin-top: 5px;
+  color: #a09166;
+  line-height: 1.6;
+}
+.volley-app .game-text-button,
+.volley-app .game-cancel-button {
+  background: transparent;
+  border: 0;
+  color: #9c6c64 !important;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 7px;
+}
+.volley-app .game-cancel-button {
+  border-top: 1px solid #edf0e8;
+  border-radius: 0;
+  padding-top: 18px;
+}
+.game-feedback {
+  margin: 0;
+  padding: 12px;
+  background: #eff6e8;
+  border: 1px solid #d6e5c9;
+  border-radius: 9px;
+  color: #56763b;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.game-feedback.is-error {
+  background: #fdf1ef;
+  border-color: #f0d8d3;
+  color: #a14d41;
+}
+.game-dialog {
+  border: 1px solid #dce5d5;
+  border-radius: 18px;
+  padding: 28px;
+  background: white;
+  color: #304532;
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  margin: auto;
+}
+.game-dialog::backdrop {
+  background: #0e241a80;
+  backdrop-filter: blur(3px);
+}
+.game-dialog h2 {
+  font-size: 20px;
+  margin: 0 0 14px;
+  letter-spacing: -0.5px;
+}
+.game-dialog p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #7c8975;
+}
+.game-dialog-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+.game-roster-heading {
+  justify-content: space-between;
+}
+.game-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  white-space: nowrap;
+  color: #8da17b;
+}
+.game-live > span {
+  width: 5px;
+  height: 5px;
+}
+.game-capacity > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.game-capacity strong {
+  font-size: 19px;
+  font-weight: 700;
+  color: #365137;
+}
+.game-capacity strong > span {
+  font-weight: 400;
+  font-size: 11px;
+  color: #96a08e;
+}
+.game-capacity > div > span {
+  font-size: 11px;
+  color: #7a9461;
+}
+.game-capacity progress {
+  display: block;
+  appearance: none;
+  border: 0;
+  width: 100%;
+  height: 7px;
+  margin: 12px 0 9px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eef2e9;
+}
+.game-capacity progress::-webkit-progress-bar {
+  background: #eef2e9;
+  border-radius: 10px;
+}
+.game-capacity progress::-webkit-progress-value {
+  background: #9fbd78;
+  border-radius: 10px;
+}
+.game-capacity progress::-moz-progress-bar {
+  background: #9fbd78;
+  border-radius: 10px;
+}
+.game-capacity > small {
+  font-size: 10px;
+  color: #a1ab97;
+}
+.game-roster-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid #e6ecdf;
+  padding: 4px;
+  border-radius: 10px;
+  gap: 3px;
+  background: #f6f8f3;
+}
+.volley-app .game-roster-filters button {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #8d9c80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 5px;
+  border-radius: 7px;
+  font-size: 10px;
+  min-height: 40px;
+  font-weight: 500;
+}
+.volley-app .game-roster-filters button[aria-pressed="true"] {
+  background: white;
+  border-color: #dfe8d4;
+  color: #526c39;
+  box-shadow: 0 1px 3px #203f1710;
+  font-weight: 650;
+}
+.game-roster-filters button > span {
+  font-size: 9px;
+  background: #edf2e6;
+  color: #8b9f72;
+  min-width: 17px;
+  padding: 2px 3px;
+  border-radius: 4px;
+}
+.game-roster-content {
+  min-height: 180px;
+}
+.game-player-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.game-player-list li {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid #f0f3eb;
+}
+.game-player-list li:last-child {
+  border: 0;
+}
+.game-player-position {
+  font-size: 10px;
+  color: #b1baa9;
+  width: 18px;
+  flex-shrink: 0;
+}
+.game-player-avatar {
+  width: 32px;
+  height: 32px;
+  font-size: 10px;
+}
+.game-player-list li > div {
+  flex: 1;
+  min-width: 0;
+}
+.game-player-list strong {
+  font-size: 12px;
+  font-weight: 550;
+  color: #576c4d;
+  display: block;
+}
+.game-player-list small {
+  color: #a8b39b;
+  font-size: 9px;
+  display: block;
+  margin-top: 4px;
+}
+.game-player-mark {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e5eed9;
+  border-radius: 50%;
+  color: #88a65f;
+  background: #f7faf2;
+  flex-shrink: 0;
+}
+.game-player-mark svg {
+  width: 12px;
+  height: 12px;
+}
+.game-player-mark.is-waiting {
+  color: #ad9561;
+  border-color: #f1e6cf;
+  background: #fdfaf2;
+}
+.game-empty {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  padding: 24px 12px;
+  gap: 12px;
+}
+.game-empty-icon {
+  width: 56px;
+  height: 56px;
+  border: 1px dashed #d9e4cd;
+  border-radius: 50%;
+  background: #f6f9f1;
+  display: grid;
+  place-items: center;
+  color: #a1b68a;
+}
+.volley-app .game-empty h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #7f9370;
+  margin: 0;
+}
+.game-empty p {
+  margin: 0;
+  max-width: 230px;
+  font-size: 11px;
+  color: #a3ad99;
+  line-height: 1.7;
+}
+.game-roster-footer {
+  border-top: 1px solid #eef2e8;
+  padding-top: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 9px;
+  color: #a5af9c;
+  line-height: 1.7;
+}
+.game-roster-footer svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.game-page-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px;
+  color: #a5b098;
+  text-align: left;
+}
+.game-page-footer > svg {
+  width: 28px;
+  height: 28px;
+}
+.game-page-footer p {
+  font-size: 10px;
+  line-height: 1.8;
+  margin: 0;
+}
+.game-page-footer strong {
+  font-weight: 500;
+  color: #96a586;
+}
+@media (max-width: 1100px) and (min-width: 1025px) {
+  .game-page-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .game-page {
+    gap: 18px;
+  }
+  .game-page-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .game-event-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 24px;
+    gap: 22px;
+  }
+  .game-deadline-box {
+    border-left: 0;
+    padding: 18px 0 0;
+    border-top: 1px solid #dfe8d6;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 5px 14px;
+  }
+  .game-deadline-box .game-open-badge {
+    width: fit-content;
+    grid-column: 1;
+  }
+  .game-deadline-box > p {
+    margin: 8px 0 0;
+    grid-column: 1;
+  }
+  .game-deadline-box > strong {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    font-size: 30px;
+    text-align: right;
+  }
+  .game-deadline-box > strong small {
+    font-size: 9px;
+    margin-bottom: 0;
+  }
+  .game-deadline-box > span:last-child {
+    grid-column: 1;
+  }
+  .game-summary-strip {
+    gap: 12px 16px;
+  }
+  .game-summary-strip > span {
+    font-size: 11px;
+  }
+  .volley-app .game-signup,
+  .volley-app .game-roster {
+    padding: 22px 18px;
+    gap: 20px;
+  }
+  .volley-app .game-form input {
+    font-size: 16px;
+  }
+  .game-phone-input > span {
+    padding-inline: 10px;
+  }
+  .game-event-details {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+@media (max-width: 360px) {
+  .game-event-header {
+    padding: 20px 16px;
+  }
+  .game-open-badge {
+    font-size: 8px;
+    letter-spacing: 0.2px;
+  }
+  .game-deadline-box > strong {
+    font-size: 27px;
+  }
+  .volley-app .game-signup,
+  .volley-app .game-roster {
+    padding-inline: 14px;
+  }
+  .game-roster-filters {
+    gap: 1px;
+    padding: 3px;
+  }
+  .volley-app .game-roster-filters button {
+    font-size: 9px;
+    gap: 3px;
+    padding-inline: 2px;
+  }
+  .game-device-badge {
+    width: 100%;
+    padding-left: 48px;
+  }
+}
+
+/* Secondary information stays readable on small screens. */
+.game-form label > small,
+.game-checkbox small,
+.game-privacy-note p,
+.game-roster-footer,
+.game-capacity > small,
+.game-empty p {
+  font-size: 11px;
+  color: #728168;
+}
+.game-description {
+  color: #6e7d65;
+}
+.game-player-list strong {
+  font-size: 13px;
+  color: #4f6346;
+}
+.game-player-list small {
+  font-size: 11px;
+  color: #7f8d75;
+}
+.game-notice p {
+  font-size: 12px;
+}
+.game-personal-status p {
+  color: #708562;
+  font-size: 12px;
+}
+.game-live {
+  color: #698450;
+}
