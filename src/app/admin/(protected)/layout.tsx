@@ -1,3 +1,4 @@
+﻿import { AdminSystemShell } from "@/components/volei/shell";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/escalas/supabase";
 import { AdminNav } from "@/components/escalas/admin-nav";
@@ -19,40 +20,50 @@ export default async function Layout({
     </Link>
   );
   return (
-    <div className="sc-app">
-      <aside className="sc-sidebar">
-        {brand}
-        <AdminNav variant="side" />
-        <div className="sc-sidebar-foot">
-          <Link href="/escalas">
-            <NavIcon name="globe" />
-            <span>Área pública</span>
-          </Link>
-          <form action={logout}>
-            <button type="submit" className="sc-sideitem">
-              <NavIcon name="logout" />
-              <span>Sair</span>
-            </button>
-          </form>
-        </div>
-      </aside>
-      <div className="sc-app-main">
-        <header className="sc-mobilebar">
-          {brand}
-          <div className="sc-mobilebar-actions">
-            <Link href="/escalas" aria-label="Área pública">
-              <NavIcon name="globe" />
-            </Link>
-            <form action={logout}>
-              <button type="submit" className="sc-sideitem" aria-label="Sair">
-                <NavIcon name="logout" />
-              </button>
-            </form>
+    <AdminSystemShell
+      fallback={
+        <div className="sc-app">
+          <aside className="sc-sidebar">
+            {brand}
+            <AdminNav variant="side" />
+            <div className="sc-sidebar-foot">
+              <Link href="/escalas">
+                <NavIcon name="globe" />
+                <span>Área pública</span>
+              </Link>
+              <form action={logout}>
+                <button type="submit" className="sc-sideitem">
+                  <NavIcon name="logout" />
+                  <span>Sair</span>
+                </button>
+              </form>
+            </div>
+          </aside>
+          <div className="sc-app-main">
+            <header className="sc-mobilebar">
+              {brand}
+              <div className="sc-mobilebar-actions">
+                <Link href="/escalas" aria-label="Área pública">
+                  <NavIcon name="globe" />
+                </Link>
+                <form action={logout}>
+                  <button
+                    type="submit"
+                    className="sc-sideitem"
+                    aria-label="Sair"
+                  >
+                    <NavIcon name="logout" />
+                  </button>
+                </form>
+              </div>
+            </header>
+            <div className="sc-app-content">{children}</div>
           </div>
-        </header>
-        <div className="sc-app-content">{children}</div>
-      </div>
-      <AdminNav variant="bottom" />
-    </div>
+          <AdminNav variant="bottom" />
+        </div>
+      }
+    >
+      {children}
+    </AdminSystemShell>
   );
 }

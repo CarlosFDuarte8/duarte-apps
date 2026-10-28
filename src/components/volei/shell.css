@@ -1,0 +1,614 @@
+.volley-app {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6f5;
+  color: #182e2a;
+  font-family: Arial, sans-serif;
+}
+.volley-sidebar {
+  width: 250px;
+  flex-shrink: 0;
+  background: #102d29;
+  color: #c8d8d2;
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+}
+.volley-brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 850;
+  letter-spacing: 2px;
+}
+.volley-brand > span {
+  background: #d5f580;
+  color: #173a2c;
+  border-radius: 14px;
+  padding: 8px;
+  font-size: 29px;
+}
+.volley-brand small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  margin-top: 6px;
+  color: #b8c9c3;
+}
+.volley-mode {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #91aaa0;
+}
+.volley-sidebar nav {
+  display: grid;
+  gap: 8px;
+}
+.volley-sidebar nav a {
+  color: #c8d8d2;
+  text-decoration: none;
+  border-radius: 10px;
+  padding: 14px 12px;
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+}
+.volley-sidebar nav a:hover,
+.volley-sidebar nav a[aria-current] {
+  background: #24483e;
+  color: #d5f580;
+}
+.volley-sidebar-note {
+  border: 1px solid #36554b;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: auto;
+}
+.volley-sidebar-note strong {
+  color: #d5f580;
+}
+.volley-sidebar footer {
+  display: grid;
+  gap: 16px;
+  font-size: 12px;
+}
+.volley-sidebar footer a {
+  color: #c8d8d2;
+}
+.volley-sidebar footer button {
+  background: none;
+  border: 0;
+  color: #c8d8d2;
+  cursor: pointer;
+  padding: 0;
+}
+.volley-body {
+  flex: 1;
+  min-width: 0;
+}
+.volley-top {
+  height: 76px;
+  background: #fff;
+  border-bottom: 1px solid #e0e7e3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #73857c;
+}
+.volley-tag {
+  background: #edf5e3;
+  color: #476431;
+  padding: 9px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+.volley-content {
+  max-width: 1250px;
+  margin: auto;
+  padding: 36px;
+  display: grid;
+  gap: 24px;
+  align-content: start;
+}
+.volley-content > .volley-hero {
+  margin-bottom: 0;
+}
+.volley-content > * {
+  min-width: 0;
+}
+.volley-hero {
+  padding: 32px;
+  background: #183e32;
+  color: #fff;
+  border-radius: 22px;
+  margin-bottom: 26px;
+  position: relative;
+  overflow: hidden;
+}
+.volley-hero h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.1;
+  margin: 12px 0;
+}
+.volley-hero p {
+  color: #c4d9cb;
+  line-height: 1.7;
+  max-width: 600px;
+}
+.volley-eyebrow {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #d5f580;
+}
+.volley-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 22px;
+}
+.volley-card {
+  background: white;
+  border: 1px solid #e0e7e3;
+  border-radius: 18px;
+  padding: 24px;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+.volley-card h2,
+.volley-card h3 {
+  margin: 0;
+}
+.volley-muted {
+  color: #728179;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.volley-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.volley-stat {
+  padding: 16px 12px;
+  background: #f3f6f1;
+  border-radius: 12px;
+}
+.volley-stat strong {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+.volley-stat span {
+  font-size: 11px;
+  color: #6a7d70;
+}
+.volley-link,
+.volley-card button {
+  display: inline-block;
+  background: #d5f580;
+  color: #1e3b2c;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+.volley-list {
+  padding-left: 22px;
+  margin: 0;
+  line-height: 2;
+}
+.volley-card input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccd8cf;
+  border-radius: 9px;
+  color: #183e32;
+  background: white;
+}
+.volley-card label {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+}
+.volley-card button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.volley-error {
+  color: #a52d2d;
+}
+.volley-form {
+  display: grid;
+  gap: 12px;
+}
+.volley-content .sc-card {
+  border-radius: 18px;
+}
+.volley-content .pagina {
+  min-height: 0;
+}
+.volley-content .sc-page-head {
+  margin: 0;
+}
+@media print {
+  .volley-sidebar,
+  .volley-top {
+    display: none;
+  }
+  .volley-content {
+    padding: 0;
+  }
+}
+.sc:has(.volley-app) {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+.volley-app .volley-brand {
+  color: white;
+  text-decoration: none;
+}
+.volley-app .volley-link {
+  color: #1e3b2c;
+  text-decoration: none;
+}
+.volley-app .volley-hero h1 {
+  margin: 12px 0;
+}
+.volley-app .volley-content .sc-btn,
+.volley-app .volley-content .sc-button {
+  background: #d5f580;
+  border-color: #c0dc72;
+  color: #1e3b2c !important;
+}
+.volley-app .volley-content .sc-btn-ghost {
+  background: white;
+  border-color: #d5dfd5;
+}
+.volley-app .volley-content .sc-btn-danger {
+  background: #b13737;
+  border-color: #b13737;
+  color: white !important;
+}
+.volley-app .volley-content .sc-table {
+  display: block;
+  overflow-x: auto;
+}
+.volley-app :focus-visible {
+  outline: 3px solid #93b842;
+  outline-offset: 4px;
+}
+
+/* Keep the volleyball layout independent of the scales' desktop minimum widths. */
+.volley-app,
+.volley-app * {
+  box-sizing: border-box;
+}
+.volley-sidebar {
+  overflow-y: auto;
+}
+.volley-content,
+.volley-grid > *,
+.volley-form > *,
+.volley-card,
+.volley-content .sc-card,
+.volley-content .sc-fields > *,
+.volley-content .vl-inline > *,
+.volley-content .vl-row > * {
+  min-width: 0;
+}
+.volley-content {
+  width: 100%;
+}
+.volley-content :is(h1, h2, h3, p, li, small, .sc-feedback) {
+  overflow-wrap: anywhere;
+}
+.volley-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.volley-card :is(input, select),
+.volley-content .sc-fields :is(input, select) {
+  min-width: 0;
+  max-width: 100%;
+}
+.volley-app .volley-link,
+.volley-app button {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-height: 44px;
+}
+.volley-content .vl-preview {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.volley-mobile-logout {
+  display: none;
+}
+.volley-app .volley-content .vl-day {
+  display: flex;
+  padding: 8px 4px;
+  min-height: 54px;
+  background: #fff;
+  border-color: #d5dfd5;
+  color: #183e32 !important;
+}
+.volley-app .volley-content .vl-day[aria-pressed="true"] {
+  background: #24483e;
+  border-color: #24483e;
+  color: #d5f580 !important;
+}
+.volley-app .volley-content .vl-day[aria-pressed="true"] small {
+  color: #d5f580;
+}
+
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .volley-sidebar {
+    width: 220px;
+    padding: 28px 18px;
+  }
+  .volley-content {
+    padding: 28px 24px;
+  }
+}
+@media (max-width: 1024px) {
+  .volley-app {
+    display: block;
+  }
+  .volley-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 20px 24px;
+    gap: 16px;
+    overflow: visible;
+  }
+  .volley-sidebar nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .volley-sidebar-note,
+  .volley-mode,
+  .volley-sidebar footer {
+    display: none;
+  }
+  .volley-brand {
+    font-size: 20px;
+  }
+  .volley-top {
+    height: auto;
+    min-height: 58px;
+    padding: 8px 24px;
+    gap: 12px;
+  }
+  .volley-top > span:first-child {
+    flex: 1;
+    min-width: 0;
+  }
+  .volley-content {
+    padding: 24px;
+  }
+  .volley-mobile-logout {
+    display: block;
+  }
+  .volley-app .volley-mobile-logout button {
+    padding: 8px 12px;
+    border: 1px solid #d5dfd5;
+    border-radius: 8px;
+    color: #183e32 !important;
+    background: white;
+    font-size: 13px;
+    letter-spacing: 0;
+  }
+  .volley-content .sc-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .volley-sidebar {
+    padding: 16px;
+    gap: 14px;
+  }
+  .volley-sidebar nav {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .volley-sidebar nav a {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px 6px;
+    gap: 5px;
+    font-size: 12px;
+    line-height: 1.35;
+    min-height: 64px;
+  }
+  .volley-sidebar nav a > span {
+    font-size: 20px;
+    line-height: 1;
+  }
+  .volley-brand > span {
+    padding: 6px;
+    font-size: 25px;
+  }
+  .volley-top {
+    padding-inline: 16px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    gap: 8px;
+  }
+  .volley-tag {
+    padding: 7px 10px;
+    white-space: nowrap;
+  }
+  .volley-content {
+    padding: 20px 16px max(24px, env(safe-area-inset-bottom));
+  }
+  .volley-hero {
+    padding: 24px 20px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+  .volley-app .volley-hero h1 {
+    font-size: clamp(27px, 7.5vw, 36px);
+  }
+  .volley-eyebrow {
+    font-size: 10px;
+    line-height: 1.6;
+    letter-spacing: 1.5px;
+  }
+  .volley-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .volley-card,
+  .volley-app .volley-content .sc-card {
+    padding: 18px 16px;
+    gap: 16px;
+    border-radius: 14px;
+  }
+  .volley-stats {
+    gap: 6px;
+  }
+  .volley-stat {
+    padding: 14px 8px;
+  }
+  .volley-stat strong {
+    font-size: 26px;
+  }
+  .volley-stat span {
+    font-size: 11px;
+    line-height: 1.4;
+    display: block;
+    overflow-wrap: anywhere;
+  }
+  .volley-app .volley-content .sc-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .volley-app :is(input, select, textarea) {
+    font-size: 16px;
+  }
+  .volley-app .sc-page-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .volley-app .sc-page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+  }
+  .volley-app .sc-page-actions > a {
+    text-align: center;
+    flex: 1 1 calc(50% - 8px);
+    min-width: 0;
+  }
+  .volley-app .sc-page-actions > a:last-child {
+    flex-basis: 100%;
+  }
+  .volley-content .vl-inline {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+  .volley-content .vl-inline input[type="number"] {
+    width: 100%;
+  }
+  .volley-content .vl-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+  .volley-content .vl-actions > * {
+    width: 100%;
+    text-align: center;
+    min-width: 0;
+  }
+  .volley-content .vl-row {
+    align-items: flex-start;
+  }
+  .volley-content .vl-member h3 {
+    font-size: 18px;
+  }
+  .volley-content .vl-days {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .volley-app .volley-content .vl-day {
+    padding: 6px 2px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+  .volley-content .vl-day small {
+    font-size: 9px;
+  }
+  .volley-app .volley-content .sc-table {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+  }
+  .volley-app .sc-table td {
+    flex-wrap: wrap;
+    text-align: left;
+    gap: 8px;
+    overflow-wrap: anywhere;
+  }
+  .volley-app .sc-table td::before {
+    flex-shrink: 0;
+  }
+  .volley-app .sc-table td select {
+    width: 100%;
+    min-width: 0;
+  }
+  .volley-app .volley-link {
+    text-align: center;
+  }
+}
+@media (max-width: 360px) {
+  .volley-content {
+    padding-inline: 12px;
+  }
+  .volley-card,
+  .volley-app .volley-content .sc-card {
+    padding-inline: 12px;
+  }
+  .volley-stat span {
+    font-size: 10px;
+  }
+}
+@media print {
+  .volley-sidebar,
+  .volley-top {
+    display: none;
+  }
+}
+.volley-brand > span {
+  display: grid;
+  place-items: center;
+}
+.volley-sidebar nav a > span {
+  display: grid;
+  place-items: center;
+}
+.volley-sidebar nav a svg {
+  width: 18px;
+  height: 18px;
+}

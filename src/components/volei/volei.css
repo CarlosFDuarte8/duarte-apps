@@ -1,0 +1,100 @@
+.vl-days {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.vl-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  color: #0f172a;
+  cursor: pointer;
+}
+.vl-day small {
+  color: #64748b;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+.vl-day[aria-pressed="true"] {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+.vl-day[aria-pressed="true"] small {
+  color: #dbeafe;
+}
+.vl-actions,
+.vl-inline,
+.vl-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.vl-row {
+  justify-content: space-between;
+}
+.vl-inline input[type="number"] {
+  width: 80px;
+}
+.vl-inline input:not([type="number"]) {
+  flex: 1 1 180px;
+}
+.vl-gap {
+  margin-left: 8px;
+}
+.vl-preview {
+  white-space: pre-wrap;
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 14px;
+  font: inherit;
+}
+.vl-members {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+.vl-member {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+.vl-member h3 {
+  margin: 0;
+}
+.vl-blocked {
+  border-color: #fca5a5;
+}
+.vl-reason {
+  margin: 6px 0 0;
+  color: #b91c1c;
+  font-size: 14px;
+}
+.vl-points {
+  font-size: 22px;
+}
+.vl-box {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+.vl-log {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+.vl-pos {
+  color: #15803d;
+}
+.vl-neg {
+  color: #b91c1c;
+}

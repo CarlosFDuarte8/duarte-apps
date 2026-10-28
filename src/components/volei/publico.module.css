@@ -1,0 +1,120 @@
+.pagina {
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 24px 16px 48px;
+}
+.container {
+  max-width: 560px;
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
+}
+.topo h1 {
+  font-size: 26px;
+  margin: 4px 0;
+}
+.topo p {
+  color: #64748b;
+  margin: 0;
+}
+.pontos {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 700;
+  font-size: 14px;
+}
+.aviso {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 12px;
+  padding: 14px;
+}
+.cartao {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px;
+  display: grid;
+  gap: 12px;
+}
+.cartao h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.ranking ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ranking li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+.ranking li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.membroAtual {
+  color: #1d4ed8;
+}
+.detalhe {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+}
+.botoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.botao {
+  border: 2px solid #cbd5e1;
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+.botao:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.vou[aria-pressed="true"] {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+.naoVou[aria-pressed="true"] {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+}
+.erro {
+  color: #b91c1c;
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+.confirmados summary {
+  cursor: pointer;
+  color: #2563eb;
+  font-size: 14px;
+}
+.confirmados ol {
+  margin: 8px 0 0;
+  padding-left: 22px;
+}
+.vazio {
+  text-align: center;
+  color: #64748b;
+}

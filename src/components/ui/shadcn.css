@@ -1,0 +1,149 @@
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@theme inline {
+  --color-background: var(--ui-background);
+  --color-foreground: var(--ui-foreground);
+  --color-primary: var(--ui-primary);
+  --color-primary-foreground: #fff;
+  --color-secondary: #edf3e8;
+  --color-secondary-foreground: #385535;
+  --color-muted: #f1f5ed;
+  --color-muted-foreground: #6a7a63;
+  --color-accent: #eef4e7;
+  --color-accent-foreground: #36542d;
+  --color-destructive: #a83e36;
+  --color-border: #dce4d6;
+  --color-input: #cdd9c4;
+  --color-ring: #94b676;
+  --color-popover: #fff;
+  --color-popover-foreground: #243f2e;
+  --color-card: #fff;
+  --color-card-foreground: #243f2e;
+}
+:root {
+  --ui-background: #fff;
+  --ui-foreground: #243f2e;
+  --ui-primary: #30563b;
+}
+.volley-app [data-slot="input"],
+.volley-app [data-slot="textarea"],
+.volley-app [data-slot="native-select"] {
+  border: 1px solid #cdd9c4;
+  border-radius: 9px;
+  background: #fff;
+  color: #243f2e;
+  font: inherit;
+  font-size: 14px;
+  min-height: 44px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+.volley-app [data-slot="input"]:focus-visible,
+.volley-app [data-slot="textarea"]:focus-visible {
+  outline: 3px solid #e0edcf;
+  outline-offset: 1px;
+  border-color: #86a866;
+}
+.volley-app [data-slot="input"]:disabled {
+  opacity: 0.6;
+}
+.volley-app [data-slot="button"],
+[data-slot="alert-dialog-content"] [data-slot="button"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  height: auto;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  background: #30563b;
+  color: #fff !important;
+  cursor: pointer;
+  white-space: normal;
+  text-decoration: none;
+}
+.volley-app [data-slot="button"][data-variant="outline"],
+.volley-app [data-slot="button"][data-variant="ghost"] {
+  background: white;
+  border-color: #dce4d6;
+  color: #49633f !important;
+}
+.volley-app [data-slot="button"][data-variant="secondary"] {
+  background: #edf3e8;
+  color: #385535 !important;
+}
+.volley-app [data-slot="button"][data-variant="destructive"] {
+  background: #a83e36;
+  color: white !important;
+}
+.volley-app [data-slot="button"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.volley-app [data-slot="checkbox"] {
+  display: inline-flex;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  border: 1px solid #b9c9ab;
+  border-radius: 5px;
+  background: white;
+  color: #fff !important;
+  flex-shrink: 0;
+}
+.volley-app [data-slot="checkbox"][data-state="checked"] {
+  background: #42693c;
+}
+.volley-app [data-slot="checkbox"] svg {
+  width: 14px;
+  height: 14px;
+}
+.volley-app [data-slot="badge"] {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid #dce7d2;
+  border-radius: 20px;
+  background: #f0f6e9;
+  color: #5b7647;
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+[data-slot="alert-dialog-overlay"] {
+  position: fixed;
+  inset: 0;
+  background: #10291d80;
+  z-index: 50;
+}
+[data-slot="alert-dialog-content"] {
+  position: fixed;
+  z-index: 51;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(480px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  border: 1px solid #dce4d6;
+  border-radius: 16px;
+  padding: 24px;
+  background: white;
+  color: #243f2e;
+}
+@media (max-width: 640px) {
+  .volley-app [data-slot="input"],
+  .volley-app [data-slot="textarea"],
+  .volley-app [data-slot="native-select"] {
+    font-size: 16px;
+  }
+}
