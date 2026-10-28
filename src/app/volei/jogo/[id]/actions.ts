@@ -10,6 +10,8 @@ import {
   hashDevice,
 } from "@/lib/volei/player-session";
 import { phoneSchema } from "@/lib/volei/phone";
+import { currentPlayer } from "@/lib/volei/player-session";
+import { deleteStoredPhotos } from "@/lib/volei/photos";
 const guestSchema = z
   .string()
   .trim()
@@ -33,7 +35,6 @@ export async function registerForGame(
       eventId: z.uuid(),
       name: z.string().trim().min(2, "Informe seu nome completo.").max(100),
       phone: phoneSchema,
-      guest: guestSchema.optional(),
     })
     .safeParse(input);
   if (!parsed.success)
@@ -42,13 +43,13 @@ export async function registerForGame(
         parsed.error.issues[0]?.message ?? "Confira os dados da inscrição.",
     };
   const secret = (await deviceSecret()) ?? randomBytes(32).toString("hex");
-  const { eventId, name, phone, guest } = parsed.data;
+  const { eventId, name, phone } = parsed.data;
   const { error } = await serviceClient().rpc("volei_phone_register", {
     p_event: eventId,
     p_name: name,
     p_phone: phone,
     p_secret_hash: hashDevice(secret),
-    p_guest_name: guest ?? null,
+    p_guest_name: null,
   });
   if (error) return { error: errorMessage(error) };
   (await cookies()).set(DEVICE_COOKIE, secret, {
@@ -67,6 +68,7 @@ export async function manageGame(input: unknown): Promise<{ error: string }> {
       eventId: z.uuid(),
       action: z.enum(["join", "cancel", "guest_join", "guest_cancel"]),
       guest: guestSchema.optional(),
+      guestPhone: phoneSchema.optional(),
     })
     .safeParse(input);
   if (!parsed.success) return { error: "Confira os dados da solicitação." };
@@ -76,7 +78,30 @@ export async function manageGame(input: unknown): Promise<{ error: string }> {
       error:
         "Use o mesmo navegador em que você se inscreveu para gerenciar sua presença.",
     };
-  const { eventId, action, guest } = parsed.data;
+  const { eventId, action, guest, guestPhone } = parsed.data;
+  if (action === "guest_join") {
+    if (!guest || !guestPhone)
+      return { error: "Informe o nome e o telefone do convidado." };
+    const player = await currentPlayer();
+    const previous = player
+      ? await serviceClient()
+          .from("volei_guests")
+          .select("photo_path")
+          .eq("event_id", eventId)
+          .eq("member_id", player.id)
+          .maybeSingle()
+      : null;
+    const result = await serviceClient().rpc("volei_add_phone_guest", {
+      p_event: eventId,
+      p_secret_hash: hashDevice(secret),
+      p_name: guest,
+      p_phone: guestPhone,
+    });
+    if (result.error) return { error: errorMessage(result.error) };
+    await deleteStoredPhotos([previous?.data?.photo_path]);
+    refresh();
+    return { error: "" };
+  }
   const { error } = await serviceClient().rpc("volei_phone_manage", {
     p_event: eventId,
     p_secret_hash: hashDevice(secret),

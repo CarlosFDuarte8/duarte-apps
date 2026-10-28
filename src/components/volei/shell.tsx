@@ -31,6 +31,7 @@ export function VoleiShell({
     ? ([
         ["/admin/volei", "Visão geral", "ball"],
         ["/admin/volei/membros", "Membros", "users"],
+        ["/admin/volei/convidados", "Convidados", "users"],
         ["/admin/volei/frequencia", "Frequência", "check"],
         ["/volei", "Área pública", "arrow"],
       ] as const)
@@ -65,9 +66,12 @@ export function VoleiShell({
                 (href === "/admin/volei" &&
                   path?.startsWith("/admin/volei/") &&
                   !path?.startsWith("/admin/volei/membros") &&
+                  !path?.startsWith("/admin/volei/convidados") &&
                   !path?.startsWith("/admin/volei/frequencia")) ||
-                (href === "/admin/volei/frequencia" &&
-                  path?.startsWith("/admin/volei/frequencia/"))
+                ((href === "/admin/volei/membros" ||
+                  href === "/admin/volei/convidados" ||
+                  href === "/admin/volei/frequencia") &&
+                  path?.startsWith(`${href}/`))
                   ? "page"
                   : undefined
               }

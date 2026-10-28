@@ -1,18 +1,20 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { serviceClient } from "@/lib/escalas/supabase";
+import { signPhotos } from "./photos";
 import {
   daysInMonth,
   isEventOpen,
   type AttendanceStatus,
   type VoleiEvent,
   type VoleiMember,
+  today,
 } from "./domain";
 
 const eventColumns =
   "id,date,title,start_time,location,notes,closed,registration_deadline,guests_open_at,presence_closed_at";
 const memberColumns =
-  "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status";
+  "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status,birth_date,photo_path";
 
 function fail(error: { message: string } | null): asserts error is null {
   if (error) throw new Error(error.message);
@@ -77,7 +79,31 @@ export async function listMembers(client: SupabaseClient) {
     .select(memberColumns)
     .order("name");
   fail(error);
-  return (data ?? []) as VoleiMember[];
+  return signPhotos((data ?? []) as VoleiMember[]);
+}
+
+export async function getMember(client: SupabaseClient, id: string) {
+  const { data, error } = await client
+    .from("volei_members")
+    .select(memberColumns)
+    .eq("id", id)
+    .maybeSingle();
+  fail(error);
+  return data ? (await signPhotos([data as VoleiMember]))[0] : null;
+}
+
+export async function memberPointLogs(
+  client: SupabaseClient,
+  memberId: string,
+) {
+  const { data, error } = await client
+    .from("volei_point_log")
+    .select("id,delta,reason,created_at")
+    .eq("member_id", memberId)
+    .order("created_at", { ascending: false })
+    .limit(10);
+  fail(error);
+  return (data ?? []) as PointLogRow[];
 }
 
 export async function getEvent(client: SupabaseClient, id: string) {
@@ -105,22 +131,6 @@ export async function getEvent(client: SupabaseClient, id: string) {
     }[];
   };
   return { event, attendance, guests };
-}
-
-export async function listPointLogs(client: SupabaseClient) {
-  const { data, error } = await client
-    .from("volei_point_log")
-    .select("id,member_id,delta,reason,created_at")
-    .order("created_at", { ascending: false })
-    .limit(300);
-  fail(error);
-  const byMember = new Map<string, PointLogRow[]>();
-  for (const row of (data ?? []) as (PointLogRow & { member_id: string })[]) {
-    const list = byMember.get(row.member_id) ?? [];
-    if (list.length < 10) list.push(row);
-    byMember.set(row.member_id, list);
-  }
-  return byMember;
 }
 
 /* ---------- Área pública (token individual; sempre pelo servidor) ---------- */
@@ -259,6 +269,101 @@ export type GuestRow = {
   registered_at: string;
   queue_order: number;
 };
+
+export type GuestProfileRow = GuestRow & {
+  event_id: string;
+  phone: string | null;
+  birth_date: string | null;
+  photo_path: string | null;
+  photo_url?: string | null;
+  volei_members: { id: string; name: string } | null;
+  volei_events: {
+    id: string;
+    date: string;
+    title: string;
+    closed: boolean;
+    presence_closed_at: string | null;
+  } | null;
+  blocked: boolean;
+  blocked_reason: string;
+};
+const guestProfileColumns =
+  "id,event_id,member_id,name,status,registered_at,queue_order,phone,birth_date,photo_path,volei_members(id,name),volei_events(id,date,title,closed,presence_closed_at)";
+
+export async function listGuestProfiles(
+  client: SupabaseClient,
+  memberId?: string,
+) {
+  let query = client
+    .from("volei_guests")
+    .select(guestProfileColumns)
+    .order("registered_at", { ascending: false })
+    .limit(200);
+  if (memberId) query = query.eq("member_id", memberId);
+  const [{ data, error }, blocks] = await Promise.all([
+    query,
+    client.from("volei_guest_blocks").select("phone,reason"),
+  ]);
+  fail(error);
+  fail(blocks.error);
+  const blocked = new Map(blocks.data?.map((row) => [row.phone, row.reason]));
+  return signPhotos(
+    ((data ?? []) as unknown as GuestProfileRow[]).map((row) => ({
+      ...row,
+      blocked: blocked.has(row.phone),
+      blocked_reason: blocked.get(row.phone) ?? "",
+    })),
+  );
+}
+
+export async function getGuestProfile(client: SupabaseClient, id: string) {
+  const { data, error } = await client
+    .from("volei_guests")
+    .select(guestProfileColumns)
+    .eq("id", id)
+    .maybeSingle();
+  fail(error);
+  if (!data) return null;
+  const row = data as unknown as GuestProfileRow;
+  const block = row.phone
+    ? await client
+        .from("volei_guest_blocks")
+        .select("reason")
+        .eq("phone", row.phone)
+        .maybeSingle()
+    : null;
+  fail(block?.error ?? null);
+  return (
+    await signPhotos([
+      {
+        ...row,
+        blocked: !!block?.data,
+        blocked_reason: block?.data?.reason ?? "",
+      },
+    ])
+  )[0];
+}
+
+export async function guestByProfileToken(token: string) {
+  if (!/^[a-f0-9]{64}$/.test(token)) return null;
+  const { data, error } = await serviceClient()
+    .from("volei_guests")
+    .select(guestProfileColumns)
+    .eq("profile_token", token)
+    .maybeSingle();
+  fail(error);
+  if (!data) return null;
+  const row = data as unknown as GuestProfileRow;
+  if (
+    !row.volei_events ||
+    row.volei_events.date < today() ||
+    row.volei_events.closed ||
+    row.volei_events.presence_closed_at ||
+    !["confirmado", "espera"].includes(row.status)
+  )
+    return null;
+  return (await signPhotos([row]))[0];
+}
 
 export async function publicEvent(id: string) {
   if (

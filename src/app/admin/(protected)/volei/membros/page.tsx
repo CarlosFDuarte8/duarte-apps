@@ -3,28 +3,28 @@ import { requireVoleiAdmin as requireAdmin } from "@/lib/volei/auth";
 import { PageHeader } from "@/components/escalas/admin-ui";
 import { MemberManager } from "@/components/volei/member-manager";
 import { ImportLegacyMembers } from "@/components/volei/import-legacy";
-import { listMembers, listPointLogs } from "@/lib/volei/repository";
+import { listMembers } from "@/lib/volei/repository";
 
 export default async function Page() {
   const { client } = await requireAdmin();
-  const [members, logs] = await Promise.all([
-    listMembers(client),
-    listPointLogs(client),
-  ]);
+  const members = await listMembers(client);
   return (
     <>
       <PageHeader
         eyebrow="Vôlei"
         title="Membros do grupo"
-        description="Organize o grupo principal, os contatos e os dias preferidos de cada pessoa. Estas configurações são privadas."
+        description="Consulte os membros e acompanhe os cadastros do grupo. Abra um perfil para editar os dados e as preferências."
         actions={
           <Link className="sc-button sc-btn-ghost" href="/admin/volei">
             ← Dias de jogo
           </Link>
         }
       />
-      <ImportLegacyMembers />
-      <MemberManager members={members} logs={Object.fromEntries(logs)} />
+      <MemberManager members={members} />
+      <details className="vm-legacy-import">
+        <summary>Importar membros da lista antiga</summary>
+        <ImportLegacyMembers />
+      </details>
     </>
   );
 }

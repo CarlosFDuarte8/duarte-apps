@@ -1,6 +1,7 @@
 ﻿"use client";
 import { useId, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   registerForGame,
   manageGame,
@@ -12,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { VolleyIcon } from "./volley-icon";
 import { PhoneInput } from "./phone-input";
+import { useCopy } from "./use-run";
 export type MyGame = {
   name: string;
   phone: string;
@@ -19,7 +21,7 @@ export type MyGame = {
   active: boolean;
   membershipStatus: "approved" | "pending" | "rejected";
   status?: AttendanceStatus;
-  guest?: { name: string; status: AttendanceStatus };
+  guest?: { name: string; status: AttendanceStatus; profileToken?: string };
 };
 export function GameResponse({
   eventId,
@@ -38,6 +40,8 @@ export function GameResponse({
   const [name, setName] = useState("");
   const [register, setRegister] = useState(false);
   const [guest, setGuest] = useState("");
+  const [guestPhone, setGuestPhone] = useState("");
+  const { copy, copied } = useCopy();
   const [message, setMessage] = useState("");
   const [failed, setFailed] = useState(false);
   const [pending, start] = useTransition();
@@ -103,6 +107,11 @@ export function GameResponse({
               Seu acesso
             </span>
           </div>
+          <Button asChild variant="outline">
+            <Link href="/volei/meu-cadastro">
+              Meu cadastro · foto e nascimento
+            </Link>
+          </Button>
           {!approved ? (
             <div className="game-notice is-warning">
               <VolleyIcon name="clock" />
@@ -200,6 +209,24 @@ export function GameResponse({
                       >
                         Remover
                       </Button>
+                      {mine.guest!.profileToken && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() =>
+                            copy(
+                              new URL(
+                                `/volei/convidado/${mine.guest!.profileToken}`,
+                                window.location.origin,
+                              ).href,
+                            )
+                          }
+                        >
+                          {copied
+                            ? "Link copiado!"
+                            : "Copiar link do convidado"}
+                        </Button>
+                      )}
                     </div>
                   ) : (
                     <form
@@ -212,6 +239,7 @@ export function GameResponse({
                               eventId,
                               action: "guest_join",
                               guest,
+                              guestPhone,
                             }),
                           "Convidado incluído na espera.",
                         );
@@ -235,6 +263,18 @@ export function GameResponse({
                           maxLength={100}
                           placeholder="Nome e sobrenome"
                         />
+                      </label>
+                      <label>
+                        Telefone do convidado
+                        <PhoneInput
+                          value={guestPhone}
+                          onChange={setGuestPhone}
+                          required
+                        />
+                        <small>
+                          Identifica o convidado e fica privado. Após incluir,
+                          envie o link para ele completar o cadastro.
+                        </small>
                       </label>
                       <Button
                         type="submit"

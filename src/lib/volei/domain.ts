@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-export type AttendanceStatus = "confirmado" | "nao_vai" | "espera" | "ausente" | "reservado";
+export type AttendanceStatus =
+  "confirmado" | "nao_vai" | "espera" | "ausente" | "reservado";
 
 export type VoleiMember = {
   id: string;
@@ -11,6 +12,9 @@ export type VoleiMember = {
   blocked_reason: string;
   is_active: boolean;
   phone?: string | null;
+  birth_date?: string | null;
+  photo_path?: string | null;
+  photo_url?: string | null;
   is_core?: boolean;
   membership_status?: "approved" | "pending" | "rejected";
   preferred_weekdays?: number[];
@@ -41,11 +45,22 @@ export const eventSchema = z.object({
   start_time: z.string().trim().max(20),
   location: z.string().trim().max(120),
   notes: z.string().trim().max(500),
-  registration_time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).default("18:00"),
+  registration_time: z
+    .string()
+    .regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/)
+    .default("18:00"),
 });
 
-export const memberNameSchema = z.string().trim().min(1, "Informe o nome.").max(100);
-export const reasonSchema = z.string().trim().min(1, "Informe o motivo.").max(200);
+export const memberNameSchema = z
+  .string()
+  .trim()
+  .min(1, "Informe o nome.")
+  .max(100);
+export const reasonSchema = z
+  .string()
+  .trim()
+  .min(1, "Informe o motivo.")
+  .max(200);
 
 export function today() {
   return new Intl.DateTimeFormat("en-CA", {
@@ -76,7 +91,15 @@ export function weekdayOf(date: string) {
   return new Date(`${date}T12:00:00Z`).getUTCDay();
 }
 
-const WEEKDAYS = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+const WEEKDAYS = [
+  "Domingo",
+  "Segunda",
+  "Terça",
+  "Quarta",
+  "Quinta",
+  "Sexta",
+  "Sábado",
+];
 
 export function formatDate(date: string) {
   const [, m, d] = date.split("-");
@@ -93,7 +116,12 @@ export function formatMonth(month: string) {
 }
 
 export function isEventOpen(event: VoleiEvent, now = today()) {
-  return !event.closed && event.date >= now && (!event.registration_deadline || new Date().getTime() <= Date.parse(event.registration_deadline));
+  return (
+    !event.closed &&
+    event.date >= now &&
+    (!event.registration_deadline ||
+      new Date().getTime() <= Date.parse(event.registration_deadline))
+  );
 }
 
 /** Texto da lista de confirmados, pronto para colar no WhatsApp. */

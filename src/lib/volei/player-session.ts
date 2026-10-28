@@ -15,7 +15,9 @@ export async function currentPlayer() {
   if (!secret) return null;
   const { data, error } = await serviceClient()
     .from("volei_members")
-    .select("id,name,phone,is_active,blocked,membership_status")
+    .select(
+      "id,name,phone,is_active,blocked,membership_status,birth_date,photo_path",
+    )
     .eq("device_secret_hash", hashDevice(secret))
     .maybeSingle();
   if (error) throw new Error("Não foi possível reconhecer seu acesso.");
@@ -26,5 +28,7 @@ export async function currentPlayer() {
     is_active: boolean;
     blocked: boolean;
     membership_status: "approved" | "pending" | "rejected";
+    birth_date: string | null;
+    photo_path: string | null;
   } | null;
 }

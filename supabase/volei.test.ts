@@ -830,3 +830,191 @@ describe("Telefone internacional", () => {
     ).toBe("pending");
   });
 });
+
+describe("Perfis privados e bloqueio de convidados", () => {
+  const event = "30000000-0000-4000-8000-000000000006";
+  const secret = "71".repeat(32);
+  const otherSecret = "72".repeat(32);
+  const phone = "+5561999990611";
+  let sponsor: string;
+  beforeAll(async () => {
+    await db.exec(
+      "create schema storage; create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[])",
+    );
+    await db.exec(
+      await readFile(
+        new URL(
+          "./migrations/202610280006_volei_profiles.sql",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    );
+    await db.exec("update public.volei_members set is_core=false");
+    sponsor = (
+      await db.query<{ id: string }>(
+        "insert into public.volei_members(name,membership_status,device_secret_hash) values('Responsavel do convidado','approved',$1) returning id",
+        [secret],
+      )
+    ).rows[0].id;
+    const other = (
+      await db.query<{ id: string }>(
+        "insert into public.volei_members(name,membership_status,device_secret_hash) values('Outro responsavel','approved',$1) returning id",
+        [otherSecret],
+      )
+    ).rows[0].id;
+    await db.query(
+      "insert into public.volei_events(id,date,guests_open_at) values($1,'2099-06-01',now()-interval '1 minute')",
+      [event],
+    );
+    for (const member of [sponsor, other])
+      await as(
+        admin,
+        "select public.volei_respond('" +
+          event +
+          "','" +
+          member +
+          "','confirmado')",
+      );
+  });
+  it("cria armazenamento privado e limita formatos e tamanho", async () => {
+    const row = (
+      await db.query<{
+        public: boolean;
+        file_size_limit: number;
+        allowed_mime_types: string[];
+      }>(
+        "select public,file_size_limit,allowed_mime_types from storage.buckets where id='volei-profiles'",
+      )
+    ).rows[0];
+    expect(row.public).toBe(false);
+    expect(Number(row.file_size_limit)).toBe(1048576);
+    expect(row.allowed_mime_types).toEqual(["image/webp"]);
+  });
+  it("convidado fica vinculado ao membro e recebe token individual", async () => {
+    await db.query("select public.volei_add_phone_guest($1,$2,$3,$4)", [
+      event,
+      secret,
+      "Convidado avulso",
+      phone,
+    ]);
+    const guest = (
+      await db.query<{
+        member_id: string;
+        profile_token: string;
+        status: string;
+      }>(
+        "select member_id,profile_token,status from public.volei_guests where event_id=$1 and phone=$2",
+        [event, phone],
+      )
+    ).rows[0];
+    expect(guest.member_id).toBe(sponsor);
+    expect(guest.profile_token).toMatch(/^[a-f0-9]{64}$/);
+    expect(guest.status).toBe("confirmado");
+    expect(
+      (
+        await db.query("select id from public.volei_members where phone=$1", [
+          phone,
+        ])
+      ).rows,
+    ).toHaveLength(0);
+  });
+  it("impede o mesmo telefone de ocupar duas vagas no jogo", async () => {
+    await expect(
+      db.query("select public.volei_add_phone_guest($1,$2,$3,$4)", [
+        event,
+        otherSecret,
+        "Mesmo convidado",
+        phone,
+      ]),
+    ).rejects.toThrow("inscrito");
+  });
+  it("protege nascimento e fotos por RLS e valida nascimento futuro", async () => {
+    await expect(
+      db.query(
+        "update public.volei_members set birth_date='2099-01-01' where id=$1",
+        [sponsor],
+      ),
+    ).rejects.toThrow();
+    expect(
+      (
+        await as(
+          stranger,
+          "select phone,birth_date,photo_path,profile_token from public.volei_guests where event_id='" +
+            event +
+            "'",
+        )
+      ).rows,
+    ).toHaveLength(0);
+    await expect(
+      as(null, "select birth_date from public.volei_members"),
+    ).rejects.toThrow();
+  });
+  it("bloqueia por telefone, libera a vaga e impede convite por outro membro", async () => {
+    await expect(
+      as(
+        stranger,
+        "select public.volei_set_guest_block('" + phone + "',true,'Motivo')",
+      ),
+    ).rejects.toThrow("restrito");
+    await as(
+      admin,
+      "select public.volei_set_guest_block('" +
+        phone +
+        "',true,'Conduta inadequada')",
+    );
+    expect(
+      (
+        await db.query<{ status: string }>(
+          "select status from public.volei_guests where event_id=$1 and phone=$2",
+          [event, phone],
+        )
+      ).rows[0].status,
+    ).toBe("nao_vai");
+    await expect(
+      db.query("select public.volei_add_phone_guest($1,$2,$3,$4)", [
+        event,
+        otherSecret,
+        "Outro nome",
+        phone,
+      ]),
+    ).rejects.toThrow("bloqueado");
+    await expect(
+      db.query(
+        "update public.volei_guests set status='confirmado' where event_id='" +
+          event +
+          "' and phone='" +
+          phone +
+          "'",
+      ),
+    ).rejects.toThrow("bloqueado");
+  });
+  it("desbloquear permite novo convite sem restaurar automaticamente o cancelado", async () => {
+    await as(
+      admin,
+      "select public.volei_set_guest_block('" + phone + "',false)",
+    );
+    expect(
+      (
+        await db.query<{ status: string }>(
+          "select status from public.volei_guests where event_id=$1 and phone=$2",
+          [event, phone],
+        )
+      ).rows[0].status,
+    ).toBe("nao_vai");
+    await db.query("select public.volei_add_phone_guest($1,$2,$3,$4)", [
+      event,
+      secret,
+      "Convidado avulso",
+      phone,
+    ]);
+    expect(
+      (
+        await db.query<{ status: string }>(
+          "select status from public.volei_guests where event_id=$1 and phone=$2",
+          [event, phone],
+        )
+      ).rows[0].status,
+    ).toBe("confirmado");
+  });
+});

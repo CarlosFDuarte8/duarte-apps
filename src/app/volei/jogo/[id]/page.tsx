@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { publicEvent } from "@/lib/volei/repository";
 import { formatDate, isEventOpen } from "@/lib/volei/domain";
 import { currentPlayer } from "@/lib/volei/player-session";
+import { serviceClient } from "@/lib/escalas/supabase";
 import { GameResponse, type MyGame } from "@/components/volei/game-response";
 import { GameRoster } from "@/components/volei/game-roster";
 import { VolleyIcon } from "@/components/volei/volley-icon";
@@ -22,6 +23,14 @@ export default async function Page({
     attendance.filter((p) => p.status === "confirmado").length +
     guests.filter((p) => p.status === "confirmado").length;
   const reserved = attendance.filter((p) => p.status === "reservado").length;
+  const ownGuest = player
+    ? await serviceClient()
+        .from("volei_guests")
+        .select("name,status,profile_token")
+        .eq("event_id", id)
+        .eq("member_id", player.id)
+        .maybeSingle()
+    : null;
   const mine: MyGame | null = player
     ? {
         name: player.name,
@@ -30,7 +39,13 @@ export default async function Page({
         active: player.is_active,
         membershipStatus: player.membership_status,
         status: attendance.find((p) => p.member_id === player.id)?.status,
-        guest: guests.find((g) => g.member_id === player.id),
+        guest: ownGuest?.data
+          ? {
+              name: ownGuest.data.name,
+              status: ownGuest.data.status,
+              profileToken: ownGuest.data.profile_token,
+            }
+          : undefined,
       }
     : null;
   const deadline = event.registration_deadline

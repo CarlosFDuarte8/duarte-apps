@@ -3,6 +3,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireVoleiAdmin as requireAdmin } from "@/lib/volei/auth";
 import { phoneSchema } from "@/lib/volei/phone";
+import { deleteStoredPhotos } from "@/lib/volei/photos";
 import { preferencesSchema } from "@/lib/volei/frequency";
 import {
   eventSchema,
@@ -118,13 +119,11 @@ export async function addMember(name: string, phone = ""): Promise<Result> {
   if (!parsed.success) return invalid(parsed.error);
   const contact = phone ? phoneSchema.safeParse(phone) : null;
   if (contact && !contact.success) return invalid(contact.error);
-  const { error } = await client
-    .from("volei_members")
-    .insert({
-      name: parsed.data,
-      phone: contact?.data ?? null,
-      membership_status: "approved",
-    });
+  const { error } = await client.from("volei_members").insert({
+    name: parsed.data,
+    phone: contact?.data ?? null,
+    membership_status: "approved",
+  });
   return done(error);
 }
 
@@ -273,10 +272,24 @@ export async function adjustPoints(
 export async function deleteMember(memberId: string): Promise<Result> {
   const { client } = await requireAdmin();
   if (!id.safeParse(memberId).success) return { error: "Dados inválidos." };
+  const [member, guests] = await Promise.all([
+    client
+      .from("volei_members")
+      .select("photo_path")
+      .eq("id", memberId)
+      .maybeSingle(),
+    client.from("volei_guests").select("photo_path").eq("member_id", memberId),
+  ]);
+  if (member.error || guests.error) return done(member.error || guests.error);
   const { error } = await client
     .from("volei_members")
     .delete()
     .eq("id", memberId);
+  if (!error)
+    await deleteStoredPhotos([
+      member.data?.photo_path,
+      ...(guests.data ?? []).map((guest) => guest.photo_path),
+    ]);
   return done(error);
 }
 
