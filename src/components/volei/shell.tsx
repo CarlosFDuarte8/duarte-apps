@@ -30,15 +30,16 @@ export function VoleiShell({
   }, [path, router]);
   const links = admin
     ? ([
-        ["/admin/volei", "Visão geral", "ball"],
-        ["/admin/volei/membros", "Membros", "users"],
-        ["/admin/volei/convidados", "Convidados", "users"],
-        ["/admin/volei/frequencia", "Frequência", "check"],
-        ["/volei", "Área pública", "arrow"],
+        ["/admin/volei", "Visão geral", "ball", "Jogos"],
+        ["/admin/volei/membros", "Membros", "users", "Membros"],
+        ["/admin/volei/convidados", "Convidados", "users", "Convidados"],
+        ["/admin/volei/frequencia", "Frequência", "check", "Frequência"],
+        ["/volei", "Área pública", "arrow", "Público"],
       ] as const)
     : ([
-        ["/volei", "Jogos e presenças", "ball"],
-        ["/volei/entrar", "Acesso administrativo", "shield"],
+        ["/volei", "Jogos e presenças", "ball", "Jogos"],
+        ["/volei/meu-cadastro", "Meu cadastro", "users", "Meu cadastro"],
+        ["/volei/entrar", "Acesso administrativo", "shield", "Admin"],
       ] as const);
   return (
     <div className="volley-app">
@@ -55,10 +56,11 @@ export function VoleiShell({
           {admin ? "GESTÃO DO GRUPO" : "DENTRO DE QUADRA"}
         </div>
         <nav aria-label="Navegação do vôlei">
-          {links.map(([href, label, icon]) => (
+          {links.map(([href, label, icon, mobileLabel]) => (
             <Link
               key={href}
               href={href}
+              aria-label={label}
               aria-current={
                 path === href ||
                 (href === "/volei" &&
@@ -78,10 +80,11 @@ export function VoleiShell({
                   : undefined
               }
             >
-              <span>
+              <span aria-hidden="true">
                 <VolleyIcon name={icon} />
               </span>
-              {label}
+              <span className="volley-nav-label">{label}</span>
+              <span className="volley-nav-mobile-label">{mobileLabel}</span>
             </Link>
           ))}
         </nav>
@@ -104,6 +107,21 @@ export function VoleiShell({
       </aside>
       <div className="volley-body">
         <header className="volley-top">
+          <Link
+            href={admin ? "/admin/volei" : "/volei"}
+            className="volley-mobile-brand"
+            aria-label={
+              admin
+                ? "Quadra — painel administrativo"
+                : "Quadra — jogos e presenças"
+            }
+          >
+            <VolleyIcon name="ball" width="28" height="28" />
+            <span>
+              QUADRA
+              <small>{admin ? "ADMINISTRATIVO" : "VÔLEI DA GALERA"}</small>
+            </span>
+          </Link>
           <span>{admin ? "PAINEL ADMINISTRATIVO" : "ÁREA PÚBLICA"}</span>
           <div className="vn-header-actions">
             {admin && <NotificationBell />}

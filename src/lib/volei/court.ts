@@ -19,14 +19,36 @@ const arrivalSchema = z.object({
   departedAt: z.string().nullable(),
   order: z.number().int(),
   lastEntered: z.number().int(),
+  consecutiveMatches: z.number().int().min(0).optional(),
 });
 const matchSchema = z.object({
+  result: z
+    .object({
+      scores: z
+        .array(
+          z.object({
+            team: z.number().int(),
+            points: z.number().int().min(0).max(999),
+          }),
+        )
+        .length(2),
+      durationSeconds: z.number().int().min(0),
+    })
+    .optional(),
   round: z.number().int(),
   winner: z.number().int(),
   loser: z.number().int(),
   incoming: z.number().int(),
   borrowed: z.array(z.string()),
   at: z.string(),
+  lineups: z
+    .array(
+      z.object({
+        team: z.number().int(),
+        players: z.array(z.object({ key: z.string(), name: z.string() })),
+      }),
+    )
+    .optional(),
 });
 export const courtStateSchema = z.object({
   teams: z.array(z.array(z.string())).min(3).max(4),
@@ -37,11 +59,20 @@ export const courtStateSchema = z.object({
   round: z.number().int().min(0),
   nextOrder: z.number().int().min(1),
   history: z.array(matchSchema).max(200),
+  live: z
+    .object({
+      scores: z.array(z.number().int().min(0).max(999)).length(4),
+      elapsedMs: z.number().int().min(0),
+      startedAt: z.string().datetime().nullable(),
+    })
+    .optional(),
 });
 export type CourtState = z.infer<typeof courtStateSchema>;
 export type CourtAction =
   | { type: "arrive" | "leave" | "undo"; key: string }
   | { type: "shuffle" }
+  | { type: "point"; team: number; delta: 1 | -1 }
+  | { type: "clock"; command: "start" | "pause" | "reset" }
   | { type: "winner"; team: number }
   | { type: "swap"; first: string; second: string };
 export function emptyCourt(count = 3): CourtState {
@@ -57,6 +88,16 @@ export function emptyCourt(count = 3): CourtState {
   };
 }
 const copy = (state: CourtState): CourtState => structuredClone(state);
+export function elapsedCourtMs(live: CourtState["live"], now: number) {
+  return (
+    (live?.elapsedMs ?? 0) +
+    (live?.startedAt ? Math.max(0, now - Date.parse(live.startedAt)) : 0)
+  );
+}
+export function formatCourtTime(milliseconds: number) {
+  const seconds = Math.floor(milliseconds / 1000);
+  return `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+}
 const teamSum = (keys: string[], levels: Map<string, number>) =>
   keys.reduce((sum, key) => sum + (levels.get(key) ?? 3), 0);
 export function teamLevel(keys: string[], roster: CourtRosterPerson[]) {
@@ -161,6 +202,7 @@ function wait(state: CourtState, key: string) {
   enter(state, key, team);
 }
 function bestBorrow(
+  state: CourtState,
   candidates: string[],
   needed: number,
   current: string[],
@@ -172,15 +214,25 @@ function bestBorrow(
   if (!count) return [];
   let best: string[] = [];
   let difference = Infinity;
+  let leastConsecutive = Infinity;
   const target = teamSum(opponent, levels) / Math.max(1, opponent.length);
   function choose(start: number, chosen: string[]) {
     if (chosen.length === count) {
       const result = [...current, ...chosen];
       const score = Math.abs(teamSum(result, levels) / result.length - target);
+      const consecutive = chosen.reduce(
+        (sum, key) =>
+          sum +
+          (state.arrivals.find((p) => p.key === key)?.consecutiveMatches ?? 0),
+        0,
+      );
       if (
-        score < difference - 1e-8 ||
-        (Math.abs(score - difference) < 1e-8 && random() < 0.3)
+        consecutive < leastConsecutive ||
+        (consecutive === leastConsecutive &&
+          (score < difference - 1e-8 ||
+            (Math.abs(score - difference) < 1e-8 && random() < 0.3)))
       ) {
+        leastConsecutive = consecutive;
         difference = score;
         best = [...chosen];
       }
@@ -209,6 +261,7 @@ function repair(
       if (outside.length) {
         const donor = state.waiting.find((i) => state.teams[i].length)!;
         const keys = bestBorrow(
+          state,
           state.teams[donor],
           Math.abs(first - second),
           state.teams[short],
@@ -269,7 +322,12 @@ export function resizeCourt(input: CourtState, count: number): CourtState {
       throw Error("Há jogadores demais para reduzir os times.");
     teams[team].push(outside[i]);
   }
-  return { ...state, teams, playing, waiting };
+  const live = state.live ? { ...state.live, scores: [0, 0, 0, 0] } : undefined;
+  if (live)
+    state.playing.forEach((old, index) => {
+      live.scores[playing[index]] = state.live!.scores[old];
+    });
+  return { ...state, teams, playing, waiting, ...(live ? { live } : {}) };
 }
 export function applyCourtAction(
   input: CourtState,
@@ -281,7 +339,30 @@ export function applyCourtAction(
   const state = copy(input);
   const people = new Map(roster.map((p) => [p.key, p]));
   const levels = new Map(roster.map((p) => [p.key, p.skill ?? 3]));
-  if (action.type === "arrive") {
+  if (action.type === "point" || action.type === "clock") {
+    if (
+      !state.started ||
+      state.playing.some((team) => !state.teams[team].length)
+    )
+      throw Error("É preciso ter dois times na quadra para usar o placar.");
+    state.live ??= { scores: [0, 0, 0, 0], elapsedMs: 0, startedAt: null };
+    if (action.type === "point") {
+      if (!state.playing.includes(action.team))
+        throw Error("Selecione um dos times que estão jogando.");
+      state.live.scores[action.team] = Math.max(
+        0,
+        Math.min(999, state.live.scores[action.team] + action.delta),
+      );
+    } else if (action.command === "start") {
+      state.live.startedAt ??= now;
+    } else {
+      state.live.elapsedMs =
+        action.command === "reset"
+          ? 0
+          : elapsedCourtMs(state.live, Date.parse(now));
+      state.live.startedAt = null;
+    }
+  } else if (action.type === "arrive") {
     const person = people.get(action.key);
     if (!person)
       throw Error(
@@ -327,6 +408,7 @@ export function applyCourtAction(
     state.playing = [0, 1];
     state.waiting = state.teams.map((_, i) => i).slice(2);
     state.started = true;
+    delete state.live;
     for (const index of state.playing)
       for (const key of state.teams[index]) {
         const arrival = state.arrivals.find((p) => p.key === key)!;
@@ -338,8 +420,41 @@ export function applyCourtAction(
     repair(state, levels, random);
     const winner = action.team,
       loser = state.playing.find((i) => i !== winner)!;
+    if (state.live && state.live.scores[winner] <= state.live.scores[loser])
+      throw Error(
+        "Confira o placar: o vencedor precisa ter mais pontos que o adversário.",
+      );
+    const result = state.live
+      ? {
+          scores: state.playing.map((team) => ({
+            team,
+            points: state.live!.scores[team],
+          })),
+          durationSeconds: Math.floor(
+            elapsedCourtMs(state.live, Date.parse(now)) / 1000,
+          ),
+        }
+      : undefined;
+    const lineups = state.playing.map((team) => ({
+      team,
+      players: state.teams[team].map((key) => ({
+        key,
+        name:
+          people.get(key)?.name ??
+          state.arrivals.find((p) => p.key === key)?.name ??
+          "Participante",
+      })),
+    }));
     if (!state.teams[winner].length || !state.teams[loser].length)
       throw Error("É preciso ter jogadores nos dois times.");
+    // Quem descansou tem prioridade para voltar. Entre quem acabou de jogar,
+    // evita manter sempre as mesmas pessoas para completar o próximo time.
+    const played = new Set(state.playing.flatMap((team) => state.teams[team]));
+    for (const arrival of state.arrivals) {
+      arrival.consecutiveMatches = played.has(arrival.key)
+        ? (arrival.consecutiveMatches ?? 0) + 1
+        : 0;
+    }
     const incoming =
       state.waiting.find((i) => state.teams[i].length > 0) ?? loser;
     const borrowed: string[] = [];
@@ -350,6 +465,7 @@ export function applyCourtAction(
           state.teams[winner].length - state.teams[incoming].length;
         if (needed <= 0) break;
         const keys = bestBorrow(
+          state,
           state.teams[donor],
           needed,
           state.teams[incoming],
@@ -377,7 +493,10 @@ export function applyCourtAction(
       incoming,
       borrowed,
       at: now,
+      lineups,
+      result,
     });
+    delete state.live;
     state.history = state.history.slice(-200);
     repair(state, levels, random);
   } else if (action.type === "swap") {

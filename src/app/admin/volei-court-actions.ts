@@ -7,6 +7,15 @@ const key = z.string().regex(/^[mg]:[a-f0-9-]{36}$/);
 const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.enum(["arrive", "leave", "undo"]), key }),
   z.object({ type: z.literal("shuffle") }),
+  z.object({
+    type: z.literal("point"),
+    team: z.number().int().min(0).max(3),
+    delta: z.union([z.literal(1), z.literal(-1)]),
+  }),
+  z.object({
+    type: z.literal("clock"),
+    command: z.enum(["start", "pause", "reset"]),
+  }),
   z.object({ type: z.literal("winner"), team: z.number().int().min(0).max(3) }),
   z.object({ type: z.literal("swap"), first: key, second: key }),
 ]);

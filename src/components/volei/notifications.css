@@ -49,6 +49,9 @@
   font-size: 9px;
 }
 .vn-popover {
+  max-height: calc(100dvh - 100px - env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   width: 360px;
   max-width: calc(100vw - 24px);
   background: #fff;

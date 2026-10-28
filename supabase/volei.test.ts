@@ -1451,6 +1451,53 @@ describe("Quadra, capacidade excepcional e presença", () => {
     ).toHaveLength(0);
     await expect(save(state, 0)).rejects.toThrow("outro acesso");
   });
+  it("persiste o placar e o relógio na sessão e o resultado no histórico", async () => {
+    state = applyCourtAction(state, roster, {
+      type: "point",
+      team: state.playing[0],
+      delta: 1,
+    });
+    state = applyCourtAction(
+      state,
+      roster,
+      { type: "clock", command: "start" },
+      Math.random,
+      "2026-10-28T20:00:00Z",
+    );
+    version = Number(
+      ((await save(state)).rows[0] as { volei_save_court: number })
+        .volei_save_court,
+    );
+    const stored = await db.query<{ state: CourtState }>(
+      "select state from public.volei_court_sessions where event_id=$1",
+      [courtEvent],
+    );
+    expect(stored.rows[0].state.live).toEqual(state.live);
+    state = applyCourtAction(
+      stored.rows[0].state,
+      roster,
+      { type: "winner", team: state.playing[0] },
+      Math.random,
+      "2026-10-28T20:01:15Z",
+    );
+    version = Number(
+      ((await save(state)).rows[0] as { volei_save_court: number })
+        .volei_save_court,
+    );
+    const finished = await db.query<{ state: CourtState }>(
+      "select state from public.volei_court_sessions where event_id=$1",
+      [courtEvent],
+    );
+    expect(finished.rows[0].state.history.at(-1)?.result?.durationSeconds).toBe(
+      75,
+    );
+    expect(
+      finished.rows[0].state.history
+        .at(-1)
+        ?.result?.scores.map((s) => s.points),
+    ).toEqual([1, 0]);
+    expect(finished.rows[0].state.live).toBeUndefined();
+  });
   it("recusa duplicatas, pessoas sem inscricao e mais de seis no mesmo time", async () => {
     const duplicate = structuredClone(state);
     duplicate.teams[1].push(duplicate.teams[0][0]);

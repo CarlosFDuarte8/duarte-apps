@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     "local-origin.dev",
     "*.local-origin.dev",
     "192.168.1.101",
+    "192.168.1.106",
     "192.168.1.107",
   ],
   // Fixe a raiz do projeto para que o Turbopack não utilize o arquivo de trava (lockfile) não relacionado localizado no diretório pessoal do usuário.

@@ -4,6 +4,8 @@ import {
   emptyCourt,
   balancedTeams,
   resizeCourt,
+  courtStateSchema,
+  elapsedCourtMs,
   type CourtState,
   type CourtRosterPerson,
 } from "./court";
@@ -52,6 +54,201 @@ function invariants(state: CourtState) {
   }
 }
 describe("Times e rodízio", () => {
+  it("salva pontos, corrige sem negativos e registra resultado e tempo antes de zerar para o próximo confronto", () => {
+    const people = roster(18);
+    let state = applyCourtAction(
+      arrived(people),
+      people,
+      { type: "shuffle" },
+      random(),
+    );
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "clock", command: "start" },
+      random(),
+      "2026-10-28T20:00:00Z",
+    );
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "clock", command: "start" },
+      random(),
+      "2026-10-28T20:00:05Z",
+    );
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "point", team: 0, delta: 1 },
+      random(),
+    );
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "point", team: 0, delta: 1 },
+      random(),
+    );
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "point", team: 1, delta: -1 },
+      random(),
+    );
+    expect(state.live!.scores).toEqual([2, 0, 0, 0]);
+    expect(() =>
+      applyCourtAction(state, people, { type: "point", team: 2, delta: 1 }),
+    ).toThrow("jogando");
+    expect(() =>
+      applyCourtAction(state, people, { type: "winner", team: 1 }),
+    ).toThrow("placar");
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "clock", command: "pause" },
+      random(),
+      "2026-10-28T20:01:10Z",
+    );
+    expect(elapsedCourtMs(state.live, Date.parse("2026-10-28T20:02:00Z"))).toBe(
+      70000,
+    );
+    state = courtStateSchema.parse(JSON.parse(JSON.stringify(state)));
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "clock", command: "start" },
+      random(),
+      "2026-10-28T20:02:00Z",
+    );
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "winner", team: 0 },
+      random(),
+      "2026-10-28T20:02:15Z",
+    );
+    expect(state.history.at(-1)!.result).toEqual({
+      scores: [
+        { team: 0, points: 2 },
+        { team: 1, points: 0 },
+      ],
+      durationSeconds: 85,
+    });
+    expect(state.live).toBeUndefined();
+    expect(state.playing).toEqual([0, 2]);
+  });
+  it("zera somente o cronômetro, preserva o placar e impede encerrar um empate", () => {
+    const people = roster(12);
+    let state = applyCourtAction(
+      arrived(people),
+      people,
+      { type: "shuffle" },
+      random(),
+    );
+    for (const team of [0, 1])
+      state = applyCourtAction(
+        state,
+        people,
+        { type: "point", team, delta: 1 },
+        random(),
+      );
+    expect(() =>
+      applyCourtAction(state, people, { type: "winner", team: 0 }),
+    ).toThrow("placar");
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "clock", command: "start" },
+      random(),
+      "2026-10-28T20:00:00Z",
+    );
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "clock", command: "reset" },
+      random(),
+      "2026-10-28T20:05:00Z",
+    );
+    expect(state.live).toEqual({
+      scores: [1, 1, 0, 0],
+      elapsedMs: 0,
+      startedAt: null,
+    });
+    state = applyCourtAction(state, people, { type: "shuffle" }, random());
+    expect(state.live).toBeUndefined();
+  });
+  it("alterna quem completa o time mesmo quando repetir os mesmos jogadores daria mais equilíbrio", () => {
+    const people = roster(14);
+    for (let i = 0; i < 6; i++) people[i].skill = 3;
+    [1, 2, 3, 4, 5, 5].forEach((level, i) => (people[i + 6].skill = level));
+    people[12].skill = people[13].skill = 1;
+    let state = arrived(people);
+    state.started = true;
+    state.teams = [
+      people.slice(0, 6).map((p) => p.key),
+      people.slice(6, 12).map((p) => p.key),
+      people.slice(12).map((p) => p.key),
+    ];
+    const winner = [...state.teams[0]];
+    for (let round = 0; round < 12; round++) {
+      const rested = [...state.teams[state.waiting[0]]];
+      const loser = state.playing.find((i) => i !== 0)!;
+      const counts = new Map(
+        state.arrivals.map((p) => [p.key, p.consecutiveMatches ?? 0]),
+      );
+      const candidates = [...state.teams[loser]];
+      state = applyCourtAction(
+        state,
+        people,
+        { type: "winner", team: 0 },
+        random(),
+      );
+      const borrowed = state.history.at(-1)!.borrowed;
+      expect(
+        rested.every((key) => state.teams[state.playing[1]].includes(key)),
+      ).toBe(true);
+      const benched = candidates.filter((key) => !borrowed.includes(key));
+      // Nenhum jogador continua se alguém que jogou menos seguidas foi descansar.
+      for (const kept of borrowed)
+        for (const out of benched)
+          expect(counts.get(kept)!).toBeLessThanOrEqual(counts.get(out)!);
+      expect(state.teams[0]).toEqual(winner);
+      invariants(state);
+    }
+  });
+  it("preserva a formação e os nomes da partida antes do rodízio e de novos sorteios", () => {
+    const people = roster(14);
+    let state = applyCourtAction(
+      arrived(people),
+      people,
+      { type: "shuffle" },
+      random(),
+    );
+    const expected = state.playing.map((team) => ({
+      team,
+      players: state.teams[team].map((key) => ({
+        key,
+        name: people.find((p) => p.key === key)!.name,
+      })),
+    }));
+    state = applyCourtAction(
+      state,
+      people,
+      { type: "winner", team: 0 },
+      random(),
+    );
+    expect(state.history[0].lineups).toEqual(expected);
+    expect(state.history[0].lineups?.flatMap((t) => t.players)).toHaveLength(
+      12,
+    );
+    const saved = structuredClone(state.history[0]);
+    const renamed = people.map((p) => ({ ...p, name: "Novo nome" }));
+    state = applyCourtAction(state, renamed, { type: "shuffle" }, random());
+    expect(state.history[0]).toEqual(saved);
+    expect(courtStateSchema.parse(state).history[0].lineups).toEqual(expected);
+    const legacy = structuredClone(state);
+    delete legacy.history[0].lineups;
+    expect(courtStateSchema.parse(legacy).history[0].lineups).toBeUndefined();
+  });
   it("sorteia tamanhos corretos, sem duplicatas, com equilíbrio e apenas presentes", () => {
     const people = roster(24),
       levels = new Map(people.map((p) => [p.key, p.skill!]));

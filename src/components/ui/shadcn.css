@@ -141,6 +141,19 @@
   color: #243f2e;
 }
 @media (max-width: 640px) {
+  [data-slot="alert-dialog-content"] {
+    padding: 20px;
+    width: calc(100vw - 24px);
+    max-height: calc(
+      100dvh - env(safe-area-inset-top, 0px) -
+        env(safe-area-inset-bottom, 0px) - 24px
+    );
+    overscroll-behavior: contain;
+  }
+  [data-slot="alert-dialog-footer"] [data-slot="button"] {
+    width: 100%;
+    min-height: 48px;
+  }
   .volley-app [data-slot="input"],
   .volley-app [data-slot="textarea"],
   .volley-app [data-slot="native-select"] {

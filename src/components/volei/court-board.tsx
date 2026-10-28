@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { LogOut, Shuffle, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,8 @@ import {
   type CourtAction,
 } from "@/lib/volei/court";
 import "./court.css";
+import { CourtGameMode } from "./court-game-mode";
+import { GameOverlay } from "./game-overlay";
 const teamName = (index: number) => String.fromCharCode(65 + index);
 export function CourtBoard({
   eventId,
@@ -49,6 +52,7 @@ export function CourtBoard({
   const [search, setSearch] = useState("");
   const [first, setFirst] = useState("");
   const [second, setSecond] = useState("");
+  const [gameMode, setGameMode] = useState(false);
   const byKey = new Map(roster.map((p) => [p.key, p]));
   const present = state.arrivals.filter((p) => !p.departedAt);
   const departed = state.arrivals.filter((p) => !!p.departedAt);
@@ -110,8 +114,29 @@ export function CourtBoard({
       </details>
     );
   }
+  if (gameMode)
+    return (
+      <GameOverlay onExit={() => setGameMode(false)}>
+        <CourtGameMode
+          eventId={eventId}
+          state={state}
+          roster={roster}
+          pending={pending}
+          closed={closed}
+          feedback={feedback}
+          act={act}
+          onExit={() => setGameMode(false)}
+        />
+      </GameOverlay>
+    );
   return (
     <div className="vc-board">
+      <Button onClick={() => setGameMode(true)}>Abrir modo jogo</Button>
+      <Button asChild variant="outline">
+        <Link href={`/admin/volei/${eventId}/historico`}>
+          Histórico das partidas
+        </Link>
+      </Button>
       <div className="vc-metrics">
         <div>
           <strong>{present.length}</strong>
@@ -149,7 +174,8 @@ export function CourtBoard({
             <h2>Quadra e rodízio</h2>
             <p>
               O vencedor fica sem limite. O próximo time entra e aproveita
-              jogadores do time que saiu quando precisar completar.
+              jogadores do time que saiu quando precisar completar, alternando
+              quem continua para que todos tenham rodízio.
             </p>
           </div>
           <div className="vc-actions">
@@ -306,7 +332,7 @@ export function CourtBoard({
                     {!playing && keys.length > 0 && keys.length < 6 && (
                       <p className="vc-team-help">
                         Se entrar incompleto, recebe jogadores do time que saiu
-                        para equilibrar a partida.
+                        priorizando o rodízio e depois o equilíbrio.
                       </p>
                     )}
                     {playing && (
