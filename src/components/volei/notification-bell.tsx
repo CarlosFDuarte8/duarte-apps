@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/popover";
 import type { NotificationSummary } from "@/lib/volei/complaints";
 import "./notifications.css";
+import { LoadingStatus } from "./activity";
 export function NotificationBell() {
   const [summary, setSummary] = useState<NotificationSummary | null>(null);
   const [error, setError] = useState(false);
@@ -76,6 +77,9 @@ export function NotificationBell() {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="vn-popover" align="end" collisionPadding={12}>
+        {!summary && !error && (
+          <LoadingStatus message="Consultando solicitações…" />
+        )}
         <header>
           <h2>Central de solicitações</h2>
           <span>{summary ? `${total} pendentes` : "Atualizando…"}</span>

@@ -1,8 +1,12 @@
 ﻿"use client";
 import { useActionState } from "react";
 import { loginVolei } from "@/app/volei/entrar/actions";
+import { useOperationStatus } from "./activity";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 export function VoleiLogin() {
   const [error, action, pending] = useActionState(loginVolei, "");
+  useOperationStatus(pending, "Entrando no painel…", error);
   return (
     <form className="volley-card volley-form" action={action}>
       <h2>Acesso do responsável</h2>
@@ -12,11 +16,11 @@ export function VoleiLogin() {
       </p>
       <label>
         E-mail
-        <input type="email" autoComplete="username" name="email" required />
+        <Input type="email" autoComplete="username" name="email" required />
       </label>
       <label>
         Senha
-        <input
+        <Input
           type="password"
           autoComplete="current-password"
           name="password"
@@ -28,9 +32,9 @@ export function VoleiLogin() {
           {error}
         </p>
       )}
-      <button disabled={pending}>
+      <Button loading={pending} loadingText="Entrando…">
         {pending ? "Entrando…" : "Entrar no painel"}
-      </button>
+      </Button>
     </form>
   );
 }

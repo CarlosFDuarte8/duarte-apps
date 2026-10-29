@@ -52,7 +52,7 @@ export function SkillLevelForm({
           ))}
         </NativeSelect>
       </label>
-      <Button variant="outline" disabled={pending}>
+      <Button variant="outline" loading={pending}>
         Salvar nível
       </Button>
       {saved && (

@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { z } from "zod";
 import { importMembers } from "@/app/admin/volei-actions";
 import { initialVoleiMembers } from "@/lib/volei/initial-members";
+import { useOperationStatus } from "./activity";
 
 const STORAGE_KEY = "lista-presenca-v1";
 
@@ -18,7 +19,9 @@ function namesFromStorage() {
     })
     .safeParse(data);
   if (!parsed.success) {
-    throw new Error("Os dados salvos da lista antiga não estão no formato esperado.");
+    throw new Error(
+      "Os dados salvos da lista antiga não estão no formato esperado.",
+    );
   }
 
   return parsed.data.participantes.map((person) => person.nome);
@@ -28,6 +31,12 @@ export function ImportLegacyMembers() {
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
+  useOperationStatus(
+    pending,
+    "Importando membros…",
+    error ? message : "",
+    !error ? message : "",
+  );
 
   function importRoster() {
     setMessage("");
@@ -35,7 +44,9 @@ export function ImportLegacyMembers() {
     try {
       const names = namesFromStorage();
       if (names.length > 100) {
-        setMessage("A lista antiga contém mais de 100 pessoas. Revise-a antes de importar.");
+        setMessage(
+          "A lista antiga contém mais de 100 pessoas. Revise-a antes de importar.",
+        );
         setError(true);
         return;
       }
@@ -53,7 +64,9 @@ export function ImportLegacyMembers() {
               : "Todos os nomes da lista já estão cadastrados.",
           );
         } catch {
-          setMessage("Não foi possível importar. Recarregue a página e tente novamente.");
+          setMessage(
+            "Não foi possível importar. Recarregue a página e tente novamente.",
+          );
           setError(true);
         }
       });

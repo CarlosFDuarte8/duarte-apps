@@ -1,0 +1,127 @@
+.volley-spin {
+  animation: volley-spin 1s linear infinite;
+}
+@keyframes volley-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.volley-operation {
+  position: fixed;
+  z-index: 80;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: max-content;
+  max-width: calc(100vw - 24px);
+  padding: 14px 16px;
+  background: #173e30;
+  color: #fff;
+  border: 1px solid #466e55;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px #102d2933;
+  font:
+    500 14px/1.5 Arial,
+    sans-serif;
+}
+.volley-operation > svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.volley-operation span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.volley-operation button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  background: transparent;
+  color: inherit;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: -8px -8px -8px 0;
+}
+.volley-operation button svg {
+  width: 18px;
+  height: 18px;
+}
+.volley-operation-error {
+  background: #802f2c;
+  border-color: #a65850;
+}
+.volley-operation-success {
+  background: #285936;
+}
+.volley-loading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 24px;
+  border: 1px solid #dce6d5;
+  border-radius: 14px;
+  background: #fff;
+  color: #385739;
+}
+.volley-loading > svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.volley-loading p {
+  margin: 6px 0 0;
+  color: #62765d;
+  font-size: 13px;
+}
+.volley-route-loading {
+  display: grid;
+  gap: 16px;
+  min-height: 320px;
+}
+.volley-skeleton {
+  border-radius: 14px;
+  min-height: 88px;
+  background: linear-gradient(100deg, #e8eee3 25%, #f5f8f0 45%, #e8eee3 65%);
+  background-size: 250% 100%;
+  animation: volley-skeleton 1.6s ease-in-out infinite;
+}
+@keyframes volley-skeleton {
+  to {
+    background-position: -150% 0;
+  }
+}
+.volley-nav-pending {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #24483ee6;
+  display: grid !important;
+  place-items: center;
+}
+.volley-nav-pending svg {
+  width: 22px;
+  height: 22px;
+}
+@media (max-width: 1024px) {
+  .volley-operation {
+    bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .volley-spin,
+  .volley-skeleton {
+    animation: none;
+  }
+}
+@media print {
+  .volley-operation {
+    display: none;
+  }
+}

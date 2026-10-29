@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { VolleyIcon } from "./volley-icon";
 import { PhoneInput } from "./phone-input";
 import { useCopy } from "./use-run";
+import { useOperationStatus } from "./activity";
 export type MyGame = {
   name: string;
   phone: string;
@@ -46,6 +47,16 @@ export function GameResponse({
   const [message, setMessage] = useState("");
   const [failed, setFailed] = useState(false);
   const [pending, start] = useTransition();
+  useOperationStatus(
+    pending,
+    mine
+      ? "Atualizando sua participação…"
+      : register
+        ? "Enviando cadastro para aprovação…"
+        : "Consultando seu telefone…",
+    failed ? message : "",
+    !failed ? message : "",
+  );
   const router = useRouter();
   const dialog = useRef<HTMLDialogElement>(null);
   const id = useId();
@@ -377,7 +388,13 @@ export function GameResponse({
               </label>
             </>
           )}
-          <Button type="submit" disabled={pending}>
+          <Button
+            type="submit"
+            loading={pending}
+            loadingText={
+              register ? "Enviando cadastro…" : "Consultando telefone…"
+            }
+          >
             {pending
               ? "Verificando…"
               : register
@@ -435,7 +452,8 @@ export function GameResponse({
           </Button>
           <Button
             variant="destructive"
-            disabled={pending}
+            loading={pending}
+            loadingText="Liberando vaga…"
             onClick={() =>
               run(
                 () => manageGame({ eventId, action: "cancel" }),
@@ -446,6 +464,11 @@ export function GameResponse({
             Sim, não vou
           </Button>
         </div>
+        {failed && message && (
+          <p className="game-feedback is-error" role="alert">
+            {message}
+          </p>
+        )}
       </dialog>
     </section>
   );

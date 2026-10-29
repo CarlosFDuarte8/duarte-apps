@@ -7,6 +7,7 @@ import { PersonAvatar } from "./person-avatar";
 import { PhotoCropper } from "./photo-cropper";
 import { PhoneInput } from "./phone-input";
 import "./profile.css";
+import { useOperationStatus } from "./activity";
 
 export function ProfileForm({
   name,
@@ -45,6 +46,12 @@ export function ProfileForm({
   const [message, setMessage] = useState("");
   const [failed, setFailed] = useState(false);
   const [pending, start] = useTransition();
+  useOperationStatus(
+    pending || processing,
+    processing ? "Preparando foto…" : "Salvando cadastro e foto…",
+    failed ? message : "",
+    !failed ? message : "",
+  );
   const router = useRouter();
   useEffect(
     () => () => {
@@ -196,7 +203,11 @@ export function ProfileForm({
           Foto e nascimento ficam disponíveis apenas neste cadastro e no painel
           administrativo. O contato de emergência também é privado.
         </p>
-        <Button type="submit" disabled={pending || processing || !!cropImage}>
+        <Button
+          type="submit"
+          loading={pending}
+          disabled={processing || !!cropImage}
+        >
           {pending ? "Salvando…" : "Salvar dados do cadastro"}
         </Button>
         {message && (

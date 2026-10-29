@@ -106,7 +106,7 @@ export function MemberPreferences({ member }: { member: VoleiMember }) {
           Preferências salvas.
         </p>
       )}
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" loading={pending}>
         {pending ? "Salvando…" : "Salvar preferências"}
       </Button>
     </form>

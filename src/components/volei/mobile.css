@@ -1,0 +1,210 @@
+.vm-members-more-filters {
+  display: contents;
+}
+.volley-app .vm-filter-toggle {
+  display: none;
+}
+@media (max-width: 640px) {
+  .volley-content {
+    padding: 16px 12px 24px;
+    gap: 16px;
+  }
+  .volley-app .sc-page-head {
+    gap: 12px;
+  }
+  .volley-app .sc-page-head h1 {
+    font-size: 26px;
+    line-height: 1.2;
+  }
+  .volley-app .sc-page-head p {
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+  .volley-app
+    :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+    min-height: 48px;
+    font-size: 16px;
+  }
+  .volley-app summary {
+    min-height: 44px;
+    display: list-item;
+    align-content: center;
+  }
+  .volley-app .vm-member-metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .volley-app .vm-member-metrics > div,
+  .volley-app .vm-member-metrics > button {
+    padding: 10px 6px;
+    border-radius: 10px;
+  }
+  .volley-app .vm-member-metrics strong {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .volley-app .vm-member-metrics span {
+    font-size: 10px;
+    line-height: 1.4;
+    display: block;
+  }
+  .volley-app .vm-members-toolbar {
+    padding: 16px;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  .vm-members-toolbar p {
+    display: none;
+  }
+  .volley-app .vm-members-toolbar h2 {
+    font-size: 17px;
+  }
+  .volley-app .vm-members-toolbar > [data-slot="button"] {
+    width: auto;
+    min-height: 48px;
+    font-size: 12px;
+    padding: 10px;
+  }
+  .volley-app .vm-members-filters {
+    padding: 14px 16px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 10px;
+  }
+  .volley-app .vm-members-search {
+    grid-column: auto;
+  }
+  .volley-app .vm-filter-toggle {
+    display: inline-flex;
+    min-height: 48px;
+    padding: 10px;
+  }
+  .vm-members-more-filters {
+    grid-column: 1/-1;
+    display: none;
+    gap: 12px;
+  }
+  .vm-members-more-filters[data-open="true"] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .vm-members-more-filters > label {
+    min-width: 0;
+    display: grid;
+    gap: 8px;
+    font-size: 12px;
+    color: #506849;
+  }
+  .vm-members-more-filters > label:last-child {
+    grid-column: 1/-1;
+  }
+  .vm-members-results {
+    padding-inline: 16px;
+  }
+  .vm-members-table tbody {
+    padding: 0 12px 12px;
+    gap: 10px;
+  }
+  .volley-app .vm-members-table tbody tr {
+    position: relative;
+    padding: 14px;
+    gap: 10px;
+  }
+  .vm-members-table .vm-member-name {
+    padding-right: 74px;
+  }
+  .vm-members-table .vm-member-action {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+  .volley-app .vm-member-action [data-slot="button"] {
+    min-height: 48px;
+    padding-inline: 10px;
+  }
+  .vm-members-table .vm-member-days {
+    grid-column: 1/-1;
+  }
+  .vm-member-phone {
+    font-size: 14px;
+  }
+  .vm-member-phone::before {
+    display: none !important;
+  }
+  .vp-member-person {
+    gap: 8px;
+  }
+  .vp-member-person .vp-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  .volley-app .vp-member-person a {
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .game-event-header {
+    padding: 20px 16px;
+  }
+  .game-event-header h1 {
+    font-size: 28px;
+  }
+  .game-event-details {
+    gap: 8px;
+  }
+  .game-description {
+    margin-block: 8px;
+  }
+  .volley-app .game-signup,
+  .volley-app .game-roster {
+    padding: 18px 14px;
+    gap: 16px;
+  }
+  .volley-content .game-roster-filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    padding: 5px;
+  }
+  .volley-app .volley-content .game-roster-filters button {
+    min-height: 46px;
+    font-size: 12px;
+    padding: 8px 5px;
+  }
+  .volley-app .vc-arrival-list > article {
+    padding: 12px;
+  }
+  .vc-player-line {
+    flex-wrap: wrap;
+  }
+  .vc-player-line > span {
+    flex-basis: calc(100% - 88px);
+  }
+  .vc-arrival-list .vc-player-line > [data-slot="button"] {
+    width: 100%;
+    min-height: 48px;
+  }
+  .volley-app .vc-person-details > summary {
+    min-height: 44px;
+  }
+  .vc-person-details p,
+  .vc-person-details > label {
+    font-size: 13px;
+  }
+}
+@media (max-width: 360px) {
+  .vm-members-more-filters[data-open="true"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .volley-app .vm-member-metrics span {
+    font-size: 9px;
+  }
+}
+.volley-nav-pending {
+  color: #d5f580;
+}
+.vm-member-action a,
+.vp-member-person a {
+  position: relative;
+}

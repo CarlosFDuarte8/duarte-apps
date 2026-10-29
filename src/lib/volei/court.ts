@@ -54,7 +54,7 @@ export const courtStateSchema = z.object({
   teams: z.array(z.array(z.string())).min(3).max(4),
   playing: z.tuple([z.number().int(), z.number().int()]),
   waiting: z.array(z.number().int()),
-  arrivals: z.array(arrivalSchema).max(24),
+  arrivals: z.array(arrivalSchema).max(500),
   started: z.boolean(),
   round: z.number().int().min(0),
   nextOrder: z.number().int().min(1),
@@ -370,6 +370,8 @@ export function applyCourtAction(
       );
     const previous = state.arrivals.find((p) => p.key === action.key);
     if (previous && !previous.departedAt) return state;
+    if (state.arrivals.filter(p => !p.departedAt).length >= state.teams.length * 6)
+      throw Error("Não há vaga livre para registrar a chegada ou o retorno.");
     state.arrivals = state.arrivals.filter((p) => p.key !== action.key);
     state.arrivals.push({
       key: action.key,

@@ -10,6 +10,7 @@ import {
   Plus,
   Search,
   Users,
+  SlidersHorizontal,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ import type { VoleiMember } from "@/lib/volei/domain";
 import { WEEKDAY_LABELS } from "@/lib/volei/frequency";
 import { PhoneInput } from "./phone-input";
 import { useRun } from "./use-run";
+import { LinkPending } from "./link-pending";
 import { PersonAvatar } from "./person-avatar";
 import { ageLabel, ageOn } from "@/lib/volei/profile";
 import "./management.css";
@@ -97,6 +99,7 @@ function MemberStatus({ member }: { member: VoleiMember }) {
 export function MemberManager({ members }: { members: VoleiMember[] }) {
   const { run, pending, feedback } = useRun();
   const [creating, setCreating] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [search, setSearch] = useState("");
@@ -251,7 +254,7 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
                   aria-label="Telefone do novo membro"
                 />
               </label>
-              <Button type="submit" disabled={pending}>
+              <Button type="submit" loading={pending}>
                 {pending ? "Salvando…" : "Cadastrar membro"}
               </Button>
             </div>
@@ -272,52 +275,71 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
               />
             </span>
           </label>
-          <label>
-            Grupo e situação
-            <NativeSelect
-              value={group}
-              onChange={(e) => setGroup(e.target.value)}
-            >
-              <option value="todos">Todos os membros</option>
-              <option value="pending">Aprovação pendente</option>
-              <option value="principal">Grupo principal</option>
-              <option value="ativos">Ativos</option>
-              <option value="inativos">Inativos</option>
-              <option value="bloqueados">Bloqueados</option>
-              <option value="rejected">Não aprovados</option>
-            </NativeSelect>
-          </label>
-          <label>
-            Dia preferido
-            <NativeSelect value={day} onChange={(e) => setDay(e.target.value)}>
-              <option value="">Qualquer dia</option>
-              {WEEKDAY_LABELS.map((label, i) => (
-                <option key={label} value={String(i)}>
-                  {label}
-                </option>
-              ))}
-            </NativeSelect>
-          </label>
-          <label>
-            Ordenar por
-            <NativeSelect
-              value={`${sortBy}:${order}`}
-              onChange={(e) => {
-                const [column, direction] = e.target.value.split(":");
-                setSortBy(column as SortColumn);
-                setOrder(direction);
-              }}
-            >
-              {sortColumns.map(({ key, label }) => [
-                <option key={`${key}:asc`} value={`${key}:asc`}>
-                  {label} · {key === "phone" ? "crescente" : "A–Z"}
-                </option>,
-                <option key={`${key}:desc`} value={`${key}:desc`}>
-                  {label} · {key === "phone" ? "decrescente" : "Z–A"}
-                </option>,
-              ])}
-            </NativeSelect>
-          </label>
+          <Button
+            className="vm-filter-toggle"
+            variant="outline"
+            aria-expanded={filtersOpen}
+            aria-controls="vm-more-filters"
+            onClick={() => setFiltersOpen(!filtersOpen)}
+          >
+            <SlidersHorizontal aria-hidden="true" />
+            Filtros{group !== "todos" || day ? " •" : ""}
+          </Button>
+          <div
+            className="vm-members-more-filters"
+            id="vm-more-filters"
+            data-open={filtersOpen}
+          >
+            <label>
+              Grupo e situação
+              <NativeSelect
+                value={group}
+                onChange={(e) => setGroup(e.target.value)}
+              >
+                <option value="todos">Todos os membros</option>
+                <option value="pending">Aprovação pendente</option>
+                <option value="principal">Grupo principal</option>
+                <option value="ativos">Ativos</option>
+                <option value="inativos">Inativos</option>
+                <option value="bloqueados">Bloqueados</option>
+                <option value="rejected">Não aprovados</option>
+              </NativeSelect>
+            </label>
+            <label>
+              Dia preferido
+              <NativeSelect
+                value={day}
+                onChange={(e) => setDay(e.target.value)}
+              >
+                <option value="">Qualquer dia</option>
+                {WEEKDAY_LABELS.map((label, i) => (
+                  <option key={label} value={String(i)}>
+                    {label}
+                  </option>
+                ))}
+              </NativeSelect>
+            </label>
+            <label>
+              Ordenar por
+              <NativeSelect
+                value={`${sortBy}:${order}`}
+                onChange={(e) => {
+                  const [column, direction] = e.target.value.split(":");
+                  setSortBy(column as SortColumn);
+                  setOrder(direction);
+                }}
+              >
+                {sortColumns.map(({ key, label }) => [
+                  <option key={`${key}:asc`} value={`${key}:asc`}>
+                    {label} · {key === "phone" ? "crescente" : "A–Z"}
+                  </option>,
+                  <option key={`${key}:desc`} value={`${key}:desc`}>
+                    {label} · {key === "phone" ? "decrescente" : "Z–A"}
+                  </option>,
+                ])}
+              </NativeSelect>
+            </label>
+          </div>
         </div>
         <div className="vm-members-results">
           <p role="status">
@@ -389,6 +411,7 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
                     <div>
                       <Link href={`/admin/volei/membros/${m.id}`}>
                         {m.name}
+                        <LinkPending />
                       </Link>
                       <small
                         className={`vp-member-age${(ageOn(m.birth_date) ?? 18) < 18 ? " is-minor" : ""}`}
@@ -448,6 +471,7 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
                     >
                       <Pencil aria-hidden="true" />
                       Editar
+                      <LinkPending />
                     </Link>
                   </Button>
                 </TableCell>
