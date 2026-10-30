@@ -5,6 +5,7 @@ import { navigationItems } from "@/data/navigation";
 const projectLinks = [
   { href: "/escalas", label: "Escalas da congregação" },
   { href: "/nutrigo/privacy-policy", label: "Privacidade do NutriGo" },
+  { href: "/volei", label: "Volei" }
 ];
 
 export function SiteFooter() {
