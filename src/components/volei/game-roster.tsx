@@ -47,7 +47,7 @@ export function GameRoster({ game }: { game: Game }) {
   const selected =
     tab === "confirmed" ? confirmed : tab === "waiting" ? waiting : guests;
   return (
-    <section className="volley-card game-roster">
+    <section className="volley-card game-roster" id="lista-do-dia">
       <header className="game-roster-heading">
         <div>
           <span className="game-kicker">O GRUPO EM TEMPO REAL</span>

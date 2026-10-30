@@ -11,18 +11,18 @@
   width: 100%;
   font-size: 13px;
   line-height: 1.7;
-  color: #718369;
+  color: var(--vm-component-muted, #718369);
 }
 .gate-sheet {
-  background: #fff;
-  color: #182019;
-  border: 1px solid #dde6d6;
+  background: var(--vm-component-surface, #fff);
+  color: var(--vm-component-ink, #182019);
+  border: 1px solid var(--vm-component-line, #dde6d6);
   padding: 32px;
   border-radius: 12px;
 }
 .gate-sheet header {
   padding-bottom: 20px;
-  border-bottom: 2px solid #233c2b;
+  border-bottom: 2px solid var(--vm-component-line, #233c2b);
 }
 .gate-sheet header > span {
   font-size: 11px;
@@ -48,7 +48,7 @@
 }
 .gate-sheet th,
 .gate-sheet td {
-  border: 1px solid #c6cec0;
+  border: 1px solid var(--vm-component-line, #c6cec0);
   padding: 10px;
   text-align: left;
   overflow-wrap: anywhere;

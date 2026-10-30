@@ -67,12 +67,9 @@ export default async function Page({
         <div className="game-event-intro">
           <span className="game-event-label">
             <span />
-            ENCONTRO DO GRUPO
+            LISTA DO DIA
           </span>
-          <h1>
-            {event.title}
-            <span>Todo mundo na quadra.</span>
-          </h1>
+          <h1>{event.title}</h1>
           <div className="game-event-details">
             <span>
               <VolleyIcon name="clock" />
@@ -86,7 +83,12 @@ export default async function Page({
               </span>
             )}
           </div>
-          {event.notes && <p className="game-event-notes">{event.notes}</p>}
+          {event.notes && (
+            <details className="vx-event-notes">
+              <summary>Orientações do encontro</summary>
+              <p className="game-event-notes">{event.notes}</p>
+            </details>
+          )}
         </div>
         <div className="game-deadline-box">
           <span className={`game-open-badge ${!open ? "is-closed" : ""}`}>
@@ -126,6 +128,14 @@ export default async function Page({
           {event.max_teams ?? 3} times de 6 jogadores
         </span>
       </div>
+      <nav className="vx-event-jumps" aria-label="Acessos do encontro">
+        <a href="#minha-presenca">
+          Minha presença <span>↗</span>
+        </a>
+        <a href="#lista-do-dia">
+          Lista de participantes <strong>{confirmed}</strong>
+        </a>
+      </nav>
       <div className="game-page-grid">
         <GameResponse
           eventId={id}

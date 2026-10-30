@@ -60,7 +60,8 @@ export function NotificationBell() {
         <Button
           type="button"
           variant="ghost"
-          className="vn-bell"
+          className="vn-bell volley-header-icon"
+          title="Notificações"
           aria-label={
             summary ? `Notificações: ${total} pendências` : "Notificações"
           }

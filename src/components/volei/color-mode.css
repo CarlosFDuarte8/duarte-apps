@@ -1,0 +1,193 @@
+/* Shared appearance tokens also reach dialogs and menus rendered in portals. */
+:root:has(.volley-app) {
+  --vm-surface: #fff;
+  --vm-page: #fafafa;
+  --vm-subtle: #edf4fb;
+  --vm-line: #e5e5e5;
+  --vm-ink: #001f3b;
+  --vm-muted: #737373;
+  --vm-accent: #00498c;
+  --vm-hover: #edf4fb;
+}
+:root[data-volley-theme="dark"]:has(.volley-app) {
+  color-scheme: dark;
+  --vm-surface: #10273b;
+  --vm-page: #071725;
+  --vm-subtle: #17344d;
+  --vm-line: #ffffff1a;
+  --vm-ink: #fafafa;
+  --vm-muted: #b0bdcc;
+  --vm-accent: #83a3d5;
+  --vm-hover: #003668;
+  --ui-background: var(--vm-surface);
+  --ui-foreground: var(--vm-ink);
+  --ui-primary: var(--vm-accent);
+  --color-muted-foreground: var(--vm-muted);
+  --color-border: var(--vm-line);
+  --color-input: var(--vm-line);
+  --color-ring: #83a3d5;
+  --color-popover: var(--vm-surface);
+  --color-popover-foreground: var(--vm-ink);
+  --vm-component-surface: var(--vm-surface);
+  --vm-component-subtle: var(--vm-subtle);
+  --vm-component-ink: var(--vm-ink);
+  --vm-component-muted: var(--vm-muted);
+  --vm-component-line: var(--vm-line);
+  --vm-component-success-surface: #123b30;
+  --vm-component-success-ink: #a7e7c0;
+  --vm-component-success-line: #356b52;
+  --vm-component-warning-surface: #3a2d19;
+  --vm-component-warning-ink: #f4d399;
+  --vm-component-warning-line: #756039;
+  --vm-component-danger-surface: #42272e;
+  --vm-component-danger-ink: #ffb9bb;
+  --vm-component-danger-line: #80505b;
+}
+.volley-app .vn-header-actions :is(.volley-header-icon, .vn-bell) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--vm-muted) !important;
+  box-shadow: none;
+  text-decoration: none;
+}
+.volley-app .vn-header-actions :is(.volley-header-icon, .vn-bell):is(:hover, [data-state="open"]) {
+  background: var(--vm-hover);
+  color: var(--vm-accent) !important;
+}
+.volley-header-icon > svg { width: 18px; height: 18px; }
+.volley-app .volley-theme-toggle > svg { color: #d97706; }
+:root[data-volley-theme="dark"] .volley-theme-toggle > svg { color: #a5b4fc; }
+.volley-theme-menu {
+  z-index: 100;
+  width: 208px;
+  padding: 6px;
+  background: var(--vm-surface);
+  color: var(--vm-ink);
+  border: 1px solid var(--vm-line);
+  border-radius: 12px;
+  box-shadow: 0 12px 36px #001f3b26;
+  font: 14px/1.5 var(--font-geist-sans, Arial), sans-serif;
+}
+.volley-theme-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+}
+.volley-theme-option[data-highlighted] { background: var(--vm-hover); }
+.volley-theme-option > span:first-of-type { flex: 1; }
+.volley-theme-option svg { width: 16px; height: 16px; }
+.volley-theme-option[data-state="checked"] { color: var(--vm-accent); }
+.volley-theme-option[data-state="checked"] > span:last-child { display: flex; }
+body:has(.volley-app) .vn-popover .vn-view-all {
+  background: var(--vm-subtle);
+  color: var(--vm-ink);
+  border-color: var(--vm-line);
+}
+/* The same surfaces apply to the dashboard, member forms and public lists. */
+:root[data-volley-theme="dark"] .volley-app {
+  --vq-ink: var(--vm-ink);
+  --vq-bg: var(--vm-page);
+  --vq-line: var(--vm-line);
+  --vq-muted: var(--vm-muted);
+  background: var(--vm-page);
+  color: var(--vm-ink);
+}
+:root[data-volley-theme="dark"] .volley-app :is(.volley-sidebar, .volley-top, .volley-card, .sc-card, .game-deadline-box, .game-summary-strip, .game-player-list > li, .vm-members-table, .vm-member-filters, .vx-schedule, .vx-date-track > a) {
+  background: var(--vm-surface);
+  border-color: var(--vm-line);
+  color: var(--vm-ink);
+}
+:root[data-volley-theme="dark"] .volley-app :is(h1, h2, h3, .volley-brand, .volley-mobile-brand, .volley-account strong, .vx-desktop-context strong, .vx-row-info h3, .vx-shortcuts strong, .vx-tools h2, .vx-month-summary h2, .vx-how h2, .game-player-list strong, .vm-members-table th, .vm-members-table td, .vp-member-person a) { color: var(--vm-ink); }
+:root[data-volley-theme="dark"] .volley-app :is(.volley-sidebar nav a, .volley-sidebar footer a, .volley-mode, .volley-muted, .vm-hint, .vm-member-summary, .game-event-details > span, .game-privacy-note p, .game-personal-status p, .vx-row-stats strong) { color: var(--vm-muted); }
+:root[data-volley-theme="dark"] .volley-app :is(.volley-sidebar nav a[aria-current], .volley-sidebar nav a:hover, .vx-date-track > a.is-next, .vm-member-metrics > button[aria-pressed="true"], .vm-members-table tbody tr:hover) {
+  background: var(--vm-hover);
+  color: #e4eefc;
+}
+:root[data-volley-theme="dark"] .volley-app :is(input, textarea, select, [data-slot="input"], [data-slot="textarea"], [data-slot="native-select"]) {
+  background: var(--vm-page);
+  border-color: #ffffff26;
+  color: var(--vm-ink);
+}
+:root[data-volley-theme="dark"] .volley-app :is(input, textarea)::placeholder { color: #92a5b9; }
+:root[data-volley-theme="dark"] .volley-app :is([data-slot="button"], .sc-btn, .sc-button) { background: #83a3d5; color: #001f3b !important; border-color: transparent; }
+:root[data-volley-theme="dark"] .volley-app :is([data-slot="button"][data-variant="outline"], [data-slot="button"][data-variant="ghost"], .sc-btn-ghost, .volley-mobile-logout button, .volley-sidebar footer [data-slot="button"]) {
+  background: transparent;
+  border-color: var(--vm-line);
+  color: var(--vm-ink) !important;
+}
+:root[data-volley-theme="dark"] .volley-app [data-slot="button"][data-variant="destructive"] { background: #a43e49; color: white !important; }
+:root[data-volley-theme="dark"] .volley-app :is(.vm-member-metrics > button, .game-roster-filters button, .game-response-card, .vx-event-jumps a) { background: var(--vm-surface); color: var(--vm-ink); border-color: var(--vm-line); }
+:root[data-volley-theme="dark"] body:has(.volley-app) :is(.vn-popover, [data-slot="alert-dialog-content"], .game-dialog, .volley-theme-menu) { background: var(--vm-surface); color: var(--vm-ink); border-color: var(--vm-line); }
+:root[data-volley-theme="dark"] .vn-popover :is(h2, a, strong) { color: var(--vm-ink); }
+:root[data-volley-theme="dark"] .vn-popover :is(p, small, header > span) { color: var(--vm-muted); }
+:root[data-volley-theme="dark"] .vn-popover :is(header, a) { border-color: var(--vm-line); }
+:root[data-volley-theme="dark"] .vn-bell-count { border-color: var(--vm-surface); }
+:root[data-volley-theme="dark"] .volley-app :is(.vx-date-track strong, .vx-month-summary dd, .vx-match-manage > span:last-child, .vx-schedule summary, .vx-agenda-empty strong) { color: var(--vm-accent); }
+:root[data-volley-theme="dark"] .vx-shortcuts > a { border-color: var(--vm-line); }
+:root[data-volley-theme="dark"] .vx-tool-icon { background: var(--vm-subtle); color: var(--vm-accent); }
+:root[data-volley-theme="dark"] .volley-app :is(.vm-members-filters, .vm-members-more-filters, .vm-members-search, .vm-create-fields) { background: var(--vm-surface); border-color: var(--vm-line); color: var(--vm-muted); }
+:root[data-volley-theme="dark"] .volley-app :is(.vm-metrics > div, .vp-photo-picker, .vp-crop-dialog, .game-phone-input, .game-notes, .game-response-card, .vc-roster, .vc-team) { background: var(--vm-surface); border-color: var(--vm-line); color: var(--vm-ink); }
+:root[data-volley-theme="dark"] .volley-app :is(.vm-metrics strong, .game-form label, .game-form h2, .vp-crop-dialog h2) { color: var(--vm-ink); }
+:root[data-volley-theme="dark"] .volley-app :is(.vm-metrics span, .game-form label > small, .vp-crop-dialog > p) { color: var(--vm-muted); }
+:root[data-volley-theme="dark"] .volley-app :is(.vm-members-filters label, .vm-members-results, .vm-muted, .vp-member-age),
+:root[data-volley-theme="dark"] .volley-app .vm-members-table td[data-label]::before { color: var(--vm-muted); }
+:root[data-volley-theme="dark"] .volley-app :is(.vm-members-table, .vm-members-toolbar, .vm-members-filters, .vm-members-table tr, .vm-members-table th, .vm-members-table td) { border-color: var(--vm-line); }
+/* Controls shared with the schedules module remain scoped to volleyball. */
+:root[data-volley-theme="dark"] .volley-app :is(.sc-muted, .sc-page-desc, .sc-field label, .sc-form label, .sc-table th, .sc-table td, .sc-feedback, .sc-empty) { color: var(--vm-muted); }
+:root[data-volley-theme="dark"] .volley-app :is(.sc-table, .sc-table th, .sc-table td, .sc-toolbar, .sc-nav, fieldset, hr) { border-color: var(--vm-line); }
+:root[data-volley-theme="dark"] .volley-app :is(.sc-table th, .sc-empty, .sc-details, .sc-feedback:not(:empty)) { background: var(--vm-subtle); }
+:root[data-volley-theme="dark"] .volley-app [data-slot="badge"] { background: var(--vm-subtle); color: var(--vm-ink); border-color: var(--vm-line); }
+:root[data-volley-theme="dark"] .volley-app :is([data-slot="badge"][data-variant="destructive"], .vm-status-blocked) { background: var(--vm-component-danger-surface); color: var(--vm-component-danger-ink); border-color: var(--vm-component-danger-line); }
+:root[data-volley-theme="dark"] .volley-app .vm-status-pending { background: var(--vm-component-warning-surface); color: var(--vm-component-warning-ink); border-color: var(--vm-component-warning-line); }
+:root[data-volley-theme="dark"] .volley-app [data-slot="checkbox"] { background: var(--vm-page); border-color: #8ca2b9; color: var(--vm-ink); }
+:root[data-volley-theme="dark"] .volley-app [data-slot="checkbox"][data-state="checked"] { background: #83a3d5; color: #001f3b; }
+:root[data-volley-theme="dark"] .volley-app .volley-skeleton { background-image: linear-gradient(100deg, #17344d 25%, #24465f 45%, #17344d 65%); }
+:root[data-volley-theme="dark"] .volley-app :is(.volley-stat, .sc-badge, .sc-badge-muted) { background: var(--vm-subtle); color: var(--vm-ink); }
+:root[data-volley-theme="dark"] .volley-app .volley-stat span { color: var(--vm-muted); }
+:root[data-volley-theme="dark"] .volley-app :is(.volley-error, .sc-badge-danger) { color: var(--vm-component-danger-ink); }
+:root[data-volley-theme="dark"] .volley-app .sc-badge-danger { background: var(--vm-component-danger-surface); }
+:root[data-volley-theme="dark"] body:has(.volley-app) [data-slot="alert-dialog-content"] :is([data-slot="alert-dialog-action"], [data-slot="button"]) { background: #83a3d5; color: #001f3b !important; border-color: var(--vm-line); }
+:root[data-volley-theme="dark"] body:has(.volley-app) [data-slot="alert-dialog-content"] [data-slot="alert-dialog-cancel"] { background: transparent; color: var(--vm-ink) !important; }
+:root[data-volley-theme="dark"] .volley-app .vn-header-actions :is(.volley-header-icon, .vn-bell) { background: transparent; color: var(--vm-muted) !important; border: 0; }
+:root[data-volley-theme="dark"] .volley-app .vn-header-actions :is(.volley-header-icon, .vn-bell):is(:hover, [data-state="open"]) { background: var(--vm-hover); color: var(--vm-accent) !important; }
+@media (max-width: 640px) {
+  .volley-app .vn-header-actions { gap: 2px; }
+  .volley-app .volley-top { gap: 4px; padding-inline: 12px; }
+  .volley-app .volley-mobile-brand { gap: 6px; min-width: 0; font-size: 15px; }
+  .volley-app .volley-mobile-brand small { font-size: 6px; letter-spacing: 0.6px; }
+  .volley-app .volley-mobile-logout button { padding-inline: 8px; }
+}
+@media print {
+  :root[data-volley-theme="dark"]:has(.volley-app) {
+    --vm-component-surface: initial;
+    --vm-component-subtle: initial;
+    --vm-component-ink: initial;
+    --vm-component-muted: initial;
+    --vm-component-line: initial;
+    --vm-component-success-surface: initial;
+    --vm-component-success-ink: initial;
+    --vm-component-success-line: initial;
+    --vm-component-warning-surface: initial;
+    --vm-component-warning-ink: initial;
+    --vm-component-warning-line: initial;
+    --vm-component-danger-surface: initial;
+    --vm-component-danger-ink: initial;
+    --vm-component-danger-line: initial;
+  }
+  :root[data-volley-theme="dark"]:has(.volley-app) { color-scheme: light; --vm-surface: white; --vm-page: white; --vm-subtle: #f5f5f5; --vm-line: #ddd; --vm-ink: black; --vm-muted: #555; }
+  .volley-theme-toggle { display: none !important; }
+}

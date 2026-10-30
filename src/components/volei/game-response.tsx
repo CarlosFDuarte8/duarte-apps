@@ -85,7 +85,7 @@ export function GameResponse({
     });
   }
   return (
-    <section className="volley-card game-signup">
+    <section className="volley-card game-signup" id="minha-presenca">
       <header className="game-section-heading">
         <span className="game-icon-box">
           <VolleyIcon name={participating ? "check" : "phone"} />

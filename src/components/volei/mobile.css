@@ -95,7 +95,7 @@
     display: grid;
     gap: 8px;
     font-size: 12px;
-    color: #506849;
+    color: var(--vm-component-ink, #506849);
   }
   .vm-members-more-filters > label:last-child {
     grid-column: 1/-1;
@@ -202,7 +202,7 @@
   }
 }
 .volley-nav-pending {
-  color: #d5f580;
+  color: var(--vm-component-warning-ink, #d5f580);
 }
 .vm-member-action a,
 .vp-member-person a {

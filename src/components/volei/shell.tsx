@@ -2,14 +2,19 @@
 import Link from "next/link";
 import { LinkPending } from "./link-pending";
 import { ActivityProvider } from "./activity";
+import { CircleHelp, PanelLeft, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { logoutVolei as logout } from "@/app/volei/entrar/actions";
 import { VolleyIcon } from "./volley-icon";
 import { NotificationBell } from "./notification-bell";
+import { ThemeToggle } from "./theme-toggle";
 import "./shell.css";
 import "@/components/ui/shadcn.css";
 import "./mobile.css";
+import "./theme.css";
+import "./color-mode.css";
 export function VoleiShell({
   children,
   admin = false,
@@ -19,6 +24,7 @@ export function VoleiShell({
 }) {
   const path = usePathname();
   const router = useRouter();
+  const [collapsed, setCollapsed] = useState(false);
   useEffect(() => {
     if (path?.includes("lista-presenca") || path?.includes("entrar")) return;
     const timer = window.setInterval(() => {
@@ -46,8 +52,8 @@ export function VoleiShell({
       ] as const);
   return (
     <ActivityProvider>
-      <div className="volley-app">
-        <aside className="volley-sidebar">
+      <div className={`volley-app${collapsed ? " volley-sidebar-collapsed" : ""}`}>
+        <aside className="volley-sidebar" id="volley-navigation">
           <Link
             href={admin ? "/admin/volei" : "/volei"}
             className="volley-brand"
@@ -68,6 +74,7 @@ export function VoleiShell({
                 key={href}
                 href={href}
                 aria-label={label}
+                title={collapsed ? label : undefined}
                 style={{ position: "relative" }}
                 aria-current={
                   path === href ||
@@ -97,16 +104,16 @@ export function VoleiShell({
               </Link>
             ))}
           </nav>
-          <div className="volley-sidebar-note">
-            <strong>Um só grupo. Uma só quadra.</strong>
-            <p>Confira as vagas disponíveis em cada dia de jogo.</p>
-          </div>
           <footer>
+            <div className="volley-account">
+              <span><VolleyIcon name={admin ? "shield" : "ball"} /></span>
+              <div><strong>{admin ? "Administrador" : "Vôlei da galera"}</strong><small>{admin ? "Gestão do grupo" : "Área dos participantes"}</small></div>
+            </div>
             {admin ? (
               <>
                 <Link href="/admin">Sistema de escalas ↗</Link>
                 <form action={logout}>
-                  <button>Sair da conta</button>
+                  <Button variant="outline" type="submit" aria-label="Sair da conta"><LogOut aria-hidden="true" /><span>Sair da conta</span></Button>
                 </form>
               </>
             ) : (
@@ -131,15 +138,22 @@ export function VoleiShell({
                 <small>{admin ? "ADMINISTRATIVO" : "VÔLEI DA GALERA"}</small>
               </span>
             </Link>
-            <span>{admin ? "PAINEL ADMINISTRATIVO" : "ÁREA PÚBLICA"}</span>
+            <div className="vx-desktop-context">
+              <Button variant="ghost" size="icon" onClick={() => setCollapsed(!collapsed)} aria-controls="volley-navigation" aria-expanded={!collapsed} aria-label={collapsed ? "Expandir menu lateral" : "Recolher menu lateral"}><PanelLeft aria-hidden="true" /></Button>
+              <span className="volley-header-divider" />
+              <strong>{path?.includes("notificacoes") ? "Solicitações" : path?.includes("ajuda") ? "Ajuda" : links.find(([href]) => path === href || (href !== "/admin/volei" && href !== "/volei" && path?.startsWith(`${href}/`)))?.[1] ?? (admin ? "Gestão do encontro" : "Jogos e presenças")}</strong>
+            </div>
             <div className="vn-header-actions">
               <Link
                 href={admin ? "/admin/volei/ajuda" : "/volei/ajuda"}
-                className="volley-link"
+                className="volley-help-link volley-header-icon"
+                aria-label="Ajuda e orientações"
+                title="Ajuda e orientações"
               >
-                Ajuda
+                <CircleHelp aria-hidden="true" />
               </Link>
               {admin && <NotificationBell />}
+              <ThemeToggle />
               <span className="volley-tag">● Vôlei</span>
               {admin && (
                 <form action={logout} className="volley-mobile-logout">

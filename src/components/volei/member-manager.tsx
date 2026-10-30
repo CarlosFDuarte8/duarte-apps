@@ -165,11 +165,19 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
   return (
     <>
       <div className="vm-metrics vm-member-metrics">
-        <div>
+        <button
+          type="button"
+          onClick={() => setGroup("todos")}
+          aria-pressed={group === "todos"}
+        >
           <strong>{members.length}</strong>
-          <span>Membros cadastrados</span>
-        </div>
-        <div>
+          <span>Todos</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setGroup("ativos")}
+          aria-pressed={group === "ativos"}
+        >
           <strong>
             {
               members.filter(
@@ -180,12 +188,16 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
               ).length
             }
           </strong>
-          <span>Membros ativos</span>
-        </div>
-        <div>
+          <span>Ativos</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setGroup("principal")}
+          aria-pressed={group === "principal"}
+        >
           <strong>{members.filter((m) => m.is_core).length}</strong>
-          <span>Grupo principal</span>
-        </div>
+          <span>Principais</span>
+        </button>
         <button
           type="button"
           className={pendingCount ? "vm-pending-metric" : ""}
@@ -193,7 +205,7 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
           aria-pressed={group === "pending"}
         >
           <strong>{pendingCount}</strong>
-          <span>Aguardando aprovação</span>
+          <span>Pendentes</span>
         </button>
       </div>
 

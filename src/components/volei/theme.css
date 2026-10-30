@@ -1,0 +1,872 @@
+﻿/* Application shell and shared surfaces; dashboard composition lives in dashboard.css. */
+.volley-app {
+  --vq-brand: #00498c;
+  --vq-ink: #001f3b;
+  --vq-muted: #737373;
+  --vq-line: #e5e5e5;
+  --vq-bg: #fafafa;
+  font-family: var(--font-geist-sans, Arial), sans-serif;
+  color: var(--vq-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.volley-app:not(.vc-game-overlay) {
+  background: var(--vq-bg);
+}
+:root:has(.volley-app) {
+  --ui-primary: #00498c;
+  --ui-foreground: #001f3b;
+  --color-muted-foreground: #737373;
+  --color-border: var(--vm-line);
+  --color-ring: #6a8bb7;
+}
+.volley-app .volley-sidebar {
+  width: 256px;
+  background: var(--vm-surface);
+  border-right: 1px solid var(--vm-line);
+  padding: 32px 18px 20px;
+  gap: 32px;
+  color: var(--vm-muted);
+}
+.volley-app .volley-brand {
+  color: var(--vm-ink);
+  gap: 10px;
+  font-size: 22px;
+  letter-spacing: 0.6px;
+  font-weight: 750;
+  padding-inline: 10px;
+}
+.volley-app .volley-brand > span {
+  background: #00498c;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 8px;
+}
+.volley-app .volley-brand small {
+  color: var(--vm-muted);
+  font-size: 7px;
+  letter-spacing: 1.8px;
+  font-weight: 500;
+}
+.volley-app .volley-mode {
+  font-size: 8px;
+  letter-spacing: 1.6px;
+  color: var(--vm-muted);
+  padding-left: 14px;
+}
+.volley-app .volley-sidebar nav {
+  gap: 7px;
+}
+.volley-app .volley-sidebar nav a {
+  border-radius: 10px;
+  color: var(--vm-muted);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 13px 14px;
+  align-items: center;
+}
+.volley-app .volley-sidebar nav a svg {
+  width: 18px;
+  height: 18px;
+}
+.volley-app .volley-sidebar nav a:hover {
+  background: var(--vm-subtle);
+  color: var(--vm-muted);
+}
+.volley-app .volley-sidebar nav a[aria-current] {
+  background: var(--vm-subtle);
+  color: var(--vm-component-ink, #00498c);
+  box-shadow: none;
+}
+.volley-app .volley-sidebar-note {
+  background: var(--vm-subtle);
+  border: 0;
+  border-radius: 16px;
+  padding: 20px 16px;
+  color: var(--vm-muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+.volley-app .volley-sidebar-note strong {
+  display: block;
+  color: var(--vm-muted);
+  font-size: 13px;
+  font-weight: 550;
+}
+.volley-app .volley-sidebar-note p {
+  margin: 9px 0 0;
+}
+.volley-app .volley-sidebar footer {
+  gap: 14px;
+  padding-inline: 12px;
+  font-size: 10px;
+}
+.volley-app .volley-sidebar footer a,
+.volley-app .volley-sidebar footer button {
+  color: var(--vm-muted);
+}
+.volley-app .volley-top {
+  background: var(--vm-surface);
+  border-color: var(--vm-line);
+  height: 80px;
+  padding-inline: 36px;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.volley-app .vx-desktop-context {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--vm-muted);
+}
+.vx-desktop-context strong {
+  color: var(--vm-muted);
+  font-weight: 550;
+}
+.vx-desktop-context > span {
+  color: var(--vm-muted);
+}
+.volley-app .volley-content {
+  max-width: 1152px;
+  padding: 40px;
+  gap: 24px;
+}
+.volley-app .volley-tag {
+  background: var(--vm-subtle);
+  color: var(--vm-muted);
+  font-size: 10px;
+  border: 1px solid var(--vm-line);
+  padding: 7px 11px;
+}
+.volley-app .volley-help-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--vm-muted);
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 9px;
+  min-height: 44px;
+  font-size: 11px;
+}
+.volley-help-link svg {
+  width: 18px;
+  height: 18px;
+}
+.volley-app .volley-help-link:hover {
+  background: var(--vm-subtle);
+}
+.volley-app .vn-header-actions {
+  gap: 10px;
+}
+.volley-app .volley-mobile-brand {
+  color: #2d415e;
+}
+.volley-app .volley-mobile-brand > svg {
+  background: #263d5c;
+  color: #737373;
+  border-radius: 10px;
+}
+.volley-app .volley-mobile-brand small {
+  color: var(--vm-muted);
+  font-size: 7px;
+}
+.volley-app:not(.vc-game-overlay) .volley-content :is(.volley-card, .sc-card) {
+  border: 1px solid var(--vm-line);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px #273d5a02;
+}
+.volley-app:not(.vc-game-overlay)
+  .volley-content
+  :is(.volley-card, .sc-page-head, .game-event-header, .vm-section-head)
+  :is(h1, h2, h3) {
+  color: var(--vm-ink);
+}
+.volley-app .sc-page-head h1 {
+  font-size: 29px;
+  font-weight: 650;
+  letter-spacing: -0.8px;
+  line-height: 1.25;
+  margin: 8px 0;
+}
+.volley-app .sc-page-head .sc-eyebrow {
+  color: var(--vm-muted);
+  font-size: 9px;
+  letter-spacing: 1.6px;
+  font-weight: 550;
+}
+.volley-app .sc-page-head .sc-page-desc {
+  font-size: 12px;
+  color: var(--vm-muted);
+  line-height: 1.7;
+}
+.volley-app:not(.vc-game-overlay)
+  .volley-content
+  :is(.sc-btn, .sc-button, .volley-link) {
+  background: #00498c;
+  border-color: var(--vm-component-line, #00498c);
+  color: #fff !important;
+  border-radius: 10px;
+  font-size: 12px;
+  box-shadow: none;
+}
+.volley-app:not(.vc-game-overlay)
+  .volley-content
+  :is(.sc-btn-ghost, .sc-button.sc-btn-ghost) {
+  background: var(--vm-surface);
+  border-color: var(--vm-line);
+  color: var(--vm-muted) !important;
+}
+.volley-app:not(.vc-game-overlay) .volley-content .sc-btn-danger {
+  background: #b35c64;
+  border-color: var(--vm-component-line, #b35c64);
+}
+.volley-app:not(.vc-game-overlay) [data-slot="button"] {
+  background: #00498c;
+  color: white !important;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 550;
+}
+.volley-app:not(.vc-game-overlay)
+  [data-slot="button"]:is([data-variant="outline"], [data-variant="ghost"]) {
+  background: var(--vm-surface);
+  border-color: var(--vm-line);
+  color: var(--vm-muted) !important;
+  box-shadow: none;
+}
+.volley-app:not(.vc-game-overlay)
+  [data-slot="button"][data-variant="secondary"] {
+  background: var(--vm-subtle);
+  color: var(--vm-muted) !important;
+}
+.volley-app:not(.vc-game-overlay)
+  [data-slot="button"][data-variant="destructive"] {
+  background: #b2525b;
+}
+.volley-app:not(.vc-game-overlay)
+  :is(
+    [data-slot="input"],
+    [data-slot="textarea"],
+    [data-slot="native-select"]
+  ) {
+  color: var(--vm-muted);
+  background: var(--vm-surface);
+  border-color: var(--vm-line);
+  border-radius: 10px;
+}
+.volley-app:not(.vc-game-overlay)
+  :is(
+    [data-slot="input"],
+    [data-slot="textarea"],
+    [data-slot="native-select"]
+  ):focus-visible {
+  border-color: var(--vm-component-line, #8fa8ce);
+  outline: 3px solid #90addc22;
+}
+.volley-app :focus-visible {
+  outline-color: #7c9fcf;
+}
+.volley-app:not(.vc-game-overlay) [data-slot="checkbox"][data-state="checked"] {
+  background: #4f709c;
+  border-color: var(--vm-component-line, #4f709c);
+}
+.volley-app:not(.vc-game-overlay)
+  :is(
+    .volley-muted,
+    .vm-hint,
+    .vm-member-summary,
+    .game-event-notes,
+    .game-event-details > span,
+    .game-roster-footer,
+    .game-privacy-note p,
+    .game-personal-status p,
+    .vc-help
+  ) {
+  color: var(--vm-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.volley-app:not(.vc-game-overlay)
+  :is(
+    .game-kicker,
+    .game-event-label,
+    .game-section-heading h2,
+    .game-player-list strong,
+    .vm-members-toolbar h2
+  ) {
+  color: var(--vm-component-ink, #4f6689);
+}
+.volley-app:not(.vc-game-overlay)
+  :is(.game-icon-box, .game-avatar, .game-player-avatar, .vp-avatar) {
+  background: var(--vm-component-subtle, #eef3fc);
+  color: var(--vm-muted);
+}
+.volley-app:not(.vc-game-overlay) .game-roster-filters {
+  background: var(--vm-component-surface, #f4f7fc);
+  border-radius: 11px;
+}
+.volley-app:not(.vc-game-overlay) .game-roster-filters button {
+  color: var(--vm-muted);
+}
+.volley-app:not(.vc-game-overlay)
+  .game-roster-filters
+  button[aria-pressed="true"] {
+  color: var(--vm-component-ink, #4e6e9c);
+  border-color: var(--vm-line);
+  box-shadow: 0 2px 5px #28466c05;
+}
+.volley-app:not(.vc-game-overlay)
+  :is(.vm-metrics > div, .vm-member-metrics > button, .vc-metrics > div) {
+  border-color: var(--vm-line);
+  border-radius: 13px;
+}
+.volley-app:not(.vc-game-overlay) :is(.vm-metrics strong, .vc-metrics strong) {
+  color: var(--vm-component-ink, #526d94);
+  font-weight: 600;
+}
+.volley-app:not(.vc-game-overlay) :is(.vm-metrics span, .vc-metrics span) {
+  color: var(--vm-muted);
+}
+.volley-app .vm-member-metrics {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px;
+  min-width: 0;
+  scrollbar-width: thin;
+}
+.volley-app .vm-member-metrics > button {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 110px;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid var(--vm-line);
+  border-radius: 10px;
+  background: var(--vm-surface);
+  font: inherit;
+}
+.volley-app .vm-member-metrics > button strong {
+  margin: 0;
+  font-size: 11px;
+  color: var(--vm-muted);
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--vm-component-subtle, #f2f5fa);
+  letter-spacing: 0;
+}
+.volley-app .vm-member-metrics > button span {
+  font-size: 12px;
+  color: var(--vm-muted);
+}
+.volley-app .vm-member-metrics > button[aria-pressed="true"] {
+  background: #2b466c;
+  border-color: var(--vm-component-line, #2b466c);
+}
+.volley-app .vm-member-metrics > button[aria-pressed="true"] span {
+  color: #f5f8ff;
+}
+.volley-app .vm-member-metrics > button[aria-pressed="true"] strong {
+  background: #405d85;
+  color: var(--vm-component-muted, #c8d7ed);
+}
+.volley-app:not(.vc-game-overlay) .vm-members-filters {
+  background: var(--vm-component-surface, #fafcff);
+  border-color: var(--vm-line);
+}
+.volley-app:not(.vc-game-overlay) .vm-members-table th {
+  font-size: 10px;
+  background: var(--vm-component-surface, #f8faff);
+  color: var(--vm-muted);
+}
+.volley-app:not(.vc-game-overlay) .vm-members-table td {
+  color: var(--vm-muted);
+}
+.volley-app:not(.vc-game-overlay) .vp-member-person a {
+  color: var(--vm-component-muted, #536e96);
+  text-decoration: none;
+  font-weight: 550;
+}
+.volley-app:not(.vc-game-overlay) .vp-member-person a:hover {
+  color: var(--vm-ink);
+}
+.volley-app:not(.vc-game-overlay) .vm-members-table tbody tr {
+  border-color: var(--vm-line);
+}
+.volley-app:not(.vc-game-overlay) .volley-content .vl-day {
+  color: var(--vm-muted) !important;
+  border-color: var(--vm-line);
+}
+.volley-app:not(.vc-game-overlay) .volley-content .vl-day[aria-pressed="true"] {
+  color: #fff !important;
+  background: #5679ab;
+  border-color: var(--vm-component-line, #5679ab);
+}
+.volley-app:not(.vc-game-overlay)
+  .volley-content
+  .vl-day[aria-pressed="true"]
+  small {
+  color: var(--vm-component-muted, #d7e3f6);
+}
+.volley-app .volley-hero {
+  background: #1d304c;
+  border-radius: 20px;
+  padding: 30px;
+  color: #fff;
+}
+.volley-app .volley-hero h1 {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+  color: #fff;
+}
+.volley-app .volley-hero p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #9db3d1;
+}
+.volley-app .volley-eyebrow {
+  color: var(--vm-component-muted, #a5c1e7);
+  font-size: 9px;
+  letter-spacing: 1.8px;
+}
+.volley-operation-loading {
+  background: #283f60;
+  border-color: #3e577a;
+}
+.volley-app .volley-loading {
+  color: var(--vm-muted);
+  border-color: var(--vm-line);
+}
+.volley-app .volley-loading p {
+  color: var(--vm-muted);
+}
+.volley-app .volley-skeleton {
+  background-image: linear-gradient(
+    100deg,
+    #ecf1f8 25%,
+    #f8faff 45%,
+    #ecf1f8 65%
+  );
+}
+.volley-app .volley-nav-pending {
+  background: #2b466ced;
+  color: white;
+}
+body:has(.volley-app)
+  :is(.vn-popover, [data-slot="alert-dialog-content"], .game-dialog) {
+  color: var(--vm-muted);
+  font-family: var(--font-geist-sans, Arial), sans-serif;
+  border-color: var(--vm-line);
+  border-radius: 16px;
+}
+body:has(.volley-app) [data-slot="alert-dialog-content"] [data-slot="button"] {
+  background: #00498c;
+}
+body:has(.volley-app)
+  [data-slot="alert-dialog-content"]
+  [data-slot="alert-dialog-cancel"] {
+  background: var(--vm-surface);
+  color: var(--vm-muted) !important;
+  border-color: var(--vm-line);
+}
+/* Game detail becomes a compact event workspace, with direct access to either task. */
+.volley-app .game-page {
+  gap: 20px;
+}
+.volley-app .game-event-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  background: transparent;
+  border: 0;
+  padding: 6px 0 0;
+  border-radius: 0;
+  gap: 24px;
+}
+.volley-app .game-event-header h1 {
+  color: var(--vm-component-ink, #2b3f5e);
+  font-size: 32px;
+  font-weight: 650;
+  letter-spacing: -1px;
+  margin: 12px 0 16px;
+}
+.volley-app .game-event-label {
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  color: var(--vm-muted);
+}
+.volley-app .game-event-label > span {
+  background: var(--vm-component-subtle, #aacb91);
+}
+.volley-app .game-event-details > span {
+  font-size: 12px;
+  color: var(--vm-muted);
+}
+.volley-app .game-deadline-box {
+  background: var(--vm-surface);
+  border: 1px solid var(--vm-line);
+  border-radius: 14px;
+  padding: 18px 20px;
+  min-width: 200px;
+}
+.volley-app .game-deadline-box > p {
+  margin: 10px 0 0;
+  font-size: 10px;
+  color: var(--vm-muted);
+}
+.volley-app .game-deadline-box > strong {
+  font-size: 27px;
+  color: var(--vm-muted);
+  font-weight: 550;
+}
+.volley-app .game-deadline-box > strong small {
+  display: none;
+}
+.volley-app .game-deadline-box > span:last-child {
+  color: var(--vm-muted);
+  font-size: 10px;
+}
+.volley-app .game-summary-strip {
+  padding: 18px 20px;
+  border-radius: 13px;
+  background: var(--vm-surface);
+  border: 1px solid var(--vm-line);
+  justify-content: space-between;
+  gap: 10px;
+}
+.volley-app .game-summary-strip > span {
+  font-size: 11px;
+  color: var(--vm-muted);
+}
+.volley-app .game-summary-strip strong {
+  color: var(--vm-muted);
+}
+.vx-event-notes {
+  margin-top: 14px;
+}
+.volley-app .vx-event-notes summary {
+  color: var(--vm-muted);
+  font-size: 11px;
+  cursor: pointer;
+  min-height: 36px;
+}
+.vx-event-jumps {
+  display: flex;
+  gap: 8px;
+}
+.vx-event-jumps a {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid var(--vm-line);
+  background: var(--vm-surface);
+  border-radius: 11px;
+  text-decoration: none;
+  color: var(--vm-muted);
+  font-size: 12px;
+}
+.vx-event-jumps a:first-child {
+  color: var(--vm-muted);
+  background: var(--vm-component-subtle, #edf3fd);
+  border-color: var(--vm-line);
+}
+.vx-event-jumps strong {
+  background: var(--vm-subtle);
+  color: var(--vm-muted);
+  font-size: 11px;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-weight: 500;
+}
+#minha-presenca,
+#lista-do-dia {
+  scroll-margin-top: 130px;
+}
+#minha-presenca:target,
+#lista-do-dia:target {
+  border-color: var(--vm-component-line, #afc4e3);
+  box-shadow: 0 0 0 3px #b6ccec22;
+}
+@media (max-width: 1320px) and (min-width: 1025px) {
+  .volley-app .volley-sidebar {
+    width: 190px;
+    padding-inline: 14px;
+  }
+  .volley-app .volley-content {
+    padding-inline: 26px;
+  }
+}
+@media (max-width: 1024px) {
+  .volley-app .volley-sidebar {
+    width: 100%;
+    padding: 0;
+    border: 0;
+  }
+  .volley-app .volley-sidebar nav {
+    background: var(--vm-surface);
+    inset: auto 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    border: 1px solid var(--vm-line);
+    border-radius: 19px;
+    box-shadow: 0 6px 24px #33517d14;
+    min-height: 68px;
+    padding: 6px;
+    gap: 3px;
+  }
+  .volley-app .volley-sidebar nav a {
+    box-shadow: none;
+    padding: 8px 2px;
+    border-radius: 13px;
+    font-size: 10px;
+    color: var(--vm-muted);
+    gap: 5px;
+  }
+  .volley-app .volley-sidebar nav a[aria-current] {
+    background: var(--vm-subtle);
+    color: var(--vm-muted);
+    box-shadow: none;
+  }
+  .volley-app {
+    --volley-nav-height: 96px;
+  }
+  .volley-app .volley-top {
+    height: 64px;
+    min-height: 64px;
+    padding: 8px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(16px);
+    background: #ffffffee;
+  }
+  .volley-app .volley-top > .vx-desktop-context {
+    display: none;
+  }
+  .volley-app .volley-content {
+    padding: 24px 20px 32px;
+  }
+  .volley-app .volley-mobile-logout button {
+    color: var(--vm-muted) !important;
+    border-color: var(--vm-line);
+  }
+  .volley-app .volley-mobile-brand {
+    font-size: 17px;
+    letter-spacing: 1px;
+  }
+  .volley-app .volley-mobile-brand small {
+    font-size: 7px;
+  }
+  .volley-app .vx-event-jumps {
+    position: sticky;
+    top: 76px;
+    z-index: 10;
+    padding-block: 6px;
+    background: #fafafaef;
+    backdrop-filter: blur(12px);
+  }
+}
+@media (max-width: 640px) {
+  .volley-app .volley-content {
+    padding: 24px 16px 28px;
+    gap: 22px;
+  }
+  .volley-app .volley-top {
+    padding-inline: 16px;
+  }
+  .volley-app .vn-header-actions {
+    gap: 2px;
+  }
+  .volley-app .volley-help-link {
+    padding: 8px;
+  }
+  .volley-app .volley-help-link span {
+    display: none;
+  }
+  .volley-app .sc-page-head h1 {
+    font-size: 27px;
+  }
+  .volley-app .sc-page-head .sc-page-desc {
+    font-size: 12px;
+  }
+  .volley-app:not(.vc-game-overlay)
+    :is(
+      [data-slot="input"],
+      [data-slot="textarea"],
+      [data-slot="native-select"]
+    ) {
+    font-size: 16px;
+  }
+  .volley-app .vm-member-metrics > button {
+    min-width: 105px;
+    min-height: 48px;
+    padding: 10px 14px;
+  }
+  .volley-app .vm-member-metrics > button strong {
+    font-size: 11px;
+  }
+  .volley-app .vm-member-metrics > button span {
+    font-size: 12px;
+  }
+  .volley-app .game-event-header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .volley-app .game-event-header h1 {
+    font-size: 28px;
+    margin-block: 10px 14px;
+  }
+  .volley-app .game-deadline-box {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 5px 12px;
+    padding: 14px 16px;
+    align-items: center;
+  }
+  .volley-app .game-deadline-box .game-open-badge {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    font-size: 8px;
+  }
+  .volley-app .game-deadline-box > p {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    font-size: 9px;
+  }
+  .volley-app .game-deadline-box > strong {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 24px;
+    text-align: right;
+  }
+  .volley-app .game-deadline-box > span:last-child {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 10px;
+  }
+  .volley-app .game-summary-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 14px;
+    gap: 10px;
+  }
+  .volley-app .game-summary-strip > span:last-child {
+    grid-column: 1/-1;
+    font-size: 10px;
+  }
+  .vx-event-jumps a {
+    font-size: 11px;
+    padding: 12px;
+    min-height: 48px;
+  }
+}
+@media print {
+  .volley-app {
+    background: var(--vm-surface);
+  }
+  .volley-app .volley-content {
+    padding: 0;
+  }
+  .vx-event-jumps {
+    display: none;
+  }
+}
+.volley-app .volley-sidebar nav a {
+  font-size: 13px;
+}
+@media (max-width: 1024px) {
+  .volley-app .volley-sidebar nav a {
+    font-size: 11px;
+  }
+}
+.volley-app .vn-bell {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  background: var(--vm-surface);
+  color: var(--vm-muted);
+  border: 1px solid var(--vm-line);
+  border-radius: 12px;
+  box-shadow: none;
+  cursor: pointer;
+}
+.volley-app .vn-bell[data-state="open"] {
+  background: var(--vm-subtle);
+  color: var(--vm-component-muted, #5877a2) !important;
+  border-color: var(--vm-component-line, #cfddf1);
+}
+body:has(.volley-app)
+  [data-slot="alert-dialog-content"]
+  :is([data-slot="alert-dialog-action"], [data-slot="alert-dialog-cancel"]) {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 16px;
+  font:
+    550 13px/1.5 var(--font-geist-sans, Arial),
+    sans-serif;
+  border: 1px solid var(--vm-line);
+  border-radius: 10px;
+  cursor: pointer;
+}
+body:has(.volley-app)
+  [data-slot="alert-dialog-content"]
+  [data-slot="alert-dialog-action"] {
+  background: #00498c;
+  color: #fff;
+  border-color: var(--vm-component-line, #00498c);
+}
+
+/* Wheaton Flow shell: neutral surfaces, blue actions and a collapsible workspace. */
+.volley-app .volley-sidebar { background: var(--vm-subtle); padding: 32px 16px 20px; gap: 28px; }
+.volley-app .volley-mode { font-size: 12px; letter-spacing: 0; padding-left: 12px; }
+.volley-app .volley-sidebar nav { gap: 4px; }
+.volley-app .volley-sidebar nav a { min-height: 44px; padding: 10px 12px; font-size: 14px; border-radius: 12px; color: var(--vm-ink); }
+.volley-app .volley-sidebar nav a[aria-current] { background: var(--vm-subtle); color: var(--vm-component-ink, #00498c); }
+.volley-app .volley-sidebar footer { margin-top: auto; padding: 20px 4px 0; border-top: 1px solid var(--vm-line); font-size: 12px; }
+.volley-account { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.volley-account > span { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; background: var(--vm-subtle); color: var(--vm-component-ink, #00498c); }
+.volley-account svg { width: 18px; height: 18px; }
+.volley-account strong, .volley-account small { display: block; }
+.volley-account strong { color: var(--vm-ink); font-size: 14px; font-weight: 500; }
+.volley-account small { color: var(--vm-muted); font-size: 12px; }
+.volley-app .volley-sidebar footer [data-slot="button"] { width: 100%; min-height: 36px; justify-content: flex-start; padding: 8px 12px; background: transparent; border: 1px solid var(--vm-line); border-radius: 8px; color: var(--vm-ink); }
+.volley-header-divider { height: 20px; border-left: 1px solid var(--vm-line); }
+.volley-app .vx-desktop-context { font-size: 14px; gap: 12px; }
+.volley-app .vx-desktop-context strong { color: var(--vm-ink); font-weight: 500; }
+.volley-app .volley-tag { display: none; }
+.volley-app .volley-content :is(.sc-page-head h1, .vx-page-intro h1) { font-size: 36px; color: var(--vm-ink); font-weight: 600; letter-spacing: -1px; }
+.volley-app .volley-content :is(.sc-page-head p, .vx-page-intro p:last-child) { font-size: 16px; color: var(--vm-muted); }
+.volley-app .vx-page-intro .vx-eyebrow { font-size: 12px; font-weight: 500; letter-spacing: 1.8px; }
+@media (min-width: 1025px) {
+  .volley-app.volley-sidebar-collapsed .volley-sidebar { width: 72px; padding-inline: 8px; }
+  .volley-sidebar-collapsed .volley-brand { padding: 0; justify-content: center; }
+  .volley-sidebar-collapsed :is(.volley-brand > div, .volley-mode, .volley-nav-label, .volley-account > div, .volley-sidebar footer > a, .volley-sidebar footer > span, .volley-sidebar footer button > span) { display: none; }
+  .volley-app.volley-sidebar-collapsed .volley-sidebar nav a { justify-content: center; padding: 12px; }
+  .volley-sidebar-collapsed .volley-account { justify-content: center; }
+  .volley-app.volley-sidebar-collapsed .volley-sidebar footer button { justify-content: center; }
+}
+@media (max-width: 1024px) {
+  .volley-app .volley-sidebar { padding: 0; }
+  .volley-app .volley-sidebar footer { display: none; }
+  .volley-app .volley-sidebar nav a { min-height: 56px; padding: 6px 2px; font-size: 11px; }
+  .volley-app .volley-content { padding: 24px 20px calc(var(--volley-nav-height, 96px) + 20px); }
+  .volley-app .volley-content :is(.sc-page-head h1, .vx-page-intro h1) { font-size: 30px; }
+}
+@media (max-width: 640px) {
+  .volley-app .volley-content { padding-inline: 16px; }
+  .volley-app .volley-content :is(.sc-page-head h1, .vx-page-intro h1) { font-size: 28px; }
+  .volley-app .volley-content :is(.sc-page-head p, .vx-page-intro p:last-child) { font-size: 14px; }
+}
