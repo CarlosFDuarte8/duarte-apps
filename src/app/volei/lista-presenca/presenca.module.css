@@ -1,7 +1,7 @@
 .pagina {
   min-height: 100vh;
-  background: #f5f7fb;
-  color: #17233b;
+  background: var(--vm-component-surface, #f5f7fb);
+  color: var(--vm-component-ink, #17233b);
   padding: 40px 20px;
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -27,14 +27,14 @@
 
 .cabecalho p,
 .painelCabecalho p {
-  color: #64748b;
+  color: var(--vm-component-muted, #64748b);
   font-size: 14px;
 }
 
 .subtitulo {
   font-size: 11px;
   font-weight: 700;
-  color: #2563eb;
+  color: var(--vm-component-muted, #2563eb);
   letter-spacing: 1.5px;
 }
 
@@ -83,7 +83,7 @@
   gap: 16px;
   background: white;
   padding: 22px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--vm-component-line, #e2e8f0);
   border-radius: 14px;
   margin-bottom: 20px;
 }
@@ -103,11 +103,11 @@
 .formulario input {
   width: 100%;
   min-width: 0;
-  border: 1px solid #dbe2ea;
+  border: 1px solid var(--vm-component-line, #dbe2ea);
   border-radius: 9px;
   padding: 12px;
   background: white;
-  color: #17233b;
+  color: var(--vm-component-ink, #17233b);
   font-size: 14px;
 }
 
@@ -121,19 +121,19 @@
 .cartao {
   text-align: left;
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--vm-component-line, #e2e8f0);
   border-radius: 13px;
   padding: 20px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  color: #17233b;
+  color: var(--vm-component-ink, #17233b);
 }
 
 .cartao span {
   font-size: 13px;
-  color: #64748b;
+  color: var(--vm-component-muted, #64748b);
 }
 
 .cartao strong {
@@ -141,13 +141,13 @@
 }
 
 .cartaoAtivo {
-  border-color: #2563eb;
+  border-color: var(--vm-component-line, #2563eb);
   box-shadow: 0 0 0 1px #2563eb;
 }
 
 .painel {
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--vm-component-line, #e2e8f0);
   border-radius: 14px;
   padding: 22px;
 }
@@ -177,14 +177,14 @@
 .tabela th {
   text-align: left;
   padding: 14px;
-  background: #f8fafc;
-  color: #64748b;
+  background: var(--vm-component-surface, #f8fafc);
+  color: var(--vm-component-muted, #64748b);
   font-size: 12px;
 }
 
 .tabela td {
   padding: 15px 14px;
-  border-bottom: 1px solid #edf0f5;
+  border-bottom: 1px solid var(--vm-component-line, #edf0f5);
 }
 
 .nome {
@@ -201,24 +201,24 @@
 }
 
 .confirmado {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--vm-component-subtle, #dcfce7);
+  color: var(--vm-component-ink, #166534);
 }
 
 .pendente {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--vm-component-subtle, #fef3c7);
+  color: var(--vm-component-ink, #92400e);
 }
 
 .nao_vai {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--vm-component-subtle, #fee2e2);
+  color: var(--vm-component-ink, #991b1b);
 }
 
 .botaoRemover {
   background: transparent;
   border: none;
-  color: #dc2626;
+  color: var(--vm-component-ink, #dc2626);
   cursor: pointer;
   font-size: 13px;
 }
@@ -226,7 +226,7 @@
 .vazio {
   text-align: center;
   padding: 30px;
-  color: #64748b;
+  color: var(--vm-component-muted, #64748b);
 }
 
 .infoImpressao {
@@ -239,13 +239,13 @@
 
 .infoImpressao span {
   font-size: 12px;
-  color: #64748b;
+  color: var(--vm-component-muted, #64748b);
 }
 
 .folha {
   background: white;
   padding: 40px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--vm-component-line, #e2e8f0);
   border-radius: 8px;
   color: black;
 }
@@ -274,13 +274,13 @@
 
 .tabelaImpressao th,
 .tabelaImpressao td {
-  border: 1px solid #777;
+  border: 1px solid var(--vm-component-line, #777);
   padding: 10px;
   text-align: left;
 }
 
 .tabelaImpressao th {
-  background: #f1f3f5;
+  background: var(--vm-component-subtle, #f1f3f5);
 }
 
 .tabelaImpressao tbody tr {
@@ -421,10 +421,10 @@
 .controles select {
   max-width: 100%;
   padding: 10px;
-  border: 1px solid #dbe2ea;
+  border: 1px solid var(--vm-component-line, #dbe2ea);
   border-radius: 8px;
   background: white;
-  color: #17233b;
+  color: var(--vm-component-ink, #17233b);
 }
 .controles small {
   display: block;
@@ -433,10 +433,10 @@
 .controles td button {
   margin: 5px 2px;
   padding: 6px;
-  border: 1px solid #dbe2ea;
+  border: 1px solid var(--vm-component-line, #dbe2ea);
   border-radius: 6px;
-  background: #f5f7fb;
-  color: #17233b;
+  background: var(--vm-component-surface, #f5f7fb);
+  color: var(--vm-component-ink, #17233b);
   cursor: pointer;
 }
 .controles .resumo {

@@ -8,6 +8,7 @@ import { submitComplaint } from "@/app/volei/complaint-actions";
 import { formatDate } from "@/lib/volei/domain";
 import type { complaintTargets } from "@/lib/volei/complaint-repository";
 import "./notifications.css";
+import { useOperationStatus } from "./activity";
 export function ComplaintForm({
   targets,
 }: {
@@ -21,6 +22,12 @@ export function ComplaintForm({
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
   const [pending, start] = useTransition();
+  useOperationStatus(
+    pending,
+    "Enviando relato…",
+    error,
+    sent ? "Relato enviado." : "",
+  );
   const key = useRef("");
   if (sent)
     return (
@@ -154,7 +161,7 @@ export function ComplaintForm({
           {error}
         </p>
       )}
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" loading={pending} loadingText="Enviando relato…">
         {pending ? "Enviando…" : "Enviar ao responsável"}
       </Button>
     </form>

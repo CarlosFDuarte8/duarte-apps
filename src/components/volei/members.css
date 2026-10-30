@@ -2,8 +2,8 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 .vm-member-metrics > button {
-  border: 1px solid #dfe7d8;
-  background: #fff;
+  border: 1px solid var(--vm-component-line, #dfe7d8);
+  background: var(--vm-component-surface, #fff);
   border-radius: 14px;
   padding: 20px;
   text-align: left;
@@ -12,15 +12,15 @@
 }
 .vm-member-metrics > button:hover,
 .vm-member-metrics > button[aria-pressed="true"] {
-  border-color: #9bb580;
-  background: #f5f9ef;
+  border-color: var(--vm-component-line, #9bb580);
+  background: var(--vm-component-surface, #f5f9ef);
 }
 .vm-member-metrics > .vm-pending-metric {
-  background: #fffaf0;
-  border-color: #eedbb2;
+  background: var(--vm-component-warning-surface, #fffaf0);
+  border-color: var(--vm-component-warning-line, #eedbb2);
 }
 .vm-member-metrics > .vm-pending-metric strong {
-  color: #95691f;
+  color: var(--vm-component-warning-ink, #95691f);
 }
 .volley-app .vm-members-panel {
   padding: 0;
@@ -33,27 +33,27 @@
 }
 .volley-app .vm-members-toolbar h2 {
   font-size: 20px;
-  color: #304e35;
+  color: var(--vm-component-ink, #304e35);
   letter-spacing: -0.4px;
   line-height: 1.3;
 }
 .vm-members-toolbar p {
   margin: 8px 0 0;
   font-size: 13px;
-  color: #76856d;
+  color: var(--vm-component-muted, #76856d);
   line-height: 1.6;
 }
 .vm-create-member {
   margin: 0 24px 24px;
   padding: 20px;
-  border: 1px solid #dce6d4;
+  border: 1px solid var(--vm-component-line, #dce6d4);
   border-radius: 12px;
-  background: #f8faf5;
+  background: var(--vm-component-surface, #f8faf5);
 }
 .vm-create-member h3 {
   margin: 0 0 16px;
   font-size: 16px;
-  color: #385a38;
+  color: var(--vm-component-ink, #385a38);
 }
 .vm-create-fields {
   display: grid;
@@ -68,7 +68,7 @@
   min-width: 0;
   font-size: 12px;
   font-weight: 600;
-  color: #5d7154;
+  color: var(--vm-component-ink, #5d7154);
 }
 .vm-members-filters {
   padding: 20px 24px;
@@ -77,8 +77,8 @@
     minmax(0, 1.5fr) minmax(0, 1.2fr) minmax(0, 1fr)
     minmax(0, 0.85fr);
   gap: 16px;
-  border-block: 1px solid #e7eddf;
-  background: #fbfcf9;
+  border-block: 1px solid var(--vm-component-line, #e7eddf);
+  background: var(--vm-component-surface, #fbfcf9);
 }
 .vm-members-search > span {
   position: relative;
@@ -91,7 +91,7 @@
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  color: #8b9b81;
+  color: var(--vm-component-muted, #8b9b81);
   pointer-events: none;
 }
 .volley-app .vm-members-search input {
@@ -108,7 +108,7 @@
 .vm-members-results p {
   margin: 0;
   font-size: 12px;
-  color: #7b8b70;
+  color: var(--vm-component-muted, #7b8b70);
 }
 .vm-members-table {
   border-collapse: collapse;
@@ -118,8 +118,8 @@
 .vm-members-table th {
   padding: 14px 12px;
   font-size: 11px;
-  color: #7f9074;
-  background: #f6f9f2;
+  color: var(--vm-component-muted, #7f9074);
+  background: var(--vm-component-surface, #f6f9f2);
 }
 .vm-members-table th:nth-child(1) {
   width: 23%;
@@ -142,7 +142,7 @@
 .vm-members-table td {
   padding: 18px 12px;
   font-size: 12px;
-  color: #4c6245;
+  color: var(--vm-component-ink, #4c6245);
   overflow-wrap: anywhere;
 }
 .vm-members-table td:first-child,
@@ -154,13 +154,13 @@
   padding-right: 24px;
 }
 .vm-members-table tbody tr {
-  border-bottom: 1px solid #e9eee3;
+  border-bottom: 1px solid var(--vm-component-line, #e9eee3);
 }
 .vm-members-table thead tr {
-  border-color: #e3eadb;
+  border-color: var(--vm-component-line, #e3eadb);
 }
 .vm-members-table tbody tr:hover {
-  background: #fafcf7;
+  background: var(--vm-component-surface, #fafcf7);
 }
 .volley-app .vm-name-sort {
   display: inline-flex;
@@ -170,7 +170,7 @@
   border: 0;
   background: none;
   padding: 0;
-  color: #4b6742 !important;
+  color: var(--vm-component-ink, #4b6742) !important;
   font: inherit;
   font-weight: 600;
   min-height: 28px;
@@ -183,7 +183,7 @@
 }
 .vm-member-name > a {
   font-size: 13px;
-  color: #34553b;
+  color: var(--vm-component-ink, #34553b);
   text-decoration: none;
   font-weight: 600;
   line-height: 1.5;
@@ -199,7 +199,7 @@
   font-variant-numeric: tabular-nums;
 }
 .vm-muted {
-  color: #84927b;
+  color: var(--vm-component-muted, #84927b);
 }
 .vm-member-statuses {
   display: flex;
@@ -211,9 +211,9 @@
   line-height: 1.5;
 }
 .volley-app .vm-status-pending {
-  background: #fff8e9;
-  color: #94651d;
-  border-color: #eddaaf;
+  background: var(--vm-component-warning-surface, #fff8e9);
+  color: var(--vm-component-warning-ink, #94651d);
+  border-color: var(--vm-component-warning-line, #eddaaf);
 }
 .vm-member-days > span,
 .vm-member-days > small {
@@ -221,7 +221,7 @@
   line-height: 1.7;
 }
 .vm-member-days small {
-  color: #8b997f;
+  color: var(--vm-component-muted, #8b997f);
   font-size: 11px;
   margin-top: 4px;
 }
@@ -241,25 +241,25 @@
   margin: 0 auto 16px;
   width: 32px;
   height: 32px;
-  color: #9cad8e;
+  color: var(--vm-component-muted, #9cad8e);
 }
 .vm-members-empty h3 {
   margin: 0;
-  color: #547047;
+  color: var(--vm-component-ink, #547047);
   font-size: 17px;
 }
 .vm-members-empty p {
-  color: #819276;
+  color: var(--vm-component-muted, #819276);
   line-height: 1.7;
   margin: 12px 0 20px;
 }
 .vm-legacy-import {
-  border: 1px dashed #dce5d4;
+  border: 1px dashed var(--vm-component-line, #dce5d4);
   border-radius: 12px;
   padding: 16px 20px;
 }
 .vm-legacy-import > summary {
-  color: #718365;
+  color: var(--vm-component-muted, #718365);
   font-size: 13px;
   cursor: pointer;
   min-height: 24px;
@@ -272,14 +272,14 @@
 }
 .volley-app .vm-editor-heading {
   margin: 0 0 6px;
-  color: #385a38;
+  color: var(--vm-component-ink, #385a38);
   font-size: 17px;
   letter-spacing: -0.2px;
 }
 .volley-app .vm-status-blocked {
-  background: #fff0ed;
-  border-color: #efcbc3;
-  color: #a44a3b;
+  background: var(--vm-component-danger-surface, #fff0ed);
+  border-color: var(--vm-component-danger-line, #efcbc3);
+  color: var(--vm-component-danger-ink, #a44a3b);
 }
 .vm-member-editor-sections .vm-member-detail-body {
   padding-top: 8px;
@@ -318,12 +318,12 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 14px 16px;
-    border: 1px solid #e0e8d9;
+    border: 1px solid var(--vm-component-line, #e0e8d9);
     border-radius: 12px;
     padding: 18px;
   }
   .vm-members-table tbody tr:last-child {
-    border: 1px solid #e0e8d9;
+    border: 1px solid var(--vm-component-line, #e0e8d9);
   }
   .vm-members-table td,
   .vm-members-table td:first-child,
@@ -337,7 +337,7 @@
     display: block;
     font-size: 10px;
     font-weight: 500;
-    color: #8b9a80;
+    color: var(--vm-component-muted, #8b9a80);
     margin-bottom: 6px;
   }
   .vm-members-table .vm-member-name {
@@ -356,8 +356,8 @@
     height: 36px;
     flex-shrink: 0;
     border-radius: 11px;
-    background: #edf4e7;
-    color: #6e8b56;
+    background: var(--vm-component-subtle, #edf4e7);
+    color: var(--vm-component-muted, #6e8b56);
     font-size: 12px;
     font-weight: 600;
   }

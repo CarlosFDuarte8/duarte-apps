@@ -61,4 +61,19 @@ export const projects: Project[] = [
     privacyPolicyHref: "/nutrigo/privacy-policy",
     image: nutrigoBanner,
   },
+  // Volei project
+  {
+    number: "05",
+    eyebrow: "Esporte • Web",
+    title: "Volei",
+    description: "Plataforma para gerenciamento de times e campeonatos de vôlei, com funcionalidades de agendamento, resultados e estatísticas.",
+    stack: ["Next.js", "React", "Node.js", "PostgreSQL"],
+    tone: "blue",
+    links: [
+      {
+        label: "Acessar",
+        href: "/volei"
+      }
+    ]
+  }
 ];

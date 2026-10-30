@@ -1,7 +1,7 @@
 .pagina {
   min-height: 100vh;
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--vm-component-surface, #f8fafc);
+  color: var(--vm-component-ink, #0f172a);
   padding: 24px 16px 48px;
 }
 .container {
@@ -15,7 +15,7 @@
   margin: 4px 0;
 }
 .topo p {
-  color: #64748b;
+  color: var(--vm-component-muted, #64748b);
   margin: 0;
 }
 .pontos {
@@ -23,21 +23,21 @@
   margin-top: 8px;
   padding: 4px 12px;
   border-radius: 999px;
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: var(--vm-component-subtle, #dbeafe);
+  color: var(--vm-component-ink, #1d4ed8);
   font-weight: 700;
   font-size: 14px;
 }
 .aviso {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #b91c1c;
+  background: var(--vm-component-danger-surface, #fef2f2);
+  border: 1px solid var(--vm-component-danger-line, #fecaca);
+  color: var(--vm-component-danger-ink, #b91c1c);
   border-radius: 12px;
   padding: 14px;
 }
 .cartao {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--vm-component-surface, #fff);
+  border: 1px solid var(--vm-component-line, #e2e8f0);
   border-radius: 14px;
   padding: 18px;
   display: grid;
@@ -58,17 +58,17 @@
   justify-content: space-between;
   gap: 12px;
   padding: 8px 0;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--vm-component-line, #e2e8f0);
 }
 .ranking li:last-child {
   border-bottom: 0;
   padding-bottom: 0;
 }
 .membroAtual {
-  color: #1d4ed8;
+  color: var(--vm-component-ink, #1d4ed8);
 }
 .detalhe {
-  color: #64748b;
+  color: var(--vm-component-muted, #64748b);
   font-size: 14px;
   margin: 0;
 }
@@ -78,8 +78,8 @@
   gap: 10px;
 }
 .botao {
-  border: 2px solid #cbd5e1;
-  background: #fff;
+  border: 2px solid var(--vm-component-line, #cbd5e1);
+  background: var(--vm-component-surface, #fff);
   border-radius: 10px;
   padding: 14px;
   font-weight: 700;
@@ -92,22 +92,22 @@
 }
 .vou[aria-pressed="true"] {
   background: #16a34a;
-  border-color: #16a34a;
+  border-color: var(--vm-component-line, #16a34a);
   color: #fff;
 }
 .naoVou[aria-pressed="true"] {
   background: #dc2626;
-  border-color: #dc2626;
+  border-color: var(--vm-component-line, #dc2626);
   color: #fff;
 }
 .erro {
-  color: #b91c1c;
+  color: var(--vm-component-danger-ink, #b91c1c);
   margin: 8px 0 0;
   font-size: 14px;
 }
 .confirmados summary {
   cursor: pointer;
-  color: #2563eb;
+  color: var(--vm-component-ink, #2563eb);
   font-size: 14px;
 }
 .confirmados ol {
@@ -116,5 +116,5 @@
 }
 .vazio {
   text-align: center;
-  color: #64748b;
+  color: var(--vm-component-muted, #64748b);
 }

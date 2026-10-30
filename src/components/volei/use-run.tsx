@@ -1,6 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useOperationStatus } from "./activity";
 
 type Result = { error: string };
 
@@ -9,12 +10,24 @@ export function useRun() {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState("");
-  function run(action: () => Promise<Result>, after?: () => void) {
+  const [success, setSuccess] = useState("");
+  const [message, setMessage] = useState("Salvando alterações…");
+  useOperationStatus(pending, message, error, success);
+  function run(
+    action: () => Promise<Result>,
+    after?: () => void,
+    pendingMessage = "Salvando alterações…",
+  ) {
+    setError("");
+    setSuccess("");
+    setMessage(pendingMessage);
     start(async () => {
       try {
         const result = await action();
         setError(result.error);
         if (!result.error) {
+          setSuccess("Alterações salvas.");
+          setMessage("Atualizando informações…");
           window.dispatchEvent(new Event("volley-notifications-changed"));
           router.refresh();
           after?.();

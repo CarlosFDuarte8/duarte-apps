@@ -3,8 +3,10 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { respond } from "@/app/volei/[token]/actions";
 import styles from "./publico.module.css";
+import { useOperationStatus } from "./activity";
 
-type Mine = "confirmado" | "nao_vai" | "espera" | "ausente" | "reservado" | undefined;
+type Mine =
+  "confirmado" | "nao_vai" | "espera" | "ausente" | "reservado" | undefined;
 
 export function Presence({
   token,
@@ -22,6 +24,7 @@ export function Presence({
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState("");
+  useOperationStatus(pending, "Atualizando sua presença…", error);
 
   function choose(status: "confirmado" | "nao_vai") {
     start(async () => {

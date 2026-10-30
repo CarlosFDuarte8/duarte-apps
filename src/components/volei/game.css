@@ -4,7 +4,7 @@
   min-width: 0;
 }
 .volley-app .game-back {
-  color: #64776b;
+  color: var(--vm-component-muted, #64776b);
   text-decoration: none;
   font-size: 13px;
   width: fit-content;
@@ -16,10 +16,10 @@
   justify-content: space-between;
   gap: 32px;
   padding: 32px;
-  border: 1px solid #dce5dc;
+  border: 1px solid var(--vm-component-line, #dce5dc);
   border-radius: 20px;
   background:
-    radial-gradient(ellipse at top right, #edf4e4, transparent 60%), #fff;
+    radial-gradient(ellipse at top right, var(--vm-component-subtle, #edf4e4), transparent 60%), var(--vm-component-surface, #fff);
 }
 .game-event-intro {
   min-width: 0;
@@ -31,7 +31,7 @@
   font-size: 10px;
   font-weight: 750;
   letter-spacing: 1.8px;
-  color: #597447;
+  color: var(--vm-component-ink, #597447);
 }
 .game-event-label > span,
 .game-open-badge > span,
@@ -50,11 +50,11 @@
   letter-spacing: -1.5px;
   line-height: 1.15;
   margin: 16px 0 22px;
-  color: #203c2e;
+  color: var(--vm-component-ink, #203c2e);
 }
 .game-event-header h1 > span {
   display: block;
-  color: #8a998c;
+  color: var(--vm-component-muted, #8a998c);
   font-size: 0.63em;
   font-weight: 450;
   letter-spacing: -0.6px;
@@ -69,7 +69,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #66786a;
+  color: var(--vm-component-muted, #66786a);
   font-size: 13px;
 }
 .game-event-details svg {
@@ -79,13 +79,13 @@
 }
 .game-event-notes {
   margin: 16px 0 0;
-  color: #6f7c71;
+  color: var(--vm-component-muted, #6f7c71);
   font-size: 13px;
   max-width: 560px;
   line-height: 1.7;
 }
 .game-deadline-box {
-  border-left: 1px solid #dce5d3;
+  border-left: 1px solid var(--vm-component-line, #dce5d3);
   padding-left: 30px;
   flex-shrink: 0;
   min-width: 220px;
@@ -94,31 +94,31 @@
   display: inline-flex;
   gap: 6px;
   align-items: center;
-  border: 1px solid #ccddba;
-  color: #4f752e;
+  border: 1px solid var(--vm-component-success-line, #ccddba);
+  color: var(--vm-component-success-ink, #4f752e);
   border-radius: 6px;
-  background: #f1f7e9;
+  background: var(--vm-component-success-surface, #f1f7e9);
   padding: 7px 9px;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.7px;
 }
 .game-open-badge.is-closed {
-  color: #7b7463;
-  border-color: #dedbd2;
-  background: #f3f1ec;
+  color: var(--vm-component-muted, #7b7463);
+  border-color: var(--vm-component-line, #dedbd2);
+  background: var(--vm-component-subtle, #f3f1ec);
 }
 .game-open-badge.is-closed > span {
   background: #a39c88;
 }
 .game-deadline-box > p {
   font-size: 12px;
-  color: #758270;
+  color: var(--vm-component-muted, #758270);
   margin: 18px 0 4px;
 }
 .game-deadline-box > strong {
   display: block;
-  color: #2b4432;
+  color: var(--vm-component-ink, #2b4432);
   font-size: 36px;
   font-weight: 650;
   letter-spacing: -1px;
@@ -129,12 +129,12 @@
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0;
-  color: #8a9684;
+  color: var(--vm-component-muted, #8a9684);
   margin: 6px 0 12px;
 }
 .game-deadline-box > span:last-child {
   font-size: 11px;
-  color: #67785e;
+  color: var(--vm-component-muted, #67785e);
 }
 .game-summary-strip {
   display: flex;
@@ -146,16 +146,16 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #758071;
+  color: var(--vm-component-muted, #758071);
   font-size: 12px;
 }
 .game-summary-strip svg {
   width: 16px;
   height: 16px;
-  color: #8c9e81;
+  color: var(--vm-component-muted, #8c9e81);
 }
 .game-summary-strip strong {
-  color: #294433;
+  color: var(--vm-component-ink, #294433);
   font-weight: 700;
 }
 .game-page-grid {
@@ -169,7 +169,7 @@
   padding: 28px;
   border-radius: 18px;
   gap: 22px;
-  border-color: #dfe6dd;
+  border-color: var(--vm-component-line, #dfe6dd);
   box-shadow: 0 3px 12px #17322003;
 }
 .game-section-heading,
@@ -182,11 +182,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #eef4e8;
-  color: #6b8b45;
+  background: var(--vm-component-subtle, #eef4e8);
+  color: var(--vm-component-muted, #6b8b45);
   width: 42px;
   height: 42px;
-  border: 1px solid #e2ebd8;
+  border: 1px solid var(--vm-component-line, #e2ebd8);
   border-radius: 12px;
   flex-shrink: 0;
 }
@@ -195,7 +195,7 @@
   font-size: 9px;
   letter-spacing: 1.4px;
   font-weight: 700;
-  color: #8d9a85;
+  color: var(--vm-component-muted, #8d9a85);
   margin-bottom: 7px;
 }
 .volley-app .game-section-heading h2,
@@ -204,13 +204,13 @@
   margin: 0;
   letter-spacing: -0.4px;
   font-weight: 700;
-  color: #294131;
+  color: var(--vm-component-ink, #294131);
 }
 .game-description {
   margin: 0;
   font-size: 13px;
   line-height: 1.7;
-  color: #83907e;
+  color: var(--vm-component-muted, #83907e);
 }
 .game-form {
   display: grid;
@@ -221,10 +221,10 @@
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: #4f6150;
+  color: var(--vm-component-ink, #4f6150);
 }
 .game-required {
-  color: #a1af97;
+  color: var(--vm-component-muted, #a1af97);
   margin-left: 3px;
 }
 .volley-app .game-form input {
@@ -233,29 +233,29 @@
   min-width: 0;
   max-width: 100%;
   height: 48px;
-  border: 1px solid #dce4d8;
+  border: 1px solid var(--vm-component-line, #dce4d8);
   border-radius: 9px;
-  background: #fcfdfb;
+  background: var(--vm-component-surface, #fcfdfb);
   padding: 12px 14px;
   font-size: 14px;
   font-weight: 400;
   margin-top: 9px;
-  color: #253f2e;
+  color: var(--vm-component-ink, #253f2e);
   box-shadow: 0 1px 2px #0f2d1403;
 }
 .volley-app .game-form input::placeholder {
-  color: #a5afa0;
+  color: var(--vm-component-muted, #a5afa0);
 }
 .volley-app .game-form input:focus {
-  outline: 3px solid #dff0ca;
-  border-color: #8db461;
+  outline: 3px solid var(--vm-component-line, #dff0ca);
+  border-color: var(--vm-component-line, #8db461);
   outline-offset: 1px;
-  background: white;
+  background: var(--vm-component-surface, white);
 }
 .game-form label > small {
   display: block;
   margin-top: 8px;
-  color: #9aa392;
+  color: var(--vm-component-muted, #9aa392);
   font-size: 10px;
   font-weight: 400;
   line-height: 1.6;
@@ -263,18 +263,18 @@
 .game-phone-input {
   display: flex;
   align-items: center;
-  border: 1px solid #dce4d8;
+  border: 1px solid var(--vm-component-line, #dce4d8);
   border-radius: 9px;
-  background: #fcfdfb;
+  background: var(--vm-component-surface, #fcfdfb);
   margin-top: 9px;
   min-width: 0;
 }
 .game-phone-input > span {
-  color: #71836a;
+  color: var(--vm-component-muted, #71836a);
   font-size: 11px;
   font-weight: 600;
   padding: 0 12px;
-  border-right: 1px solid #e0e7da;
+  border-right: 1px solid var(--vm-component-line, #e0e7da);
   white-space: nowrap;
 }
 .volley-app .game-phone-input input {
@@ -288,9 +288,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid #e0e7dc;
+  border: 1px solid var(--vm-component-line, #e0e7dc);
   border-radius: 10px;
-  background: #f9fbf6;
+  background: var(--vm-component-surface, #f9fbf6);
   padding: 14px;
   cursor: pointer;
 }
@@ -315,12 +315,12 @@
   display: block;
   font-size: 10px;
   font-weight: 400;
-  color: #9aa48f;
+  color: var(--vm-component-muted, #9aa48f);
   margin-top: 4px;
   line-height: 1.5;
 }
 .game-checkbox > svg {
-  color: #91a27e;
+  color: var(--vm-component-muted, #91a27e);
   width: 16px;
   height: 16px;
   flex-shrink: 0;
@@ -329,7 +329,7 @@
   display: grid;
   gap: 16px;
   padding: 16px;
-  border: 1px dashed #d8e2ca;
+  border: 1px dashed var(--vm-component-warning-line, #d8e2ca);
   border-radius: 10px;
 }
 .volley-app .game-primary,
@@ -371,12 +371,12 @@
   height: 17px;
 }
 .volley-app .game-secondary {
-  color: #4d6843 !important;
-  background: #f5f8f1;
-  border-color: #d9e4cd;
+  color: var(--vm-component-ink, #4d6843) !important;
+  background: var(--vm-component-surface, #f5f8f1);
+  border-color: var(--vm-component-line, #d9e4cd);
 }
 .volley-app .game-secondary:hover:not(:disabled) {
-  background: #eaf1e1;
+  background: var(--vm-component-subtle, #eaf1e1);
 }
 .volley-app .game-primary:disabled,
 .volley-app .game-secondary:disabled {
@@ -397,23 +397,23 @@
   flex-shrink: 0;
   width: 14px;
   height: 14px;
-  color: #9eab93;
+  color: var(--vm-component-muted, #9eab93);
   margin-top: 2px;
 }
 .game-privacy-note p {
   font-size: 10px;
   line-height: 1.7;
-  color: #98a28f;
+  color: var(--vm-component-muted, #98a28f);
   margin: 0;
 }
 .game-notice {
   display: flex;
   gap: 10px;
-  border: 1px solid #dce5d5;
+  border: 1px solid var(--vm-component-line, #dce5d5);
   border-radius: 10px;
   padding: 13px;
-  background: #f5f8ef;
-  color: #748765;
+  background: var(--vm-component-surface, #f5f8ef);
+  color: var(--vm-component-muted, #748765);
 }
 .game-notice svg {
   flex-shrink: 0;
@@ -427,24 +427,24 @@
   line-height: 1.7;
 }
 .game-notice strong {
-  color: #647948;
+  color: var(--vm-component-muted, #647948);
   font-weight: 650;
 }
 .game-notice.is-warning {
-  background: #fdfaf0;
-  border-color: #eee4c7;
-  color: #9b895d;
+  background: var(--vm-component-warning-surface, #fdfaf0);
+  border-color: var(--vm-component-warning-line, #eee4c7);
+  color: var(--vm-component-warning-ink, #9b895d);
 }
 .game-notice.is-warning strong {
-  color: #8a7241;
+  color: var(--vm-component-warning-ink, #8a7241);
 }
 .game-identity {
   display: flex;
   gap: 10px;
   align-items: center;
-  background: #f9fbf7;
+  background: var(--vm-component-surface, #f9fbf7);
   padding: 14px;
-  border: 1px solid #e7ece3;
+  border: 1px solid var(--vm-component-line, #e7ece3);
   border-radius: 11px;
   min-width: 0;
   flex-wrap: wrap;
@@ -455,8 +455,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #e6eddf;
-  color: #6b8256;
+  background: var(--vm-component-subtle, #e6eddf);
+  color: var(--vm-component-muted, #6b8256);
   width: 38px;
   height: 38px;
   font-size: 12px;
@@ -470,13 +470,13 @@
 .game-identity strong {
   display: block;
   font-size: 13px;
-  color: #3a523d;
+  color: var(--vm-component-ink, #3a523d);
 }
 .game-identity > div > span {
   display: flex;
   gap: 5px;
   font-size: 11px;
-  color: #8f9c85;
+  color: var(--vm-component-muted, #8f9c85);
   margin-top: 5px;
   align-items: center;
 }
@@ -486,7 +486,7 @@
 }
 .game-device-badge {
   font-size: 9px;
-  color: #74905a;
+  color: var(--vm-component-muted, #74905a);
   display: flex;
   align-items: center;
   gap: 5px;
@@ -496,9 +496,9 @@
   align-items: flex-start;
   gap: 10px;
   padding: 14px;
-  background: #f0f7e9;
+  background: var(--vm-component-subtle, #f0f7e9);
   border-radius: 10px;
-  border: 1px solid #dceace;
+  border: 1px solid var(--vm-component-line, #dceace);
 }
 .game-personal-status > span {
   margin-top: 5px;
@@ -506,24 +506,24 @@
 .game-personal-status strong {
   display: block;
   font-size: 13px;
-  color: #527535;
+  color: var(--vm-component-ink, #527535);
 }
 .game-personal-status p {
   font-size: 11px;
   line-height: 1.7;
-  color: #8a9b7e;
+  color: var(--vm-component-muted, #8a9b7e);
   margin: 5px 0 0;
 }
 .game-personal-status.is-waiting {
-  background: #fcf8eb;
-  border-color: #eee2c3;
+  background: var(--vm-component-warning-surface, #fcf8eb);
+  border-color: var(--vm-component-warning-line, #eee2c3);
 }
 .game-personal-status.is-waiting strong {
-  color: #947838;
+  color: var(--vm-component-warning-ink, #947838);
 }
 .game-divider {
   height: 1px;
-  background: #edf0e8;
+  background: var(--vm-component-subtle, #edf0e8);
 }
 .game-guest-heading {
   display: flex;
@@ -537,7 +537,7 @@
 }
 .game-guest-heading > span {
   font-size: 10px;
-  color: #9ba68e;
+  color: var(--vm-component-warning-ink, #9ba68e);
 }
 .game-guest-entry {
   display: flex;
@@ -557,44 +557,44 @@
   display: block;
   font-size: 10px;
   margin-top: 5px;
-  color: #a09166;
+  color: var(--vm-component-warning-ink, #a09166);
   line-height: 1.6;
 }
 .volley-app .game-text-button,
 .volley-app .game-cancel-button {
   background: transparent;
   border: 0;
-  color: #9c6c64 !important;
+  color: var(--vm-component-danger-ink, #9c6c64) !important;
   font-size: 11px;
   font-weight: 500;
   padding: 7px;
 }
 .volley-app .game-cancel-button {
-  border-top: 1px solid #edf0e8;
+  border-top: 1px solid var(--vm-component-danger-line, #edf0e8);
   border-radius: 0;
   padding-top: 18px;
 }
 .game-feedback {
   margin: 0;
   padding: 12px;
-  background: #eff6e8;
-  border: 1px solid #d6e5c9;
+  background: var(--vm-component-subtle, #eff6e8);
+  border: 1px solid var(--vm-component-line, #d6e5c9);
   border-radius: 9px;
-  color: #56763b;
+  color: var(--vm-component-ink, #56763b);
   font-size: 12px;
   line-height: 1.7;
 }
 .game-feedback.is-error {
-  background: #fdf1ef;
-  border-color: #f0d8d3;
-  color: #a14d41;
+  background: var(--vm-component-danger-surface, #fdf1ef);
+  border-color: var(--vm-component-danger-line, #f0d8d3);
+  color: var(--vm-component-danger-ink, #a14d41);
 }
 .game-dialog {
-  border: 1px solid #dce5d5;
+  border: 1px solid var(--vm-component-line, #dce5d5);
   border-radius: 18px;
   padding: 28px;
-  background: white;
-  color: #304532;
+  background: var(--vm-component-surface, white);
+  color: var(--vm-component-ink, #304532);
   width: min(440px, calc(100vw - 32px));
   max-height: calc(100dvh - 48px);
   overflow-y: auto;
@@ -612,7 +612,7 @@
 .game-dialog p {
   font-size: 13px;
   line-height: 1.8;
-  color: #7c8975;
+  color: var(--vm-component-muted, #7c8975);
 }
 .game-dialog-actions {
   display: grid;
@@ -628,7 +628,7 @@
   gap: 5px;
   font-size: 9px;
   white-space: nowrap;
-  color: #8da17b;
+  color: var(--vm-component-muted, #8da17b);
 }
 .game-live > span {
   width: 5px;
@@ -643,16 +643,16 @@
 .game-capacity strong {
   font-size: 19px;
   font-weight: 700;
-  color: #365137;
+  color: var(--vm-component-ink, #365137);
 }
 .game-capacity strong > span {
   font-weight: 400;
   font-size: 11px;
-  color: #96a08e;
+  color: var(--vm-component-muted, #96a08e);
 }
 .game-capacity > div > span {
   font-size: 11px;
-  color: #7a9461;
+  color: var(--vm-component-muted, #7a9461);
 }
 .game-capacity progress {
   display: block;
@@ -663,37 +663,37 @@
   margin: 12px 0 9px;
   border-radius: 10px;
   overflow: hidden;
-  background: #eef2e9;
+  background: var(--vm-component-subtle, #eef2e9);
 }
 .game-capacity progress::-webkit-progress-bar {
-  background: #eef2e9;
+  background: var(--vm-component-subtle, #eef2e9);
   border-radius: 10px;
 }
 .game-capacity progress::-webkit-progress-value {
-  background: #9fbd78;
+  background: var(--vm-component-subtle, #9fbd78);
   border-radius: 10px;
 }
 .game-capacity progress::-moz-progress-bar {
-  background: #9fbd78;
+  background: var(--vm-component-subtle, #9fbd78);
   border-radius: 10px;
 }
 .game-capacity > small {
   font-size: 10px;
-  color: #a1ab97;
+  color: var(--vm-component-muted, #a1ab97);
 }
 .game-roster-filters {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border: 1px solid #e6ecdf;
+  border: 1px solid var(--vm-component-line, #e6ecdf);
   padding: 4px;
   border-radius: 10px;
   gap: 3px;
-  background: #f6f8f3;
+  background: var(--vm-component-surface, #f6f8f3);
 }
 .volley-app .game-roster-filters button {
   background: transparent;
   border: 1px solid transparent;
-  color: #8d9c80;
+  color: var(--vm-component-muted, #8d9c80);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -705,16 +705,16 @@
   font-weight: 500;
 }
 .volley-app .game-roster-filters button[aria-pressed="true"] {
-  background: white;
-  border-color: #dfe8d4;
-  color: #526c39;
+  background: var(--vm-component-surface, white);
+  border-color: var(--vm-component-line, #dfe8d4);
+  color: var(--vm-component-ink, #526c39);
   box-shadow: 0 1px 3px #203f1710;
   font-weight: 650;
 }
 .game-roster-filters button > span {
   font-size: 9px;
-  background: #edf2e6;
-  color: #8b9f72;
+  background: var(--vm-component-subtle, #edf2e6);
+  color: var(--vm-component-muted, #8b9f72);
   min-width: 17px;
   padding: 2px 3px;
   border-radius: 4px;
@@ -732,14 +732,14 @@
   gap: 11px;
   align-items: center;
   padding: 13px 0;
-  border-bottom: 1px solid #f0f3eb;
+  border-bottom: 1px solid var(--vm-component-line, #f0f3eb);
 }
 .game-player-list li:last-child {
   border: 0;
 }
 .game-player-position {
   font-size: 10px;
-  color: #b1baa9;
+  color: var(--vm-component-muted, #b1baa9);
   width: 18px;
   flex-shrink: 0;
 }
@@ -755,11 +755,11 @@
 .game-player-list strong {
   font-size: 12px;
   font-weight: 550;
-  color: #576c4d;
+  color: var(--vm-component-ink, #576c4d);
   display: block;
 }
 .game-player-list small {
-  color: #a8b39b;
+  color: var(--vm-component-muted, #a8b39b);
   font-size: 9px;
   display: block;
   margin-top: 4px;
@@ -770,10 +770,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #e5eed9;
+  border: 1px solid var(--vm-component-line, #e5eed9);
   border-radius: 50%;
-  color: #88a65f;
-  background: #f7faf2;
+  color: var(--vm-component-muted, #88a65f);
+  background: var(--vm-component-surface, #f7faf2);
   flex-shrink: 0;
 }
 .game-player-mark svg {
@@ -781,9 +781,9 @@
   height: 12px;
 }
 .game-player-mark.is-waiting {
-  color: #ad9561;
-  border-color: #f1e6cf;
-  background: #fdfaf2;
+  color: var(--vm-component-warning-ink, #ad9561);
+  border-color: var(--vm-component-warning-line, #f1e6cf);
+  background: var(--vm-component-warning-surface, #fdfaf2);
 }
 .game-empty {
   display: grid;
@@ -795,34 +795,34 @@
 .game-empty-icon {
   width: 56px;
   height: 56px;
-  border: 1px dashed #d9e4cd;
+  border: 1px dashed var(--vm-component-line, #d9e4cd);
   border-radius: 50%;
-  background: #f6f9f1;
+  background: var(--vm-component-surface, #f6f9f1);
   display: grid;
   place-items: center;
-  color: #a1b68a;
+  color: var(--vm-component-muted, #a1b68a);
 }
 .volley-app .game-empty h3 {
   font-size: 13px;
   font-weight: 600;
-  color: #7f9370;
+  color: var(--vm-component-muted, #7f9370);
   margin: 0;
 }
 .game-empty p {
   margin: 0;
   max-width: 230px;
   font-size: 11px;
-  color: #a3ad99;
+  color: var(--vm-component-muted, #a3ad99);
   line-height: 1.7;
 }
 .game-roster-footer {
-  border-top: 1px solid #eef2e8;
+  border-top: 1px solid var(--vm-component-line, #eef2e8);
   padding-top: 16px;
   display: flex;
   align-items: flex-start;
   gap: 7px;
   font-size: 9px;
-  color: #a5af9c;
+  color: var(--vm-component-muted, #a5af9c);
   line-height: 1.7;
 }
 .game-roster-footer svg {
@@ -837,7 +837,7 @@
   justify-content: center;
   gap: 12px;
   padding: 14px;
-  color: #a5b098;
+  color: var(--vm-component-muted, #a5b098);
   text-align: left;
 }
 .game-page-footer > svg {
@@ -851,7 +851,7 @@
 }
 .game-page-footer strong {
   font-weight: 500;
-  color: #96a586;
+  color: var(--vm-component-muted, #96a586);
 }
 @media (max-width: 1100px) and (min-width: 1025px) {
   .game-page-grid {
@@ -875,7 +875,7 @@
   .game-deadline-box {
     border-left: 0;
     padding: 18px 0 0;
-    border-top: 1px solid #dfe8d6;
+    border-top: 1px solid var(--vm-component-line, #dfe8d6);
     min-width: 0;
     display: grid;
     grid-template-columns: 1fr auto;
@@ -963,26 +963,26 @@
 .game-capacity > small,
 .game-empty p {
   font-size: 11px;
-  color: #728168;
+  color: var(--vm-component-muted, #728168);
 }
 .game-description {
-  color: #6e7d65;
+  color: var(--vm-component-muted, #6e7d65);
 }
 .game-player-list strong {
   font-size: 13px;
-  color: #4f6346;
+  color: var(--vm-component-ink, #4f6346);
 }
 .game-player-list small {
   font-size: 11px;
-  color: #7f8d75;
+  color: var(--vm-component-muted, #7f8d75);
 }
 .game-notice p {
   font-size: 12px;
 }
 .game-personal-status p {
-  color: #708562;
+  color: var(--vm-component-muted, #708562);
   font-size: 12px;
 }
 .game-live {
-  color: #698450;
+  color: var(--vm-component-muted, #698450);
 }

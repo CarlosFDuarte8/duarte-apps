@@ -68,7 +68,19 @@ export function CourtBoard({
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
   function act(action: CourtAction) {
-    run(() => manageCourt({ eventId, version, action }));
+    run(
+      () => manageCourt({ eventId, version, action }),
+      undefined,
+      action.type === "point"
+        ? "Salvando ponto…"
+        : action.type === "clock"
+          ? "Atualizando cronômetro…"
+          : action.type === "winner"
+            ? "Salvando resultado e organizando rodízio…"
+            : action.type === "shuffle"
+              ? "Montando times equilibrados…"
+              : "Atualizando a quadra…",
+    );
   }
   function details(person: CourtRosterPerson) {
     return (

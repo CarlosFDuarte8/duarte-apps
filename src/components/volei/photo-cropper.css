@@ -7,10 +7,10 @@
   max-height: calc(100dvh - 32px);
   padding: 24px;
   overflow: auto;
-  border: 1px solid #dce5d6;
+  border: 1px solid var(--vm-component-line, #dce5d6);
   border-radius: 20px;
-  background: #fff;
-  color: #34513b;
+  background: var(--vm-component-surface, #fff);
+  color: var(--vm-component-ink, #34513b);
   box-shadow: 0 24px 80px #102d2940;
 }
 .vp-crop-dialog::backdrop {
@@ -25,7 +25,7 @@
 .vp-crop-dialog > p {
   font-size: 13px;
   line-height: 1.7;
-  color: #77886e;
+  color: var(--vm-component-muted, #77886e);
   margin: 0 0 20px;
 }
 .vp-crop-viewport {
@@ -51,7 +51,7 @@
 .vp-crop-circle {
   position: absolute;
   inset: 0;
-  border: 2px solid #fff;
+  border: 2px solid var(--vm-component-line, #fff);
   border-radius: 50%;
   box-shadow: 0 0 0 100px #0009;
   pointer-events: none;
@@ -68,7 +68,7 @@
   flex: 1;
   min-width: 0;
   font-size: 12px;
-  color: #687e58;
+  color: var(--vm-component-muted, #687e58);
 }
 .volley-app .vp-crop-slider input {
   width: 100%;

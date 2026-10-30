@@ -59,7 +59,9 @@ export function CourtScoreboard({
         <span>
           <i aria-hidden="true" /> PARTIDA {state.round + 1}
         </span>
-        <span>{running ? "EM JOGO" : "CRONÔMETRO PAUSADO"}</span>
+        <span>
+          {pending ? "SALVANDO…" : running ? "EM JOGO" : "CRONÔMETRO PAUSADO"}
+        </span>
       </div>
       <div className="vc-score-teams">
         {state.playing.map((team) => (

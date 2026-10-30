@@ -1,0 +1,24 @@
+.section {
+  width: 100%;
+  max-width: 840px;
+}
+.item + .item {
+  border-top: 1px solid var(--sc-line, #8884);
+}
+.item summary {
+  padding: 18px 0;
+  min-height: 48px;
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1.5;
+}
+.item summary:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.item p {
+  margin: 0;
+  padding-bottom: 20px;
+  line-height: 1.7;
+}
