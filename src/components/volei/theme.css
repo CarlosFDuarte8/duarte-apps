@@ -668,7 +668,7 @@ body:has(.volley-app)
     top: 76px;
     z-index: 10;
     padding-block: 6px;
-    background: #fafafaef;
+    background: color-mix(in srgb, var(--vm-page) 94%, transparent);
     backdrop-filter: blur(12px);
   }
 }

@@ -217,6 +217,25 @@
   gap: 20px;
   min-width: 0;
 }
+/* Grid items must shrink to the card, including native date/select controls. */
+.game-form > *,
+.game-guest-fields,
+.game-guest-fields > *,
+.game-section-heading > div,
+.game-personal-status > div {
+  min-width: 0;
+}
+.game-form label,
+.game-identity strong,
+.game-guest-entry strong,
+.game-player-list strong {
+  overflow-wrap: anywhere;
+}
+.volley-app .game-form :is(input, select, textarea),
+.game-form [data-slot="native-select-wrapper"] {
+  max-width: 100%;
+  min-width: 0;
+}
 .volley-app .game-form label {
   display: block;
   font-size: 12px;
@@ -527,6 +546,7 @@
 }
 .game-guest-heading {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   align-items: center;
   justify-content: space-between;

@@ -171,6 +171,60 @@ body:has(.volley-app) .vn-popover .vn-view-all {
   .volley-app .volley-mobile-brand small { font-size: 6px; letter-spacing: 0.6px; }
   .volley-app .volley-mobile-logout button { padding-inline: 8px; }
 }
+/* Public dashboard details and interaction states need their own contrast. */
+:root[data-volley-theme="dark"] .volley-app :is(.vx-how strong, .vx-row-date strong) {
+  color: var(--vm-ink);
+}
+:root[data-volley-theme="dark"] .volley-app .vx-overview-stat i {
+  background: var(--vm-subtle);
+  color: var(--vm-accent);
+}
+:root[data-volley-theme="dark"] .volley-app .vx-stat-green i {
+  background: var(--vm-component-success-surface);
+  color: var(--vm-component-success-ink);
+}
+:root[data-volley-theme="dark"] .volley-app .vx-stat-amber i {
+  background: var(--vm-component-warning-surface);
+  color: var(--vm-component-warning-ink);
+}
+:root[data-volley-theme="dark"] .volley-app .game-roster-filters button[aria-pressed="true"] {
+  background: var(--vm-hover);
+  color: var(--vm-ink);
+  border-color: var(--vm-accent);
+}
+:root[data-volley-theme="dark"] .volley-app .game-primary {
+  background: var(--vm-accent);
+  color: #001f3b !important;
+}
+:root[data-volley-theme="dark"] .volley-app .game-primary:hover:not(:disabled) {
+  background: #a8c4ec;
+}
+:root[data-volley-theme="dark"] .volley-app .game-secondary {
+  background: var(--vm-subtle);
+  color: var(--vm-ink) !important;
+  border-color: var(--vm-line);
+}
+:root[data-volley-theme="dark"] .volley-app .game-secondary:hover:not(:disabled) {
+  background: var(--vm-hover);
+}
+:root[data-volley-theme="dark"] .volley-app :is(.game-text-button, .game-cancel-button) {
+  color: var(--vm-component-danger-ink) !important;
+}
+:root[data-volley-theme="dark"] .volley-app :is(.game-personal-status, .game-feedback:not(.is-error)) {
+  background: var(--vm-component-success-surface);
+  border-color: var(--vm-component-success-line);
+  color: var(--vm-component-success-ink);
+}
+:root[data-volley-theme="dark"] .volley-app .game-personal-status strong {
+  color: var(--vm-component-success-ink);
+}
+:root[data-volley-theme="dark"] .volley-app .game-personal-status.is-waiting {
+  background: var(--vm-component-warning-surface);
+  border-color: var(--vm-component-warning-line);
+}
+:root[data-volley-theme="dark"] .volley-app .game-personal-status.is-waiting strong {
+  color: var(--vm-component-warning-ink);
+}
 @media print {
   :root[data-volley-theme="dark"]:has(.volley-app) {
     --vm-component-surface: initial;
