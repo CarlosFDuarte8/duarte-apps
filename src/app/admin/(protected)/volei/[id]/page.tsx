@@ -56,7 +56,7 @@ export default async function Page({
         members={members}
         attendance={found.attendance}
       />
-      {game && <GameRoster game={game} />}
+      {game && <GameRoster game={game} updatedAt={new Date().toISOString()} />}
     </>
   );
 }

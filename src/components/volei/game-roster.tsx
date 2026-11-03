@@ -3,10 +3,11 @@ import { useState } from "react";
 import type { publicEvent } from "@/lib/volei/repository";
 import { VolleyIcon } from "./volley-icon";
 import "./game.css";
-import { eventCapacity } from "@/lib/volei/domain";
+import { eventCapacity, eventFreeSlots } from "@/lib/volei/domain";
 type Game = NonNullable<Awaited<ReturnType<typeof publicEvent>>>;
-export function GameRoster({ game }: { game: Game }) {
+export function GameRoster({ game, updatedAt }: { game: Game; updatedAt: string }) {
   const capacity = eventCapacity(game.event);
+  const reserved = game.attendance.filter((p) => p.status === "reservado").length;
   const [tab, setTab] = useState<"confirmed" | "waiting" | "guests">(
     "confirmed",
   );
@@ -50,12 +51,12 @@ export function GameRoster({ game }: { game: Game }) {
     <section className="volley-card game-roster" id="lista-do-dia">
       <header className="game-roster-heading">
         <div>
-          <span className="game-kicker">O GRUPO EM TEMPO REAL</span>
+          <span className="game-kicker">PARTICIPANTES DO ENCONTRO</span>
           <h2>Quem vem para o jogo</h2>
         </div>
         <span className="game-live">
           <span />
-          Ao vivo
+          Atualização a cada 30 s
         </span>
       </header>
       <div className="game-capacity">
@@ -64,7 +65,7 @@ export function GameRoster({ game }: { game: Game }) {
             {confirmed.length}
             <span> / {capacity} jogadores</span>
           </strong>
-          <span>{Math.max(0, capacity - confirmed.length)} vagas livres</span>
+          <span>{eventFreeSlots(game.event, confirmed.length, reserved)} vagas livres</span>
         </div>
         <progress
           max={capacity}
@@ -73,7 +74,11 @@ export function GameRoster({ game }: { game: Game }) {
         />
         <small>
           {game.event.max_teams ?? 3} times de 6 · {capacity} jogadores
+          {reserved > 0 && ` · ${reserved} ${reserved === 1 ? "vaga reservada" : "vagas reservadas"}`}
         </small>
+        <p className="game-update-time">
+          Última atualização: <time dateTime={updatedAt}>{new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(updatedAt))}</time>
+        </p>
       </div>
       <div
         className="game-roster-filters"

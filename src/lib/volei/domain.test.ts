@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  eventFreeSlots,
   buildWhatsAppText,
   daysInMonth,
   eventSchema,
@@ -18,6 +19,11 @@ const event: VoleiEvent = {
   notes: "",
   closed: false,
 };
+it("desconta reservas e confirmados sem exibir vagas negativas", () => {
+  expect(eventFreeSlots(event, 2, 1)).toBe(15);
+  expect(eventFreeSlots(event, 18, 2)).toBe(0);
+  expect(eventFreeSlots({ max_teams: 4 }, 18, 2)).toBe(4);
+});
 
 describe("domínio do vôlei", () => {
   it("monta o texto do WhatsApp em ordem alfabética", () => {

@@ -37,8 +37,7 @@ const serverSnapshot = () => "system:light";
 export function ThemeToggle() {
   const [theme, resolved] = useSyncExternalStore(subscribe, snapshot, serverSnapshot).split(":");
   useEffect(() => {
-    document.documentElement.dataset.volleyTheme = resolved;
-    return () => { delete document.documentElement.dataset.volleyTheme; };
+    document.documentElement.dataset.volleyTheme = snapshot().split(":")[1];
   }, [resolved]);
   function select(value: Theme) {
     fallback = value;

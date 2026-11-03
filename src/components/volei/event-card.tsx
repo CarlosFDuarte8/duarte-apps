@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Clock3, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { eventCapacity, type VoleiEvent } from "@/lib/volei/domain";
+import { eventCapacity, eventFreeSlots, type VoleiEvent } from "@/lib/volei/domain";
 export type EventSummary = {
   event: VoleiEvent;
   confirmed: number;
@@ -18,9 +18,9 @@ export function EventCard({
   guestsWaiting = 0,
   admin = false,
 }: EventSummary & { admin?: boolean }) {
-  const date = new Date(`${event.date}T12:00:00Z`),
-    capacity = eventCapacity(event);
-  const free = Math.max(0, capacity - confirmed - reserved);
+  const date = new Date(`${event.date}T12:00:00Z`);
+  const capacity = eventCapacity(event);
+  const free = eventFreeSlots(event, confirmed, reserved);
   return (
     <article className="vx-game-row" id={`encontro-${event.id}`}>
       <div className="vx-row-date">

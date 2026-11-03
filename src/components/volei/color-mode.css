@@ -8,6 +8,10 @@
   --vm-muted: #737373;
   --vm-accent: #00498c;
   --vm-hover: #edf4fb;
+  --vm-action: #264c35;
+  --vm-action-hover: #183e29;
+  --vm-action-ink: #fff;
+  --vm-danger-action: #a8423c;
 }
 :root[data-volley-theme="dark"]:has(.volley-app) {
   color-scheme: dark;
@@ -19,6 +23,10 @@
   --vm-muted: #b0bdcc;
   --vm-accent: #83a3d5;
   --vm-hover: #003668;
+  --vm-action: #83a3d5;
+  --vm-action-hover: #a8c4ec;
+  --vm-action-ink: #001f3b;
+  --vm-danger-action: #a43e49;
   --ui-background: var(--vm-surface);
   --ui-foreground: var(--vm-ink);
   --ui-primary: var(--vm-accent);
@@ -193,11 +201,11 @@ body:has(.volley-app) .vn-popover .vn-view-all {
   border-color: var(--vm-accent);
 }
 :root[data-volley-theme="dark"] .volley-app .game-primary {
-  background: var(--vm-accent);
-  color: #001f3b !important;
+  background: var(--vm-action);
+  color: var(--vm-action-ink) !important;
 }
 :root[data-volley-theme="dark"] .volley-app .game-primary:hover:not(:disabled) {
-  background: #a8c4ec;
+  background: var(--vm-action-hover);
 }
 :root[data-volley-theme="dark"] .volley-app .game-secondary {
   background: var(--vm-subtle);

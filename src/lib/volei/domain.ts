@@ -43,6 +43,9 @@ export type VoleiEvent = {
 export function eventCapacity(event: Pick<VoleiEvent, "max_teams">) {
   return (event.max_teams ?? 3) * 6;
 }
+export function eventFreeSlots(event: Pick<VoleiEvent, "max_teams">, confirmed: number, reserved = 0) {
+  return Math.max(0, eventCapacity(event) - confirmed - reserved);
+}
 
 export const monthPattern = /^20\d{2}-(0[1-9]|1[0-2])$/;
 export const datePattern = /^20\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;

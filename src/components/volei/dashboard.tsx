@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { EventCard, type EventSummary } from "./event-card";
 import { ShareGameButton } from "./share-game-button";
 import {
-  eventCapacity,
+  eventFreeSlots,
   isEventOpen,
   formatDate,
   formatMonth,
@@ -44,10 +44,9 @@ export function VolleyDashboard({
   );
   const next = upcoming?.event;
   const other = items.filter((item) => item.event.id !== next?.id);
-  const capacity = next ? eventCapacity(next) : 18;
   const occupied = upcoming?.confirmed ?? 0;
   const free = next
-    ? Math.max(0, capacity - occupied - (upcoming?.reserved ?? 0))
+    ? eventFreeSlots(next, occupied, upcoming?.reserved ?? 0)
     : 0;
   const quick = admin
     ? [

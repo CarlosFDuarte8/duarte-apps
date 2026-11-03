@@ -554,6 +554,14 @@ body:has(.volley-app)
   cursor: pointer;
   min-height: 36px;
 }
+/* Public information remains readable at the phone's default zoom. */
+.volley-public .volley-content :is(.game-deadline-box > p, .game-deadline-box > span:last-child, .game-summary-strip > span, .game-summary-strip > span:last-child, .vx-eyebrow, .vx-row-info > div > span, .vx-row-stats > span, .vx-overview-stat p, .vp-member-age) {
+  font-size: 12px;
+}
+.volley-app.volley-public .volley-content .game-open-badge {
+  font-size: 12px;
+  white-space: normal;
+}
 .vx-event-jumps {
   display: flex;
   gap: 8px;
