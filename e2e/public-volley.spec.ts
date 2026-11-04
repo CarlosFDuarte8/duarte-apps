@@ -1,6 +1,17 @@
 import { expect, test } from "@playwright/test";
+import { readFileSync } from "node:fs";
 
 const game = "/volei/jogo/11111111-1111-4111-8111-111111111111";
+test("development assets share the server session ID", async ({ page }) => {
+  test.skip(process.env.VOLLEY_E2E_PRODUCTION === "1", "Session IDs only apply in development");
+  const session = readFileSync(".next-e2e/development-session", "utf8").trim();
+  const response = await page.goto(game);
+  expect(await response!.text()).toContain(`data-dpl-id="${session}"`);
+  const scriptURLs = await page.locator("script[src]").evaluateAll(elements => elements
+    .map(el => (el as HTMLScriptElement).src).filter(url => url.includes("/_next/static/")));
+  expect(scriptURLs.length).toBeGreaterThan(0);
+  for (const url of scriptURLs) expect(new URL(url).searchParams.get("dpl")).toBe(session);
+});
 for (const width of [320, 390, 768, 1280]) {
   for (const theme of ["light", "dark"]) {
     test(`${width}px ${theme}: public pages fit their cards`, async ({ page, context }, testInfo) => {

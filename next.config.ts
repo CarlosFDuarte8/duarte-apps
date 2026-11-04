@@ -1,8 +1,13 @@
 import type { NextConfig } from "next";
 import path from "path";
+import { existsSync, readFileSync } from "node:fs";
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
+
+const output = process.env.VOLLEY_E2E === "1" ? ".next-e2e" : ".next";
+const sessionFile = path.join(__dirname, output, "development-session");
 
 const nextConfig: NextConfig = {
-  distDir: process.env.VOLLEY_E2E === "1" ? ".next-e2e" : ".next",
+  distDir: output,
   // Keep the development badge from covering the mobile navigation.
   devIndicators: false,
   // Allow browsing the dev server from other devices on the local network (e.g. testing on a phone).
@@ -20,4 +25,11 @@ const nextConfig: NextConfig = {
   }
 };
 
-export default nextConfig;
+export default function config(phase: string): NextConfig {
+  return {
+    ...nextConfig,
+    // Bust browser asset URLs and detect old tabs after restarting development.
+    deploymentId: phase === PHASE_DEVELOPMENT_SERVER && existsSync(sessionFile)
+      ? readFileSync(sessionFile, "utf8").trim() : undefined,
+  };
+}

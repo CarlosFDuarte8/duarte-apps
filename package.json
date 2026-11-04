@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
-    "dev:turbopack": "next dev --turbopack",
+    "dev": "node scripts/dev-session.mjs && next dev --webpack",
+    "dev:turbopack": "node scripts/dev-session.mjs && next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

@@ -15,6 +15,8 @@ Os cenários incluem títulos e nomes compridos, vagas reservadas e formulário 
 emergência. Os testes verificam vazamento horizontal e fundos claros no modo
 escuro, e geram capturas completas em `test-results/` para revisão visual.
 Também verificam o tema antes da hidratação, filtros e falhas de cópia de links.
+Em desenvolvimento, verificam que o HTML e os scripts usam o mesmo identificador
+de execução, renovado pelos comandos `dev` e `dev:turbopack` a cada inicialização.
 As capturas são artefatos de revisão, não comparações automáticas com imagens de referência.
 
 Os testes unitários (`npm test`) cobrem o cálculo de vagas, a inicialização do
