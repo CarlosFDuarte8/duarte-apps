@@ -67,13 +67,22 @@
   box-shadow: none;
   text-decoration: none;
 }
-.volley-app .vn-header-actions :is(.volley-header-icon, .vn-bell):is(:hover, [data-state="open"]) {
+.volley-app
+  .vn-header-actions
+  :is(.volley-header-icon, .vn-bell):is(:hover, [data-state="open"]) {
   background: var(--vm-hover);
   color: var(--vm-accent) !important;
 }
-.volley-header-icon > svg { width: 18px; height: 18px; }
-.volley-app .volley-theme-toggle > svg { color: #d97706; }
-:root[data-volley-theme="dark"] .volley-theme-toggle > svg { color: #a5b4fc; }
+.volley-header-icon > svg {
+  width: 18px;
+  height: 18px;
+}
+.volley-app .volley-theme-toggle > svg {
+  color: #d97706;
+}
+:root[data-volley-theme="dark"] .volley-theme-toggle > svg {
+  color: #a5b4fc;
+}
 .volley-theme-menu {
   z-index: 100;
   width: 208px;
@@ -83,7 +92,9 @@
   border: 1px solid var(--vm-line);
   border-radius: 12px;
   box-shadow: 0 12px 36px #001f3b26;
-  font: 14px/1.5 var(--font-geist-sans, Arial), sans-serif;
+  font:
+    14px/1.5 var(--font-geist-sans, Arial),
+    sans-serif;
 }
 .volley-theme-option {
   display: flex;
@@ -95,11 +106,22 @@
   cursor: pointer;
   outline: none;
 }
-.volley-theme-option[data-highlighted] { background: var(--vm-hover); }
-.volley-theme-option > span:first-of-type { flex: 1; }
-.volley-theme-option svg { width: 16px; height: 16px; }
-.volley-theme-option[data-state="checked"] { color: var(--vm-accent); }
-.volley-theme-option[data-state="checked"] > span:last-child { display: flex; }
+.volley-theme-option[data-highlighted] {
+  background: var(--vm-hover);
+}
+.volley-theme-option > span:first-of-type {
+  flex: 1;
+}
+.volley-theme-option svg {
+  width: 16px;
+  height: 16px;
+}
+.volley-theme-option[data-state="checked"] {
+  color: var(--vm-accent);
+}
+.volley-theme-option[data-state="checked"] > span:last-child {
+  display: flex;
+}
 body:has(.volley-app) .vn-popover .vn-view-all {
   background: var(--vm-subtle);
   color: var(--vm-ink);
@@ -114,73 +136,377 @@ body:has(.volley-app) .vn-popover .vn-view-all {
   background: var(--vm-page);
   color: var(--vm-ink);
 }
-:root[data-volley-theme="dark"] .volley-app :is(.volley-sidebar, .volley-top, .volley-card, .sc-card, .game-deadline-box, .game-summary-strip, .game-player-list > li, .vm-members-table, .vm-member-filters, .vx-schedule, .vx-date-track > a) {
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .volley-sidebar,
+    .volley-top,
+    .volley-card,
+    .sc-card,
+    .game-deadline-box,
+    .game-summary-strip,
+    .game-player-list > li,
+    .vm-members-table,
+    .vm-member-filters,
+    .vx-schedule,
+    .vx-date-track > a
+  ) {
   background: var(--vm-surface);
   border-color: var(--vm-line);
   color: var(--vm-ink);
 }
-:root[data-volley-theme="dark"] .volley-app :is(h1, h2, h3, .volley-brand, .volley-mobile-brand, .volley-account strong, .vx-desktop-context strong, .vx-row-info h3, .vx-shortcuts strong, .vx-tools h2, .vx-month-summary h2, .vx-how h2, .game-player-list strong, .vm-members-table th, .vm-members-table td, .vp-member-person a) { color: var(--vm-ink); }
-:root[data-volley-theme="dark"] .volley-app :is(.volley-sidebar nav a, .volley-sidebar footer a, .volley-mode, .volley-muted, .vm-hint, .vm-member-summary, .game-event-details > span, .game-privacy-note p, .game-personal-status p, .vx-row-stats strong) { color: var(--vm-muted); }
-:root[data-volley-theme="dark"] .volley-app :is(.volley-sidebar nav a[aria-current], .volley-sidebar nav a:hover, .vx-date-track > a.is-next, .vm-member-metrics > button[aria-pressed="true"], .vm-members-table tbody tr:hover) {
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    h1,
+    h2,
+    h3,
+    .volley-brand,
+    .volley-mobile-brand,
+    .volley-account strong,
+    .vx-desktop-context strong,
+    .vx-row-info h3,
+    .vx-shortcuts strong,
+    .vx-tools h2,
+    .vx-month-summary h2,
+    .vx-how h2,
+    .game-player-list strong,
+    .vm-members-table th,
+    .vm-members-table td,
+    .vp-member-person a
+  ) {
+  color: var(--vm-ink);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .volley-sidebar nav a,
+    .volley-sidebar footer a,
+    .volley-mode,
+    .volley-muted,
+    .vm-hint,
+    .vm-member-summary,
+    .game-event-details > span,
+    .game-privacy-note p,
+    .game-personal-status p,
+    .vx-row-stats strong
+  ) {
+  color: var(--vm-muted);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .volley-sidebar nav a[aria-current],
+    .volley-sidebar nav a:hover,
+    .vx-date-track > a.is-next,
+    .vm-member-metrics > button[aria-pressed="true"],
+    .vm-members-table tbody tr:hover
+  ) {
   background: var(--vm-hover);
   color: #e4eefc;
 }
-:root[data-volley-theme="dark"] .volley-app :is(input, textarea, select, [data-slot="input"], [data-slot="textarea"], [data-slot="native-select"]) {
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    input,
+    textarea,
+    select,
+    [data-slot="input"],
+    [data-slot="textarea"],
+    [data-slot="native-select"]
+  ) {
   background: var(--vm-page);
   border-color: #ffffff26;
   color: var(--vm-ink);
 }
-:root[data-volley-theme="dark"] .volley-app :is(input, textarea)::placeholder { color: #92a5b9; }
-:root[data-volley-theme="dark"] .volley-app :is([data-slot="button"], .sc-btn, .sc-button) { background: #83a3d5; color: #001f3b !important; border-color: transparent; }
-:root[data-volley-theme="dark"] .volley-app :is([data-slot="button"][data-variant="outline"], [data-slot="button"][data-variant="ghost"], .sc-btn-ghost, .volley-mobile-logout button, .volley-sidebar footer [data-slot="button"]) {
+:root[data-volley-theme="dark"] .volley-app :is(input, textarea)::placeholder {
+  color: #92a5b9;
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is([data-slot="button"], .sc-btn, .sc-button) {
+  background: #83a3d5;
+  color: #001f3b !important;
+  border-color: transparent;
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    [data-slot="button"][data-variant="outline"],
+    [data-slot="button"][data-variant="ghost"],
+    .sc-btn-ghost,
+    .volley-mobile-logout button,
+    .volley-sidebar footer [data-slot="button"]
+  ) {
   background: transparent;
   border-color: var(--vm-line);
   color: var(--vm-ink) !important;
 }
-:root[data-volley-theme="dark"] .volley-app [data-slot="button"][data-variant="destructive"] { background: #a43e49; color: white !important; }
-:root[data-volley-theme="dark"] .volley-app :is(.vm-member-metrics > button, .game-roster-filters button, .game-response-card, .vx-event-jumps a) { background: var(--vm-surface); color: var(--vm-ink); border-color: var(--vm-line); }
-:root[data-volley-theme="dark"] body:has(.volley-app) :is(.vn-popover, [data-slot="alert-dialog-content"], .game-dialog, .volley-theme-menu) { background: var(--vm-surface); color: var(--vm-ink); border-color: var(--vm-line); }
-:root[data-volley-theme="dark"] .vn-popover :is(h2, a, strong) { color: var(--vm-ink); }
-:root[data-volley-theme="dark"] .vn-popover :is(p, small, header > span) { color: var(--vm-muted); }
-:root[data-volley-theme="dark"] .vn-popover :is(header, a) { border-color: var(--vm-line); }
-:root[data-volley-theme="dark"] .vn-bell-count { border-color: var(--vm-surface); }
-:root[data-volley-theme="dark"] .volley-app :is(.vx-date-track strong, .vx-month-summary dd, .vx-match-manage > span:last-child, .vx-schedule summary, .vx-agenda-empty strong) { color: var(--vm-accent); }
-:root[data-volley-theme="dark"] .vx-shortcuts > a { border-color: var(--vm-line); }
-:root[data-volley-theme="dark"] .vx-tool-icon { background: var(--vm-subtle); color: var(--vm-accent); }
-:root[data-volley-theme="dark"] .volley-app :is(.vm-members-filters, .vm-members-more-filters, .vm-members-search, .vm-create-fields) { background: var(--vm-surface); border-color: var(--vm-line); color: var(--vm-muted); }
-:root[data-volley-theme="dark"] .volley-app :is(.vm-metrics > div, .vp-photo-picker, .vp-crop-dialog, .game-phone-input, .game-notes, .game-response-card, .vc-roster, .vc-team) { background: var(--vm-surface); border-color: var(--vm-line); color: var(--vm-ink); }
-:root[data-volley-theme="dark"] .volley-app :is(.vm-metrics strong, .game-form label, .game-form h2, .vp-crop-dialog h2) { color: var(--vm-ink); }
-:root[data-volley-theme="dark"] .volley-app :is(.vm-metrics span, .game-form label > small, .vp-crop-dialog > p) { color: var(--vm-muted); }
-:root[data-volley-theme="dark"] .volley-app :is(.vm-members-filters label, .vm-members-results, .vm-muted, .vp-member-age),
-:root[data-volley-theme="dark"] .volley-app .vm-members-table td[data-label]::before { color: var(--vm-muted); }
-:root[data-volley-theme="dark"] .volley-app :is(.vm-members-table, .vm-members-toolbar, .vm-members-filters, .vm-members-table tr, .vm-members-table th, .vm-members-table td) { border-color: var(--vm-line); }
+:root[data-volley-theme="dark"]
+  .volley-app
+  [data-slot="button"][data-variant="destructive"] {
+  background: #a43e49;
+  color: white !important;
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .vm-member-metrics > button,
+    .game-roster-filters button,
+    .game-response-card,
+    .vx-event-jumps a
+  ) {
+  background: var(--vm-surface);
+  color: var(--vm-ink);
+  border-color: var(--vm-line);
+}
+:root[data-volley-theme="dark"]
+  body:has(.volley-app)
+  :is(
+    .vn-popover,
+    [data-slot="alert-dialog-content"],
+    .game-dialog,
+    .volley-theme-menu
+  ) {
+  background: var(--vm-surface);
+  color: var(--vm-ink);
+  border-color: var(--vm-line);
+}
+:root[data-volley-theme="dark"] .vn-popover :is(h2, a, strong) {
+  color: var(--vm-ink);
+}
+:root[data-volley-theme="dark"] .vn-popover :is(p, small, header > span) {
+  color: var(--vm-muted);
+}
+:root[data-volley-theme="dark"] .vn-popover :is(header, a) {
+  border-color: var(--vm-line);
+}
+:root[data-volley-theme="dark"] .vn-bell-count {
+  border-color: var(--vm-surface);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .vx-date-track strong,
+    .vx-month-summary dd,
+    .vx-match-manage > span:last-child,
+    .vx-schedule summary,
+    .vx-agenda-empty strong
+  ) {
+  color: var(--vm-accent);
+}
+:root[data-volley-theme="dark"] .vx-shortcuts > a {
+  border-color: var(--vm-line);
+}
+:root[data-volley-theme="dark"] .vx-tool-icon {
+  background: var(--vm-subtle);
+  color: var(--vm-accent);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .vm-members-filters,
+    .vm-members-more-filters,
+    .vm-members-search,
+    .vm-create-fields
+  ) {
+  background: var(--vm-surface);
+  border-color: var(--vm-line);
+  color: var(--vm-muted);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .vm-metrics > div,
+    .vp-photo-picker,
+    .vp-crop-dialog,
+    .game-phone-input,
+    .game-notes,
+    .game-response-card,
+    .vc-roster,
+    .vc-team
+  ) {
+  background: var(--vm-surface);
+  border-color: var(--vm-line);
+  color: var(--vm-ink);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(.vm-metrics strong, .game-form label, .game-form h2, .vp-crop-dialog h2) {
+  color: var(--vm-ink);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(.vm-metrics span, .game-form label > small, .vp-crop-dialog > p) {
+  color: var(--vm-muted);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .vm-members-filters label,
+    .vm-members-results,
+    .vm-muted,
+    .vp-member-age
+  ),
+:root[data-volley-theme="dark"]
+  .volley-app
+  .vm-members-table
+  td[data-label]::before {
+  color: var(--vm-muted);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .vm-members-table,
+    .vm-members-toolbar,
+    .vm-members-filters,
+    .vm-members-table tr,
+    .vm-members-table th,
+    .vm-members-table td
+  ) {
+  border-color: var(--vm-line);
+}
 /* Controls shared with the schedules module remain scoped to volleyball. */
-:root[data-volley-theme="dark"] .volley-app :is(.sc-muted, .sc-page-desc, .sc-field label, .sc-form label, .sc-table th, .sc-table td, .sc-feedback, .sc-empty) { color: var(--vm-muted); }
-:root[data-volley-theme="dark"] .volley-app :is(.sc-table, .sc-table th, .sc-table td, .sc-toolbar, .sc-nav, fieldset, hr) { border-color: var(--vm-line); }
-:root[data-volley-theme="dark"] .volley-app :is(.sc-table th, .sc-empty, .sc-details, .sc-feedback:not(:empty)) { background: var(--vm-subtle); }
-:root[data-volley-theme="dark"] .volley-app [data-slot="badge"] { background: var(--vm-subtle); color: var(--vm-ink); border-color: var(--vm-line); }
-:root[data-volley-theme="dark"] .volley-app :is([data-slot="badge"][data-variant="destructive"], .vm-status-blocked) { background: var(--vm-component-danger-surface); color: var(--vm-component-danger-ink); border-color: var(--vm-component-danger-line); }
-:root[data-volley-theme="dark"] .volley-app .vm-status-pending { background: var(--vm-component-warning-surface); color: var(--vm-component-warning-ink); border-color: var(--vm-component-warning-line); }
-:root[data-volley-theme="dark"] .volley-app [data-slot="checkbox"] { background: var(--vm-page); border-color: #8ca2b9; color: var(--vm-ink); }
-:root[data-volley-theme="dark"] .volley-app [data-slot="checkbox"][data-state="checked"] { background: #83a3d5; color: #001f3b; }
-:root[data-volley-theme="dark"] .volley-app .volley-skeleton { background-image: linear-gradient(100deg, #17344d 25%, #24465f 45%, #17344d 65%); }
-:root[data-volley-theme="dark"] .volley-app :is(.volley-stat, .sc-badge, .sc-badge-muted) { background: var(--vm-subtle); color: var(--vm-ink); }
-:root[data-volley-theme="dark"] .volley-app .volley-stat span { color: var(--vm-muted); }
-:root[data-volley-theme="dark"] .volley-app :is(.volley-error, .sc-badge-danger) { color: var(--vm-component-danger-ink); }
-:root[data-volley-theme="dark"] .volley-app .sc-badge-danger { background: var(--vm-component-danger-surface); }
-:root[data-volley-theme="dark"] body:has(.volley-app) [data-slot="alert-dialog-content"] :is([data-slot="alert-dialog-action"], [data-slot="button"]) { background: #83a3d5; color: #001f3b !important; border-color: var(--vm-line); }
-:root[data-volley-theme="dark"] body:has(.volley-app) [data-slot="alert-dialog-content"] [data-slot="alert-dialog-cancel"] { background: transparent; color: var(--vm-ink) !important; }
-:root[data-volley-theme="dark"] .volley-app .vn-header-actions :is(.volley-header-icon, .vn-bell) { background: transparent; color: var(--vm-muted) !important; border: 0; }
-:root[data-volley-theme="dark"] .volley-app .vn-header-actions :is(.volley-header-icon, .vn-bell):is(:hover, [data-state="open"]) { background: var(--vm-hover); color: var(--vm-accent) !important; }
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .sc-muted,
+    .sc-page-desc,
+    .sc-field label,
+    .sc-form label,
+    .sc-table th,
+    .sc-table td,
+    .sc-feedback,
+    .sc-empty
+  ) {
+  color: var(--vm-muted);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(
+    .sc-table,
+    .sc-table th,
+    .sc-table td,
+    .sc-toolbar,
+    .sc-nav,
+    fieldset,
+    hr
+  ) {
+  border-color: var(--vm-line);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(.sc-table th, .sc-empty, .sc-details, .sc-feedback:not(:empty)) {
+  background: var(--vm-subtle);
+}
+:root[data-volley-theme="dark"] .volley-app [data-slot="badge"] {
+  background: var(--vm-subtle);
+  color: var(--vm-ink);
+  border-color: var(--vm-line);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is([data-slot="badge"][data-variant="destructive"], .vm-status-blocked) {
+  background: var(--vm-component-danger-surface);
+  color: var(--vm-component-danger-ink);
+  border-color: var(--vm-component-danger-line);
+}
+:root[data-volley-theme="dark"] .volley-app .vm-status-pending {
+  background: var(--vm-component-warning-surface);
+  color: var(--vm-component-warning-ink);
+  border-color: var(--vm-component-warning-line);
+}
+:root[data-volley-theme="dark"] .volley-app [data-slot="checkbox"] {
+  background: var(--vm-page);
+  border-color: #8ca2b9;
+  color: var(--vm-ink);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  [data-slot="checkbox"][data-state="checked"] {
+  background: #83a3d5;
+  color: #001f3b;
+}
+:root[data-volley-theme="dark"] .volley-app .volley-skeleton {
+  background-image: linear-gradient(
+    100deg,
+    #17344d 25%,
+    #24465f 45%,
+    #17344d 65%
+  );
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(.volley-stat, .sc-badge, .sc-badge-muted) {
+  background: var(--vm-subtle);
+  color: var(--vm-ink);
+}
+:root[data-volley-theme="dark"] .volley-app .volley-stat span {
+  color: var(--vm-muted);
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(.volley-error, .sc-badge-danger) {
+  color: var(--vm-component-danger-ink);
+}
+:root[data-volley-theme="dark"] .volley-app .sc-badge-danger {
+  background: var(--vm-component-danger-surface);
+}
+:root[data-volley-theme="dark"]
+  body:has(.volley-app)
+  [data-slot="alert-dialog-content"]
+  :is([data-slot="alert-dialog-action"], [data-slot="button"]) {
+  background: #83a3d5;
+  color: #001f3b !important;
+  border-color: var(--vm-line);
+}
+:root[data-volley-theme="dark"]
+  body:has(.volley-app)
+  [data-slot="alert-dialog-content"]
+  [data-slot="alert-dialog-cancel"] {
+  background: transparent;
+  color: var(--vm-ink) !important;
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  .vn-header-actions
+  :is(.volley-header-icon, .vn-bell) {
+  background: transparent;
+  color: var(--vm-muted) !important;
+  border: 0;
+}
+:root[data-volley-theme="dark"]
+  .volley-app
+  .vn-header-actions
+  :is(.volley-header-icon, .vn-bell):is(:hover, [data-state="open"]) {
+  background: var(--vm-hover);
+  color: var(--vm-accent) !important;
+}
 @media (max-width: 640px) {
-  .volley-app .vn-header-actions { gap: 2px; }
-  .volley-app .volley-top { gap: 4px; padding-inline: 12px; }
-  .volley-app .volley-mobile-brand { gap: 6px; min-width: 0; font-size: 15px; }
-  .volley-app .volley-mobile-brand small { font-size: 6px; letter-spacing: 0.6px; }
-  .volley-app .volley-mobile-logout button { padding-inline: 8px; }
+  .volley-app .vn-header-actions {
+    gap: 2px;
+  }
+  .volley-app .volley-top {
+    gap: 4px;
+    padding-inline: 12px;
+  }
+  .volley-app .volley-mobile-brand {
+    gap: 6px;
+    min-width: 0;
+    font-size: 15px;
+  }
+  .volley-app .volley-mobile-brand small {
+    font-size: 6px;
+    letter-spacing: 0.6px;
+  }
+  .volley-app .volley-mobile-logout button {
+    padding-inline: 8px;
+  }
 }
 /* Public dashboard details and interaction states need their own contrast. */
-:root[data-volley-theme="dark"] .volley-app :is(.vx-how strong, .vx-row-date strong) {
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(.vx-how strong, .vx-row-date strong) {
   color: var(--vm-ink);
 }
 :root[data-volley-theme="dark"] .volley-app .vx-overview-stat i {
@@ -195,7 +521,10 @@ body:has(.volley-app) .vn-popover .vn-view-all {
   background: var(--vm-component-warning-surface);
   color: var(--vm-component-warning-ink);
 }
-:root[data-volley-theme="dark"] .volley-app .game-roster-filters button[aria-pressed="true"] {
+:root[data-volley-theme="dark"]
+  .volley-app
+  .game-roster-filters
+  button[aria-pressed="true"] {
   background: var(--vm-hover);
   color: var(--vm-ink);
   border-color: var(--vm-accent);
@@ -212,13 +541,19 @@ body:has(.volley-app) .vn-popover .vn-view-all {
   color: var(--vm-ink) !important;
   border-color: var(--vm-line);
 }
-:root[data-volley-theme="dark"] .volley-app .game-secondary:hover:not(:disabled) {
+:root[data-volley-theme="dark"]
+  .volley-app
+  .game-secondary:hover:not(:disabled) {
   background: var(--vm-hover);
 }
-:root[data-volley-theme="dark"] .volley-app :is(.game-text-button, .game-cancel-button) {
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(.game-text-button, .game-cancel-button) {
   color: var(--vm-component-danger-ink) !important;
 }
-:root[data-volley-theme="dark"] .volley-app :is(.game-personal-status, .game-feedback:not(.is-error)) {
+:root[data-volley-theme="dark"]
+  .volley-app
+  :is(.game-personal-status, .game-feedback:not(.is-error)) {
   background: var(--vm-component-success-surface);
   border-color: var(--vm-component-success-line);
   color: var(--vm-component-success-ink);
@@ -230,8 +565,25 @@ body:has(.volley-app) .vn-popover .vn-view-all {
   background: var(--vm-component-warning-surface);
   border-color: var(--vm-component-warning-line);
 }
-:root[data-volley-theme="dark"] .volley-app .game-personal-status.is-waiting strong {
+:root[data-volley-theme="dark"]
+  .volley-app
+  .game-personal-status.is-waiting
+  strong {
   color: var(--vm-component-warning-ink);
+}
+@media screen and (max-width: 1024px) {
+  :root:has(.volley-app)
+    .volley-app
+    .volley-sidebar
+    nav
+    a[aria-current="page"] {
+    background: color-mix(in srgb, var(--vm-accent) 16%, transparent);
+    color: var(--vm-ink);
+    border: 1px solid color-mix(in srgb, var(--vm-accent) 28%, transparent);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    box-shadow: inset 0 1px 0 #ffffff20;
+  }
 }
 @media print {
   :root[data-volley-theme="dark"]:has(.volley-app) {
@@ -250,6 +602,16 @@ body:has(.volley-app) .vn-popover .vn-view-all {
     --vm-component-danger-ink: initial;
     --vm-component-danger-line: initial;
   }
-  :root[data-volley-theme="dark"]:has(.volley-app) { color-scheme: light; --vm-surface: white; --vm-page: white; --vm-subtle: #f5f5f5; --vm-line: #ddd; --vm-ink: black; --vm-muted: #555; }
-  .volley-theme-toggle { display: none !important; }
+  :root[data-volley-theme="dark"]:has(.volley-app) {
+    color-scheme: light;
+    --vm-surface: white;
+    --vm-page: white;
+    --vm-subtle: #f5f5f5;
+    --vm-line: #ddd;
+    --vm-ink: black;
+    --vm-muted: #555;
+  }
+  .volley-theme-toggle {
+    display: none !important;
+  }
 }

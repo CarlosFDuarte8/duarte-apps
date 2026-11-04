@@ -555,7 +555,19 @@ body:has(.volley-app)
   min-height: 36px;
 }
 /* Public information remains readable at the phone's default zoom. */
-.volley-public .volley-content :is(.game-deadline-box > p, .game-deadline-box > span:last-child, .game-summary-strip > span, .game-summary-strip > span:last-child, .vx-eyebrow, .vx-row-info > div > span, .vx-row-stats > span, .vx-overview-stat p, .vp-member-age) {
+.volley-public
+  .volley-content
+  :is(
+    .game-deadline-box > p,
+    .game-deadline-box > span:last-child,
+    .game-summary-strip > span,
+    .game-summary-strip > span:last-child,
+    .vx-eyebrow,
+    .vx-row-info > div > span,
+    .vx-row-stats > span,
+    .vx-overview-stat p,
+    .vp-member-age
+  ) {
   font-size: 12px;
 }
 .volley-app.volley-public .volley-content .game-open-badge {
@@ -619,14 +631,24 @@ body:has(.volley-app)
     border: 0;
   }
   .volley-app .volley-sidebar nav {
-    background: var(--vm-surface);
+    background: color-mix(in srgb, var(--vm-surface) 65%, transparent);
+
     inset: auto 12px calc(10px + env(safe-area-inset-bottom, 0px));
-    border: 1px solid var(--vm-line);
+
+    border: 1px solid color-mix(in srgb, var(--vm-line) 65%, transparent);
     border-radius: 19px;
-    box-shadow: 0 6px 24px #33517d14;
+
+    box-shadow:
+      0 8px 32px rgba(31, 45, 61, 0.1),
+      0 2px 8px rgba(31, 45, 61, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
     min-height: 68px;
     padding: 6px;
     gap: 3px;
+
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
   }
   .volley-app .volley-sidebar nav a {
     box-shadow: none;
@@ -838,43 +860,170 @@ body:has(.volley-app)
 }
 
 /* Wheaton Flow shell: neutral surfaces, blue actions and a collapsible workspace. */
-.volley-app .volley-sidebar { background: var(--vm-subtle); padding: 32px 16px 20px; gap: 28px; }
-.volley-app .volley-mode { font-size: 12px; letter-spacing: 0; padding-left: 12px; }
-.volley-app .volley-sidebar nav { gap: 4px; }
-.volley-app .volley-sidebar nav a { min-height: 44px; padding: 10px 12px; font-size: 14px; border-radius: 12px; color: var(--vm-ink); }
-.volley-app .volley-sidebar nav a[aria-current] { background: var(--vm-subtle); color: var(--vm-component-ink, #00498c); }
-.volley-app .volley-sidebar footer { margin-top: auto; padding: 20px 4px 0; border-top: 1px solid var(--vm-line); font-size: 12px; }
-.volley-account { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.volley-account > span { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; background: var(--vm-subtle); color: var(--vm-component-ink, #00498c); }
-.volley-account svg { width: 18px; height: 18px; }
-.volley-account strong, .volley-account small { display: block; }
-.volley-account strong { color: var(--vm-ink); font-size: 14px; font-weight: 500; }
-.volley-account small { color: var(--vm-muted); font-size: 12px; }
-.volley-app .volley-sidebar footer [data-slot="button"] { width: 100%; min-height: 36px; justify-content: flex-start; padding: 8px 12px; background: transparent; border: 1px solid var(--vm-line); border-radius: 8px; color: var(--vm-ink); }
-.volley-header-divider { height: 20px; border-left: 1px solid var(--vm-line); }
-.volley-app .vx-desktop-context { font-size: 14px; gap: 12px; }
-.volley-app .vx-desktop-context strong { color: var(--vm-ink); font-weight: 500; }
-.volley-app .volley-tag { display: none; }
-.volley-app .volley-content :is(.sc-page-head h1, .vx-page-intro h1) { font-size: 36px; color: var(--vm-ink); font-weight: 600; letter-spacing: -1px; }
-.volley-app .volley-content :is(.sc-page-head p, .vx-page-intro p:last-child) { font-size: 16px; color: var(--vm-muted); }
-.volley-app .vx-page-intro .vx-eyebrow { font-size: 12px; font-weight: 500; letter-spacing: 1.8px; }
+.volley-app .volley-sidebar {
+  background: var(--vm-subtle);
+  padding: 32px 16px 20px;
+  gap: 28px;
+}
+.volley-app .volley-mode {
+  font-size: 12px;
+  letter-spacing: 0;
+  padding-left: 12px;
+}
+.volley-app .volley-sidebar nav {
+  gap: 4px;
+}
+.volley-app .volley-sidebar nav a {
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 12px;
+  color: var(--vm-ink);
+}
+.volley-app .volley-sidebar nav a[aria-current] {
+  background: var(--vm-subtle);
+  color: var(--vm-component-ink, #00498c);
+}
+.volley-app .volley-sidebar footer {
+  margin-top: auto;
+  padding: 20px 4px 0;
+  border-top: 1px solid var(--vm-line);
+  font-size: 12px;
+}
+.volley-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.volley-account > span {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--vm-subtle);
+  color: var(--vm-component-ink, #00498c);
+}
+.volley-account svg {
+  width: 18px;
+  height: 18px;
+}
+.volley-account strong,
+.volley-account small {
+  display: block;
+}
+.volley-account strong {
+  color: var(--vm-ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+.volley-account small {
+  color: var(--vm-muted);
+  font-size: 12px;
+}
+.volley-app .volley-sidebar footer [data-slot="button"] {
+  width: 100%;
+  min-height: 36px;
+  justify-content: flex-start;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid var(--vm-line);
+  border-radius: 8px;
+  color: var(--vm-ink);
+}
+.volley-header-divider {
+  height: 20px;
+  border-left: 1px solid var(--vm-line);
+}
+.volley-app .vx-desktop-context {
+  font-size: 14px;
+  gap: 12px;
+}
+.volley-app .vx-desktop-context strong {
+  color: var(--vm-ink);
+  font-weight: 500;
+}
+.volley-app .volley-tag {
+  display: none;
+}
+.volley-app .volley-content :is(.sc-page-head h1, .vx-page-intro h1) {
+  font-size: 36px;
+  color: var(--vm-ink);
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+.volley-app .volley-content :is(.sc-page-head p, .vx-page-intro p:last-child) {
+  font-size: 16px;
+  color: var(--vm-muted);
+}
+.volley-app .vx-page-intro .vx-eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.8px;
+}
 @media (min-width: 1025px) {
-  .volley-app.volley-sidebar-collapsed .volley-sidebar { width: 72px; padding-inline: 8px; }
-  .volley-sidebar-collapsed .volley-brand { padding: 0; justify-content: center; }
-  .volley-sidebar-collapsed :is(.volley-brand > div, .volley-mode, .volley-nav-label, .volley-account > div, .volley-sidebar footer > a, .volley-sidebar footer > span, .volley-sidebar footer button > span) { display: none; }
-  .volley-app.volley-sidebar-collapsed .volley-sidebar nav a { justify-content: center; padding: 12px; }
-  .volley-sidebar-collapsed .volley-account { justify-content: center; }
-  .volley-app.volley-sidebar-collapsed .volley-sidebar footer button { justify-content: center; }
+  .volley-app.volley-sidebar-collapsed .volley-sidebar {
+    width: 72px;
+    padding-inline: 8px;
+  }
+  .volley-sidebar-collapsed .volley-brand {
+    padding: 0;
+    justify-content: center;
+  }
+  .volley-sidebar-collapsed
+    :is(
+      .volley-brand > div,
+      .volley-mode,
+      .volley-nav-label,
+      .volley-account > div,
+      .volley-sidebar footer > a,
+      .volley-sidebar footer > span,
+      .volley-sidebar footer button > span
+    ) {
+    display: none;
+  }
+  .volley-app.volley-sidebar-collapsed .volley-sidebar nav a {
+    justify-content: center;
+    padding: 12px;
+  }
+  .volley-sidebar-collapsed .volley-account {
+    justify-content: center;
+  }
+  .volley-app.volley-sidebar-collapsed .volley-sidebar footer button {
+    justify-content: center;
+  }
 }
 @media (max-width: 1024px) {
-  .volley-app .volley-sidebar { padding: 0; }
-  .volley-app .volley-sidebar footer { display: none; }
-  .volley-app .volley-sidebar nav a { min-height: 56px; padding: 6px 2px; font-size: 11px; }
-  .volley-app .volley-content { padding: 24px 20px calc(var(--volley-nav-height, 96px) + 20px); }
-  .volley-app .volley-content :is(.sc-page-head h1, .vx-page-intro h1) { font-size: 30px; }
+  .volley-app .volley-sidebar {
+    padding: 0;
+  }
+  .volley-app .volley-sidebar footer {
+    display: none;
+  }
+  .volley-app .volley-sidebar nav a {
+    min-height: 56px;
+    padding: 6px 2px;
+    font-size: 11px;
+  }
+  .volley-app .volley-content {
+    padding: 24px 20px calc(var(--volley-nav-height, 96px) + 20px);
+  }
+  .volley-app .volley-content :is(.sc-page-head h1, .vx-page-intro h1) {
+    font-size: 30px;
+  }
 }
 @media (max-width: 640px) {
-  .volley-app .volley-content { padding-inline: 16px; }
-  .volley-app .volley-content :is(.sc-page-head h1, .vx-page-intro h1) { font-size: 28px; }
-  .volley-app .volley-content :is(.sc-page-head p, .vx-page-intro p:last-child) { font-size: 14px; }
+  .volley-app .volley-content {
+    padding-inline: 16px;
+  }
+  .volley-app .volley-content :is(.sc-page-head h1, .vx-page-intro h1) {
+    font-size: 28px;
+  }
+  .volley-app
+    .volley-content
+    :is(.sc-page-head p, .vx-page-intro p:last-child) {
+    font-size: 14px;
+  }
 }
