@@ -52,7 +52,7 @@ export function VoleiShell({
       ] as const);
   return (
     <ActivityProvider>
-      <div className={`volley-app${collapsed ? " volley-sidebar-collapsed" : ""}`}>
+      <div className={`volley-app${admin ? "" : " volley-public"}${collapsed ? " volley-sidebar-collapsed" : ""}`}>
         <aside className="volley-sidebar" id="volley-navigation">
           <Link
             href={admin ? "/admin/volei" : "/volei"}

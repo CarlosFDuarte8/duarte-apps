@@ -28,7 +28,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 750;
   letter-spacing: 1.8px;
   color: var(--vm-component-ink, #597447);
@@ -99,7 +99,7 @@
   border-radius: 6px;
   background: var(--vm-component-success-surface, #f1f7e9);
   padding: 7px 9px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.7px;
 }
@@ -126,14 +126,14 @@
 }
 .game-deadline-box > strong small {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: 0;
   color: var(--vm-component-muted, #8a9684);
   margin: 6px 0 12px;
 }
 .game-deadline-box > span:last-child {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--vm-component-muted, #67785e);
 }
 .game-summary-strip {
@@ -192,7 +192,7 @@
 }
 .game-kicker {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 1.4px;
   font-weight: 700;
   color: var(--vm-component-muted, #8d9a85);
@@ -215,6 +215,25 @@
 .game-form {
   display: grid;
   gap: 20px;
+  min-width: 0;
+}
+/* Grid items must shrink to the card, including native date/select controls. */
+.game-form > *,
+.game-guest-fields,
+.game-guest-fields > *,
+.game-section-heading > div,
+.game-personal-status > div {
+  min-width: 0;
+}
+.game-form label,
+.game-identity strong,
+.game-guest-entry strong,
+.game-player-list strong {
+  overflow-wrap: anywhere;
+}
+.volley-app .game-form :is(input, select, textarea),
+.game-form [data-slot="native-select-wrapper"] {
+  max-width: 100%;
   min-width: 0;
 }
 .volley-app .game-form label {
@@ -256,7 +275,7 @@
   display: block;
   margin-top: 8px;
   color: var(--vm-component-muted, #9aa392);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 1.6;
 }
@@ -271,7 +290,7 @@
 }
 .game-phone-input > span {
   color: var(--vm-component-muted, #71836a);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   padding: 0 12px;
   border-right: 1px solid var(--vm-component-line, #e0e7da);
@@ -313,7 +332,7 @@
 }
 .game-checkbox small {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   color: var(--vm-component-muted, #9aa48f);
   margin-top: 4px;
@@ -347,15 +366,15 @@
   font-size: 13px;
   font-weight: 650;
   line-height: 1.5;
-  background: #264c35;
-  color: white !important;
+  background: var(--vm-action);
+  color: var(--vm-action-ink, white) !important;
   cursor: pointer;
   transition:
     background 0.15s,
     box-shadow 0.15s;
 }
 .volley-app .game-primary:hover:not(:disabled) {
-  background: #183e29;
+  background: var(--vm-action-hover);
   box-shadow: 0 4px 10px #244e3320;
 }
 .game-primary > svg:last-child {
@@ -384,7 +403,7 @@
   cursor: not-allowed;
 }
 .volley-app .game-danger {
-  background: #a8423c;
+  background: var(--vm-danger-action);
   color: white !important;
 }
 .game-privacy-note {
@@ -392,6 +411,14 @@
   align-items: flex-start;
   gap: 8px;
   padding-inline: 4px;
+}
+.game-update-time {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--vm-component-muted, #728168);
+}
+.game-roster-heading {
+  flex-wrap: wrap;
 }
 .game-privacy-note svg {
   flex-shrink: 0;
@@ -401,7 +428,7 @@
   margin-top: 2px;
 }
 .game-privacy-note p {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.7;
   color: var(--vm-component-muted, #98a28f);
   margin: 0;
@@ -423,7 +450,7 @@
 }
 .game-notice p {
   margin: 0;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.7;
 }
 .game-notice strong {
@@ -475,7 +502,7 @@
 .game-identity > div > span {
   display: flex;
   gap: 5px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--vm-component-muted, #8f9c85);
   margin-top: 5px;
   align-items: center;
@@ -485,7 +512,7 @@
   height: 12px;
 }
 .game-device-badge {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--vm-component-muted, #74905a);
   display: flex;
   align-items: center;
@@ -509,7 +536,7 @@
   color: var(--vm-component-ink, #527535);
 }
 .game-personal-status p {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.7;
   color: var(--vm-component-muted, #8a9b7e);
   margin: 5px 0 0;
@@ -527,6 +554,7 @@
 }
 .game-guest-heading {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   align-items: center;
   justify-content: space-between;
@@ -536,7 +564,7 @@
   margin: 0;
 }
 .game-guest-heading > span {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--vm-component-warning-ink, #9ba68e);
 }
 .game-guest-entry {
@@ -555,7 +583,7 @@
 }
 .game-guest-entry > div > span {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 5px;
   color: var(--vm-component-warning-ink, #a09166);
   line-height: 1.6;
@@ -565,7 +593,7 @@
   background: transparent;
   border: 0;
   color: var(--vm-component-danger-ink, #9c6c64) !important;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   padding: 7px;
 }
@@ -626,7 +654,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 9px;
+  font-size: 12px;
   white-space: nowrap;
   color: var(--vm-component-muted, #8da17b);
 }
@@ -647,11 +675,11 @@
 }
 .game-capacity strong > span {
   font-weight: 400;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--vm-component-muted, #96a08e);
 }
 .game-capacity > div > span {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--vm-component-muted, #7a9461);
 }
 .game-capacity progress {
@@ -678,7 +706,7 @@
   border-radius: 10px;
 }
 .game-capacity > small {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--vm-component-muted, #a1ab97);
 }
 .game-roster-filters {
@@ -700,7 +728,7 @@
   gap: 5px;
   padding: 8px 5px;
   border-radius: 7px;
-  font-size: 10px;
+  font-size: 12px;
   min-height: 40px;
   font-weight: 500;
 }
@@ -712,7 +740,7 @@
   font-weight: 650;
 }
 .game-roster-filters button > span {
-  font-size: 9px;
+  font-size: 12px;
   background: var(--vm-component-subtle, #edf2e6);
   color: var(--vm-component-muted, #8b9f72);
   min-width: 17px;
@@ -738,7 +766,7 @@
   border: 0;
 }
 .game-player-position {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--vm-component-muted, #b1baa9);
   width: 18px;
   flex-shrink: 0;
@@ -746,7 +774,7 @@
 .game-player-avatar {
   width: 32px;
   height: 32px;
-  font-size: 10px;
+  font-size: 12px;
 }
 .game-player-list li > div {
   flex: 1;
@@ -760,7 +788,7 @@
 }
 .game-player-list small {
   color: var(--vm-component-muted, #a8b39b);
-  font-size: 9px;
+  font-size: 12px;
   display: block;
   margin-top: 4px;
 }
@@ -811,7 +839,7 @@
 .game-empty p {
   margin: 0;
   max-width: 230px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--vm-component-muted, #a3ad99);
   line-height: 1.7;
 }
@@ -821,7 +849,7 @@
   display: flex;
   align-items: flex-start;
   gap: 7px;
-  font-size: 9px;
+  font-size: 12px;
   color: var(--vm-component-muted, #a5af9c);
   line-height: 1.7;
 }
@@ -845,7 +873,7 @@
   height: 28px;
 }
 .game-page-footer p {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.8;
   margin: 0;
 }
@@ -897,7 +925,7 @@
     text-align: right;
   }
   .game-deadline-box > strong small {
-    font-size: 9px;
+    font-size: 12px;
     margin-bottom: 0;
   }
   .game-deadline-box > span:last-child {
@@ -907,7 +935,7 @@
     gap: 12px 16px;
   }
   .game-summary-strip > span {
-    font-size: 11px;
+    font-size: 12px;
   }
   .volley-app .game-signup,
   .volley-app .game-roster {
@@ -930,7 +958,7 @@
     padding: 20px 16px;
   }
   .game-open-badge {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.2px;
   }
   .game-deadline-box > strong {
@@ -945,7 +973,7 @@
     padding: 3px;
   }
   .volley-app .game-roster-filters button {
-    font-size: 9px;
+    font-size: 12px;
     gap: 3px;
     padding-inline: 2px;
   }
@@ -962,7 +990,7 @@
 .game-roster-footer,
 .game-capacity > small,
 .game-empty p {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--vm-component-muted, #728168);
 }
 .game-description {
@@ -973,7 +1001,7 @@
   color: var(--vm-component-ink, #4f6346);
 }
 .game-player-list small {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--vm-component-muted, #7f8d75);
 }
 .game-notice p {

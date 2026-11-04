@@ -1,7 +1,9 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useOperationStatus } from "./activity";
+import { copyText } from "@/lib/volei/clipboard";
+export { copyText } from "@/lib/volei/clipboard";
 
 type Result = { error: string };
 
@@ -49,28 +51,23 @@ export function useRun() {
   };
 }
 
-/** Copia texto; usa um textarea temporário quando a Clipboard API não está disponível (HTTP, p.ex.). */
-export async function copyText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch {
-    const area = document.createElement("textarea");
-    area.value = text;
-    area.style.position = "fixed";
-    area.style.opacity = "0";
-    document.body.appendChild(area);
-    area.select();
-    document.execCommand("copy");
-    area.remove();
-  }
-}
-
 export function useCopy() {
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState("");
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (timeout.current) clearTimeout(timeout.current); }, []);
+  useOperationStatus(false, "", error);
   async function copy(text: string) {
-    await copyText(text);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 2000);
+    if (timeout.current) clearTimeout(timeout.current);
+    setCopied(false);
+    setError("");
+    try {
+      await copyText(text);
+      setCopied(true);
+      timeout.current = setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setError("Não foi possível copiar. Tente novamente ou copie o endereço do navegador.");
+    }
   }
   return { copied, copy };
 }

@@ -10,9 +10,10 @@
   min-width: 0;
 }
 .volley-phone-input select {
+  max-width: 100%;
   text-overflow: ellipsis;
 }
-@media (max-width: 380px) {
+@media (max-width: 480px) {
   .volley-phone-input {
     grid-template-columns: minmax(0, 1fr);
   }

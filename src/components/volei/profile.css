@@ -38,6 +38,9 @@
   min-width: 0;
 }
 .vp-emergency legend {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
   font-size: 15px;
   font-weight: 600;
   color: var(--vm-component-ink, #45613c);
@@ -103,11 +106,21 @@
 }
 .vp-birth-label {
   display: grid;
+  min-width: 0;
   gap: 8px;
   max-width: 320px;
   font-size: 13px;
   font-weight: 600;
   color: var(--vm-component-ink, #5d7154);
+}
+.vp-profile-form > *,
+.vp-profile-form [data-slot="native-select-wrapper"] {
+  min-width: 0;
+  max-width: 100%;
+}
+.volley-app .vp-profile-form :is(input, select) {
+  min-width: 0;
+  max-width: 100%;
 }
 .vp-birth-label small {
   font-weight: 400;
@@ -135,7 +148,7 @@
 .vp-member-age {
   display: block;
   margin-top: 6px;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--vm-component-muted, #84927b);
   line-height: 1.6;
 }

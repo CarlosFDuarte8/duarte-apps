@@ -1,0 +1,2 @@
+// Runs before the first paint; the same preference is used by ThemeToggle.
+export const volleyThemeScript = `(()=>{try{const saved=localStorage.getItem('volley-theme');const dark=saved==='dark'||(saved!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.volleyTheme=dark?'dark':'light'}catch{document.documentElement.dataset.volleyTheme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}})()`;

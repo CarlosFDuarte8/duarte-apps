@@ -74,7 +74,7 @@ export default async function Page({
               Página do jogo e convidados →
             </Link>
           </div>
-          <GameRoster game={game} />
+          <GameRoster game={game} updatedAt={new Date().toISOString()} />
         </section>
       ))}
     </>
