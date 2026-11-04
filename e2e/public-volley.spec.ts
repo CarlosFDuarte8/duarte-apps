@@ -4,6 +4,13 @@ const game = "/volei/jogo/11111111-1111-4111-8111-111111111111";
 for (const width of [320, 390, 768, 1280]) {
   for (const theme of ["light", "dark"]) {
     test(`${width}px ${theme}: public pages fit their cards`, async ({ page, context }, testInfo) => {
+      const browserErrors: string[] = [];
+      page.on("pageerror", error => browserErrors.push(error.message));
+      page.on("console", message => {
+        if (message.type() === "error" && /hydrat|server rendered|didn't match/i.test(message.text())) {
+          browserErrors.push(message.text());
+        }
+      });
       await page.setViewportSize({ width, height: 900 });
       await page.addInitScript(t => localStorage.setItem("volley-theme", t), theme);
       for (const route of ["/volei", game, "/volei/meu-cadastro", "/volei/ajuda", "/volei/entrar"]) {
@@ -32,7 +39,7 @@ for (const width of [320, 390, 768, 1280]) {
           expect(wrappedLabels).toEqual([]);
         }
         if (theme === "dark") {
-          const whiteSurfaces = await page.locator(".volley-card, .vx-event-jumps, .vx-overview-stat").evaluateAll(elements => {
+          await expect.poll(() => page.locator(".volley-card, .vx-event-jumps, .vx-overview-stat").evaluateAll(elements => {
             const canvas = document.createElement("canvas");
             canvas.width = canvas.height = 1;
             const ctx = canvas.getContext("2d")!;
@@ -43,8 +50,7 @@ for (const width of [320, 390, 768, 1280]) {
               const [r,g,b,a] = ctx.getImageData(0, 0, 1, 1).data;
               return a > 128 && Math.min(r,g,b) > 220;
             }).map(el => el.className);
-          });
-          expect(whiteSurfaces, route).toEqual([]);
+          }), { message: `Dark surfaces on ${route}` }).toEqual([]);
         }
         if (route === game) {
           await expect(page.locator(".game-summary-strip")).toContainText("15 vagas disponíveis");
@@ -56,6 +62,7 @@ for (const width of [320, 390, 768, 1280]) {
         }
         await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
         await page.screenshot({ path: testInfo.outputPath(`${route.replace(/\W/g, "-")}.png`), fullPage: true });
+        expect(browserErrors, `Browser errors on ${route}`).toEqual([]);
       }
     });
   }
