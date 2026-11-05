@@ -115,6 +115,39 @@ export async function setAttendance(
   return done(error);
 }
 
+export async function addAdminGuest(
+  eventId: string,
+  memberId: string,
+  name: string,
+): Promise<Result & { status?: string; name?: string }> {
+  const { client } = await requireAdmin();
+  const parsed = z
+    .object({
+      eventId: id,
+      memberId: id,
+      name: z.string().trim().min(1, "Informe o nome do convidado.").max(100),
+    })
+    .safeParse({ eventId, memberId, name });
+  if (!parsed.success) return invalid(parsed.error);
+  const { data, error } = await client.rpc("volei_admin_add_guest", {
+    p_event: parsed.data.eventId,
+    p_member: parsed.data.memberId,
+    p_name: parsed.data.name,
+  });
+  if (error?.code === "PGRST202" || error?.code === "42883")
+    return {
+      error:
+        "A inclusão administrativa precisa ser habilitada no banco de dados. Aplique a migration de convidados administrativos.",
+    };
+  const result = done(error);
+  if (result.error) return result;
+  return {
+    ...result,
+    status: data?.status,
+    name: data?.name ?? parsed.data.name,
+  };
+}
+
 export async function addMember(name: string, phone = ""): Promise<Result> {
   const { client } = await requireAdmin();
   const parsed = memberNameSchema.safeParse(name);

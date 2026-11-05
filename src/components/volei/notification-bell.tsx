@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Bell, ChevronRight, UserPlus, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,6 @@ export function NotificationBell() {
   const [summary, setSummary] = useState<NotificationSummary | null>(null);
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
   useEffect(() => {
     let active = true,
       inflight = false;
@@ -52,7 +50,7 @@ export function NotificationBell() {
       window.removeEventListener("focus", refresh);
       window.removeEventListener("volley-notifications-changed", refresh);
     };
-  }, [pathname]);
+  }, []);
   const total = summary ? summary.pendingMembers + summary.openComplaints : 0;
   return (
     <Popover open={open} onOpenChange={setOpen}>

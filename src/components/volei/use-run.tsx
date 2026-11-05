@@ -8,7 +8,9 @@ export { copyText } from "@/lib/volei/clipboard";
 type Result = { error: string };
 
 /** Executa uma server action, atualiza a tela e expõe pendência e erro. */
-export function useRun() {
+export function useRun({
+  revalidated = false,
+}: { revalidated?: boolean } = {}) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState("");
@@ -31,7 +33,8 @@ export function useRun() {
           setSuccess("Alterações salvas.");
           setMessage("Atualizando informações…");
           window.dispatchEvent(new Event("volley-notifications-changed"));
-          router.refresh();
+          // Actions using revalidatePath already return the updated server tree.
+          if (!revalidated) router.refresh();
           after?.();
         }
       } catch {
@@ -55,7 +58,12 @@ export function useCopy() {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => () => { if (timeout.current) clearTimeout(timeout.current); }, []);
+  useEffect(
+    () => () => {
+      if (timeout.current) clearTimeout(timeout.current);
+    },
+    [],
+  );
   useOperationStatus(false, "", error);
   async function copy(text: string) {
     if (timeout.current) clearTimeout(timeout.current);
@@ -66,7 +74,9 @@ export function useCopy() {
       setCopied(true);
       timeout.current = setTimeout(() => setCopied(false), 2000);
     } catch {
-      setError("Não foi possível copiar. Tente novamente ou copie o endereço do navegador.");
+      setError(
+        "Não foi possível copiar. Tente novamente ou copie o endereço do navegador.",
+      );
     }
   }
   return { copied, copy };

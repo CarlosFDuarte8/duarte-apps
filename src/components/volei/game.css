@@ -19,7 +19,12 @@
   border: 1px solid var(--vm-component-line, #dce5dc);
   border-radius: 20px;
   background:
-    radial-gradient(ellipse at top right, var(--vm-component-subtle, #edf4e4), transparent 60%), var(--vm-component-surface, #fff);
+    radial-gradient(
+      ellipse at top right,
+      var(--vm-component-subtle, #edf4e4),
+      transparent 60%
+    ),
+    var(--vm-component-surface, #fff);
 }
 .game-event-intro {
   min-width: 0;
@@ -698,11 +703,11 @@
   border-radius: 10px;
 }
 .game-capacity progress::-webkit-progress-value {
-  background: var(--vm-component-subtle, #9fbd78);
+  background: var(--vm-component-accent, #00498c);
   border-radius: 10px;
 }
 .game-capacity progress::-moz-progress-bar {
-  background: var(--vm-component-subtle, #9fbd78);
+  background: var(--vm-component-accent, #00498c);
   border-radius: 10px;
 }
 .game-capacity > small {

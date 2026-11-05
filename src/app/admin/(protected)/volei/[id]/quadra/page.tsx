@@ -24,9 +24,18 @@ export default async function Page({
         title={formatDate(data.event.date)}
         description="Chegadas, times equilibrados, vencedor permanece e fila de rodízio."
         actions={
-          <Button asChild variant="outline">
-            <Link href={`/admin/volei/${id}`}>← Voltar ao jogo</Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            {!data.event.presence_closed_at && (
+              <Button asChild>
+                <Link href={`/admin/volei/${id}#adicionar-convidado`}>
+                  Adicionar convidado
+                </Link>
+              </Button>
+            )}
+            <Button asChild variant="outline">
+              <Link href={`/admin/volei/${id}`}>← Voltar ao jogo</Link>
+            </Button>
+          </div>
         }
       />
       <CourtBoard

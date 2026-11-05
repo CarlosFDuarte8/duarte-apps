@@ -7,6 +7,7 @@ import { getEvent, listMembers, publicEvent } from "@/lib/volei/repository";
 import { GameRoster } from "@/components/volei/game-roster";
 import { formatDate } from "@/lib/volei/domain";
 import { Button } from "@/components/ui/button";
+import { AdminGuestForm } from "@/components/volei/admin-guest-form";
 
 export default async function Page({
   params,
@@ -51,10 +52,29 @@ export default async function Page({
           Lista de entrada para a portaria / imprimir
         </Link>
       </Button>
+      <AdminGuestForm
+        eventId={id}
+        finalized={!!found.event.presence_closed_at}
+        sponsors={members
+          .filter(
+            (member) =>
+              member.is_active &&
+              !member.blocked &&
+              member.membership_status === "approved" &&
+              found.attendance.some(
+                (row) =>
+                  row.member_id === member.id &&
+                  ["confirmado", "espera"].includes(row.status),
+              ),
+          )
+          .map(({ id, name }) => ({ id, name }))
+          .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))}
+      />
       <EventManager
         event={found.event}
         members={members}
         attendance={found.attendance}
+        guests={found.guests}
       />
       {game && <GameRoster game={game} updatedAt={new Date().toISOString()} />}
     </>

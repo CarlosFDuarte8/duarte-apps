@@ -1,50 +1,66 @@
 ﻿"use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { publicEvent } from "@/lib/volei/repository";
 import { VolleyIcon } from "./volley-icon";
 import "./game.css";
 import { eventCapacity, eventFreeSlots } from "@/lib/volei/domain";
 type Game = NonNullable<Awaited<ReturnType<typeof publicEvent>>>;
-export function GameRoster({ game, updatedAt }: { game: Game; updatedAt: string }) {
-  const capacity = eventCapacity(game.event);
-  const reserved = game.attendance.filter((p) => p.status === "reservado").length;
+export function GameRoster({
+  game,
+  updatedAt,
+}: {
+  game: Game;
+  updatedAt: string;
+}) {
   const [tab, setTab] = useState<"confirmed" | "waiting" | "guests">(
     "confirmed",
   );
-  const confirmed = [
-    ...game.attendance
-      .filter((p) => p.status === "confirmado")
+  const { capacity, reserved, confirmed, waiting, guests } = useMemo(() => {
+    const capacity = eventCapacity(game.event);
+    const reserved = game.attendance.filter(
+      (p) => p.status === "reservado",
+    ).length;
+    const confirmed = [
+      ...game.attendance
+        .filter((p) => p.status === "confirmado")
+        .map((p) => ({
+          id: p.member_id,
+          name: p.name,
+          guest: false,
+          at: p.registered_at,
+        })),
+      ...game.guests
+        .filter((p) => p.status === "confirmado")
+        .map((p) => ({
+          id: p.id,
+          name: p.name,
+          guest: true,
+          at: p.registered_at,
+        })),
+    ].sort((a, b) => a.at.localeCompare(b.at));
+    const waiting = game.attendance
+      .filter((p) => p.status === "espera")
       .map((p) => ({
         id: p.member_id,
         name: p.name,
         guest: false,
         at: p.registered_at,
-      })),
-    ...game.guests
-      .filter((p) => p.status === "confirmado")
+      }));
+    const guests = [...game.guests]
+      .filter((p) => p.status === "espera")
+      .sort(
+        (a, b) =>
+          a.registered_at.localeCompare(b.registered_at) ||
+          a.queue_order - b.queue_order,
+      )
       .map((p) => ({
         id: p.id,
         name: p.name,
         guest: true,
         at: p.registered_at,
-      })),
-  ].sort((a, b) => a.at.localeCompare(b.at));
-  const waiting = game.attendance
-    .filter((p) => p.status === "espera")
-    .map((p) => ({
-      id: p.member_id,
-      name: p.name,
-      guest: false,
-      at: p.registered_at,
-    }));
-  const guests = [...game.guests]
-    .filter((p) => p.status === "espera")
-    .sort(
-      (a, b) =>
-        a.registered_at.localeCompare(b.registered_at) ||
-        a.queue_order - b.queue_order,
-    )
-    .map((p) => ({ id: p.id, name: p.name, guest: true, at: p.registered_at }));
+      }));
+    return { capacity, reserved, confirmed, waiting, guests };
+  }, [game]);
   const selected =
     tab === "confirmed" ? confirmed : tab === "waiting" ? waiting : guests;
   return (
@@ -65,7 +81,10 @@ export function GameRoster({ game, updatedAt }: { game: Game; updatedAt: string 
             {confirmed.length}
             <span> / {capacity} jogadores</span>
           </strong>
-          <span>{eventFreeSlots(game.event, confirmed.length, reserved)} vagas livres</span>
+          <span>
+            {eventFreeSlots(game.event, confirmed.length, reserved)} vagas
+            livres
+          </span>
         </div>
         <progress
           max={capacity}
@@ -74,10 +93,19 @@ export function GameRoster({ game, updatedAt }: { game: Game; updatedAt: string 
         />
         <small>
           {game.event.max_teams ?? 3} times de 6 · {capacity} jogadores
-          {reserved > 0 && ` · ${reserved} ${reserved === 1 ? "vaga reservada" : "vagas reservadas"}`}
+          {reserved > 0 &&
+            ` · ${reserved} ${reserved === 1 ? "vaga reservada" : "vagas reservadas"}`}
         </small>
         <p className="game-update-time">
-          Última atualização: <time dateTime={updatedAt}>{new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(updatedAt))}</time>
+          Última atualização:{" "}
+          <time dateTime={updatedAt}>
+            {new Intl.DateTimeFormat("pt-BR", {
+              timeZone: "America/Sao_Paulo",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            }).format(new Date(updatedAt))}
+          </time>
         </p>
       </div>
       <div

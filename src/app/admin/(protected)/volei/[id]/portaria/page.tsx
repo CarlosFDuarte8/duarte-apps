@@ -6,6 +6,7 @@ import { requireVoleiAdmin } from "@/lib/volei/auth";
 import { getEvent, listMembers } from "@/lib/volei/repository";
 import { formatDate } from "@/lib/volei/domain";
 import { PrintGateList } from "@/components/volei/print-gate-list";
+import { GateListTables } from "@/components/volei/gate-list-tables";
 import { Button } from "@/components/ui/button";
 import "@/components/volei/gate-list.css";
 export default async function Page({
@@ -46,31 +47,7 @@ export default async function Page({
           </p>
           <strong>Entrada autorizada somente para os nomes abaixo</strong>
         </header>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Nº</th>
-              <th scope="col">Nome completo</th>
-              <th scope="col">Tipo / responsável</th>
-              <th scope="col">Entrada</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((p, i) => (
-              <tr key={p.key}>
-                <td>{i + 1}</td>
-                <td>{p.name}</td>
-                <td>
-                  {p.type}
-                  {p.type === "Convidado" && (
-                    <small>Responsável: {p.responsible}</small>
-                  )}
-                </td>
-                <td className="gate-check">□</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <GateListTables rows={rows} />
         {!rows.length && <p>Nenhum participante confirmado para este dia.</p>}
         <footer>
           <strong>Total autorizado: {rows.length} pessoas</strong>

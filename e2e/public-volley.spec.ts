@@ -31,6 +31,14 @@ for (const width of [320, 390, 768, 1280]) {
         await page.goto(route);
         await expect(page.locator(".volley-content")).toBeVisible();
         await expect(page.locator("html")).toHaveAttribute("data-volley-theme", theme);
+        if (route === game) {
+          const ink = theme === "dark" ? "rgb(250, 250, 250)" : "rgb(0, 31, 59)";
+          const surface = theme === "dark" ? "rgb(16, 39, 59)" : "rgb(255, 255, 255)";
+          const accent = theme === "dark" ? "rgb(131, 163, 213)" : "rgb(0, 73, 140)";
+          await expect(page.locator(".game-roster")).toHaveCSS("background-color", surface);
+          await expect(page.locator(".game-capacity strong")).toHaveCSS("color", ink);
+          await expect(page.locator('.game-roster-filters button[aria-pressed="true"]')).toHaveCSS("background-color", accent);
+        }
         const overflow = await page.evaluate(() => {
           const issues: string[] = [];
           if (document.documentElement.scrollWidth > innerWidth + 1) issues.push("page");
