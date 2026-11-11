@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { MemberStudent } from "./member-student";
 import { MemberPreferences } from "./member-preferences";
 import { PhoneInput } from "./phone-input";
 import { displayPhone } from "@/lib/volei/phone";
@@ -212,6 +213,10 @@ export function MemberEditor({
             />
           </section>
 
+          <MemberStudent
+            key={`${member.id}:${JSON.stringify(member.student_weekdays)}:${JSON.stringify(member.requested_student_weekdays)}`}
+            member={member}
+          />
           <MemberPreferences member={member} />
           <SkillLevelForm id={member.id} level={member.skill_level} />
 
@@ -233,12 +238,7 @@ export function MemberEditor({
                 maxLength={200}
                 aria-label="Motivo dos pontos"
               />
-              <Button
-                type="button"
-
-                disabled={pending}
-                onClick={() => apply(1)}
-              >
+              <Button type="button" disabled={pending} onClick={() => apply(1)}>
                 + Dar
               </Button>
               <Button
@@ -273,7 +273,6 @@ export function MemberEditor({
             {member.blocked ? (
               <Button
                 type="button"
-
                 disabled={pending}
                 onClick={() => run(() => setBlocked(member.id, false, ""))}
               >

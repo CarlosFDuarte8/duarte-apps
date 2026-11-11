@@ -1,5 +1,9 @@
 "use server";
 import { z } from "zod";
+import {
+  studentEnrollmentSchema,
+  studentDaysSchema,
+} from "@/lib/volei/students";
 import { revalidatePath } from "next/cache";
 import { requireVoleiAdmin as requireAdmin } from "@/lib/volei/auth";
 import { phoneSchema } from "@/lib/volei/phone";
@@ -148,14 +152,21 @@ export async function addAdminGuest(
   };
 }
 
-export async function addMember(name: string, phone = ""): Promise<Result> {
+export async function addMember(
+  name: string,
+  phone = "",
+  enrollment: unknown = { isStudent: false, days: [] },
+): Promise<Result> {
   const { client } = await requireAdmin();
+  const student = studentEnrollmentSchema.safeParse(enrollment);
+  if (!student.success) return invalid(student.error);
   const parsed = memberNameSchema.safeParse(name);
   if (!parsed.success) return invalid(parsed.error);
   const contact = phone ? phoneSchema.safeParse(phone) : null;
   if (contact && !contact.success) return invalid(contact.error);
   const { error } = await client.from("volei_members").insert({
     name: parsed.data,
+    student_weekdays: student.data,
     phone: contact?.data ?? null,
     membership_status: "approved",
   });
@@ -430,5 +441,28 @@ export async function reviewMembership(
     .update({ membership_status: decision, is_active: decision === "approved" })
     .eq("id", memberId)
     .in("membership_status", ["pending", "rejected"]);
+  return done(error);
+}
+
+export async function saveStudentDays(
+  memberId: string,
+  input: unknown,
+): Promise<Result> {
+  const { client } = await requireAdmin();
+  const parsed = z
+    .object({
+      enrollment: studentEnrollmentSchema,
+      expectedDays: studentDaysSchema,
+      expectedRequest: studentDaysSchema.nullable(),
+    })
+    .safeParse(input);
+  if (!id.safeParse(memberId).success) return { error: "Membro inválido." };
+  if (!parsed.success) return invalid(parsed.error);
+  const { error } = await client.rpc("volei_save_student_days", {
+    p_member: memberId,
+    p_days: parsed.data.enrollment,
+    p_expected_days: parsed.data.expectedDays,
+    p_expected_request: parsed.data.expectedRequest,
+  });
   return done(error);
 }

@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { serviceClient } from "@/lib/escalas/supabase";
 import { signPhotos } from "./photos";
 import {
+  weekdayOf,
   daysInMonth,
   isEventOpen,
   type AttendanceStatus,
@@ -14,7 +15,7 @@ import {
 const eventColumns =
   "id,date,title,start_time,location,notes,closed,registration_deadline,guests_open_at,presence_closed_at,max_teams";
 const memberColumns =
-  "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status,birth_date,photo_path,skill_level,emergency_name,emergency_phone,emergency_relationship";
+  "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,student_weekdays,requested_student_weekdays,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status,birth_date,photo_path,skill_level,emergency_name,emergency_phone,emergency_relationship";
 
 function fail(error: { message: string } | null): asserts error is null {
   if (error) throw new Error(error.message);
@@ -160,7 +161,7 @@ export async function publicLeaderboard() {
   return (data ?? []) as { name: string; points: number }[];
 }
 
-const publicEventColumns = `${eventColumns}, volei_attendance(member_id,status,registered_at,queue_order, volei_members(name,is_core)), volei_guests(id,member_id,name,status,registered_at,queue_order)`;
+const publicEventColumns = `${eventColumns}, volei_attendance(member_id,status,registered_at,queue_order, volei_members(name,is_core,student_weekdays)), volei_guests(id,member_id,name,status,registered_at,queue_order)`;
 
 function presentPublicEvent(row: unknown) {
   const {
@@ -174,7 +175,11 @@ function presentPublicEvent(row: unknown) {
       status: AttendanceStatus;
       registered_at: string;
       queue_order: number;
-      volei_members: { name: string; is_core: boolean } | null;
+      volei_members: {
+        name: string;
+        is_core: boolean;
+        student_weekdays?: number[];
+      } | null;
     }[];
   };
   return {
@@ -183,8 +188,18 @@ function presentPublicEvent(row: unknown) {
     attendance: rows
       .sort(
         (a, b) =>
-          Number(!!b.volei_members?.is_core) -
-            Number(!!a.volei_members?.is_core) ||
+          Number(
+            !!b.volei_members?.is_core ||
+              !!b.volei_members?.student_weekdays?.includes(
+                weekdayOf(event.date),
+              ),
+          ) -
+            Number(
+              !!a.volei_members?.is_core ||
+                !!a.volei_members?.student_weekdays?.includes(
+                  weekdayOf(event.date),
+                ),
+            ) ||
           a.registered_at.localeCompare(b.registered_at) ||
           a.queue_order - b.queue_order,
       )
@@ -193,6 +208,7 @@ function presentPublicEvent(row: unknown) {
         status: r.status,
         name: r.volei_members?.name ?? "",
         registered_at: r.registered_at,
+        student: !!r.volei_members?.student_weekdays?.length,
       })),
   };
 }

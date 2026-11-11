@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 export type AttendanceStatus =
-  "confirmado" | "nao_vai" | "espera" | "ausente" | "reservado";
+  | "confirmado"
+  | "nao_vai"
+  | "espera"
+  | "ausente"
+  | "reservado";
 
 export type VoleiMember = {
   id: string;
@@ -19,6 +23,8 @@ export type VoleiMember = {
   emergency_name?: string;
   emergency_phone?: string;
   emergency_relationship?: string;
+  student_weekdays?: number[];
+  requested_student_weekdays?: number[] | null;
   is_core?: boolean;
   membership_status?: "approved" | "pending" | "rejected";
   preferred_weekdays?: number[];

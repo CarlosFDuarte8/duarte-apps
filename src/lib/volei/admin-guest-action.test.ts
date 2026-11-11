@@ -48,6 +48,7 @@ function fixture(
           };
         if (
           [
+            "@/lib/volei/students",
             "@/lib/volei/phone",
             "@/lib/volei/photos",
             "@/lib/volei/frequency",

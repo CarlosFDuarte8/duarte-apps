@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WEEKDAY_LABELS } from "@/lib/volei/frequency";
 import { z } from "zod";
 import { requireVoleiAdmin } from "@/lib/volei/auth";
 import {
@@ -42,7 +43,7 @@ export default async function Page({
     listComplaints(client, resolved, current),
     client
       .from("volei_members")
-      .select("id,name,phone,photo_path,created_at")
+      .select("id,name,phone,photo_path,created_at,requested_student_weekdays")
       .eq("membership_status", "pending")
       .order("created_at"),
   ]);
@@ -116,6 +117,18 @@ export default async function Page({
                   </p>
                 </div>
               </div>
+              {member.requested_student_weekdays != null && (
+                <p>
+                  Informou ser aluno:{" "}
+                  {(member.requested_student_weekdays as number[])
+                    .map((day) => WEEKDAY_LABELS[day])
+                    .join(", ")}
+                  .{" "}
+                  <Link href={`/admin/volei/membros/${member.id}`}>
+                    Conferir dias de aula
+                  </Link>
+                </p>
+              )}
               <MembershipRequestActions id={member.id} />
             </article>
           ))}
