@@ -6,6 +6,7 @@ import { transpileModule, ModuleKind, JsxEmit } from "typescript";
 import { createElement, type ComponentType } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as domain from "../src/lib/volei/domain";
+import * as participationTime from "../src/lib/volei/participation-time";
 
 const nodeRequire = createRequire(`${process.cwd()}/package.json`);
 const component: { EventManager?: ComponentType<Record<string, unknown>> } = {};
@@ -22,6 +23,7 @@ runInNewContext(
       if (name === "react" || name === "react/jsx-runtime")
         return nodeRequire(name);
       if (name === "@/lib/volei/domain") return domain;
+      if (name === "@/lib/volei/participation-time") return participationTime;
       if (name === "@/lib/volei/gate-list") return { buildGateList: () => [] };
       if (name === "./use-run")
         return {

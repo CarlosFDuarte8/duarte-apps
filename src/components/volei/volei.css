@@ -98,3 +98,10 @@
 .vl-neg {
   color: var(--vm-component-ink, #b91c1c);
 }
+
+.vl-participation-detail {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  font-weight: 400;
+}

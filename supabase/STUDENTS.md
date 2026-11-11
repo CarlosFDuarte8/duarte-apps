@@ -15,3 +15,9 @@ O RPC público é exclusivo de `service_role`, usado somente pelo servidor. Ele 
 Não foram recriadas tabelas nem alteradas políticas RLS. A migration adiciona campos e RPCs e modifica somente a ordenação das funções de preenchimento de vagas.
 
 Validação: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`. Os testes SQL estão em `supabase/students.test.ts` e usam um banco temporário local, sem cadastrar membros reais.
+
+## Rótulo e horário de confirmação
+
+O rótulo **Aluno confirmado** identifica membros com dias de aula aprovados, inclusive em jogos fora desses dias. Isso não muda a regra da fila.
+
+A migration adicional `202611110002_volei_confirmation_time.sql` adiciona `confirmed_at` a membros inscritos e convidados. Triggers registram a transição real para confirmado e preservam o horário durante check-in e outras edições. Não há backfill: registros antigos mostram a data da inscrição com o rótulo **Inscrito em**, pois não é possível reconstruir a confirmação. A apresentação usa o fuso de São Paulo.

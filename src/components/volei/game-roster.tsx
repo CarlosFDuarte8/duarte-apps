@@ -1,4 +1,5 @@
 ﻿"use client";
+import { participationTime } from "@/lib/volei/participation-time";
 import { useMemo, useState } from "react";
 import type { publicEvent } from "@/lib/volei/repository";
 import { VolleyIcon } from "./volley-icon";
@@ -27,6 +28,8 @@ export function GameRoster({
           id: p.member_id,
           name: p.name,
           guest: false,
+          student: p.student,
+          confirmedAt: p.confirmed_at,
           at: p.registered_at,
         })),
       ...game.guests
@@ -35,6 +38,8 @@ export function GameRoster({
           id: p.id,
           name: p.name,
           guest: true,
+          student: false,
+          confirmedAt: p.confirmed_at,
           at: p.registered_at,
         })),
     ].sort((a, b) => a.at.localeCompare(b.at));
@@ -44,6 +49,8 @@ export function GameRoster({
         id: p.member_id,
         name: p.name,
         guest: false,
+        student: p.student,
+        confirmedAt: null,
         at: p.registered_at,
       }));
     const guests = [...game.guests]
@@ -57,6 +64,8 @@ export function GameRoster({
         id: p.id,
         name: p.name,
         guest: true,
+        student: false,
+        confirmedAt: null,
         at: p.registered_at,
       }));
     return { capacity, reserved, confirmed, waiting, guests };
@@ -150,35 +159,53 @@ export function GameRoster({
       <div className="game-roster-content" aria-live="polite">
         {selected.length ? (
           <ol className="game-player-list">
-            {selected.map((person, i) => (
-              <li key={person.id}>
-                <span className="game-player-position">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="game-player-avatar">
-                  {person.name
-                    .split(" ")
-                    .slice(0, 2)
-                    .map((n) => n[0])
-                    .join("")}
-                </span>
-                <div>
-                  <strong>{person.name}</strong>
-                  <small>
-                    {person.guest
-                      ? "Convidado"
-                      : tab === "confirmed"
-                        ? "Membro confirmado"
-                        : "Aguardando uma vaga"}
-                  </small>
-                </div>
-                <span
-                  className={`game-player-mark ${tab !== "confirmed" ? "is-waiting" : ""}`}
-                >
-                  <VolleyIcon name={tab === "confirmed" ? "check" : "clock"} />
-                </span>
-              </li>
-            ))}
+            {selected.map((person, i) => {
+              const time = participationTime(
+                tab === "confirmed" ? "confirmado" : "espera",
+                person.at,
+                person.confirmedAt,
+              );
+              return (
+                <li key={person.id}>
+                  <span className="game-player-position">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="game-player-avatar">
+                    {person.name
+                      .split(" ")
+                      .slice(0, 2)
+                      .map((n) => n[0])
+                      .join("")}
+                  </span>
+                  <div>
+                    <strong>{person.name}</strong>
+                    <small>
+                      {person.guest
+                        ? "Convidado"
+                        : tab === "confirmed"
+                          ? person.student
+                            ? "Aluno confirmado"
+                            : "Membro confirmado"
+                          : person.student
+                            ? "Aluno · aguardando uma vaga"
+                            : "Aguardando uma vaga"}
+                    </small>
+                    {time && (
+                      <small>
+                        <time dateTime={time.dateTime}>{time.label}</time>
+                      </small>
+                    )}
+                  </div>
+                  <span
+                    className={`game-player-mark ${tab !== "confirmed" ? "is-waiting" : ""}`}
+                  >
+                    <VolleyIcon
+                      name={tab === "confirmed" ? "check" : "clock"}
+                    />
+                  </span>
+                </li>
+              );
+            })}
           </ol>
         ) : (
           <div className="game-empty">
@@ -201,8 +228,8 @@ export function GameRoster({
         )}
       </div>
       <footer className="game-roster-footer">
-        <VolleyIcon name="shield" />A lista pública mostra apenas nomes.
-        Telefones ficam privados.
+        <VolleyIcon name="shield" />A lista pública mostra nomes, vínculo de
+        aluno e horários. Telefones ficam privados.
       </footer>
     </section>
   );

@@ -32,6 +32,8 @@ export type AttendanceRow = {
   member_id: string;
   status: AttendanceStatus;
   checked_in_at?: string | null;
+  registered_at?: string;
+  confirmed_at?: string | null;
 };
 export type PointLogRow = {
   id: string;
@@ -111,7 +113,7 @@ export async function getEvent(client: SupabaseClient, id: string) {
   const { data, error } = await client
     .from("volei_events")
     .select(
-      `${eventColumns}, volei_attendance(member_id,status,checked_in_at), volei_guests(id,member_id,name,status,checked_in_at)`,
+      `${eventColumns}, volei_attendance(member_id,status,checked_in_at,registered_at,confirmed_at), volei_guests(id,member_id,name,status,checked_in_at,registered_at,confirmed_at)`,
     )
     .eq("id", id)
     .maybeSingle();
@@ -161,7 +163,7 @@ export async function publicLeaderboard() {
   return (data ?? []) as { name: string; points: number }[];
 }
 
-const publicEventColumns = `${eventColumns}, volei_attendance(member_id,status,registered_at,queue_order, volei_members(name,is_core,student_weekdays)), volei_guests(id,member_id,name,status,registered_at,queue_order)`;
+const publicEventColumns = `${eventColumns}, volei_attendance(member_id,status,registered_at,confirmed_at,queue_order, volei_members(name,is_core,student_weekdays)), volei_guests(id,member_id,name,status,registered_at,confirmed_at,queue_order)`;
 
 function presentPublicEvent(row: unknown) {
   const {
@@ -174,6 +176,7 @@ function presentPublicEvent(row: unknown) {
       member_id: string;
       status: AttendanceStatus;
       registered_at: string;
+      confirmed_at?: string | null;
       queue_order: number;
       volei_members: {
         name: string;
@@ -208,6 +211,7 @@ function presentPublicEvent(row: unknown) {
         status: r.status,
         name: r.volei_members?.name ?? "",
         registered_at: r.registered_at,
+        confirmed_at: r.confirmed_at ?? null,
         student: !!r.volei_members?.student_weekdays?.length,
       })),
   };
@@ -297,6 +301,7 @@ export async function savePublicAttendance(
 }
 
 export type GuestRow = {
+  confirmed_at?: string | null;
   id: string;
   member_id: string;
   name: string;
@@ -434,7 +439,7 @@ export async function frequencyEvents(
   const { data, error } = await client
     .from("volei_events")
     .select(
-      "id,date,title,presence_closed_at,volei_attendance(member_id,status,checked_in_at),volei_guests(status,checked_in_at)",
+      "id,date,title,presence_closed_at,volei_attendance(member_id,status,checked_in_at,registered_at,confirmed_at),volei_guests(status,checked_in_at)",
     )
     .gte("date", from)
     .lte("date", to)
