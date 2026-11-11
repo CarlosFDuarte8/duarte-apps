@@ -1,4 +1,5 @@
 ﻿"use server";
+import { unregisterBrowserOnLogout } from "@/lib/volei/web-push-logout";
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { sessionClient } from "@/lib/escalas/supabase";
@@ -21,6 +22,7 @@ export async function loginVolei(_state: string, form: FormData) {
 }
 export async function logoutVolei() {
   const client = await sessionClient();
+  await unregisterBrowserOnLogout(client);
   await client.auth.signOut();
   redirect("/volei/entrar");
 }

@@ -11,7 +11,12 @@ import {
 import type { NotificationSummary } from "@/lib/volei/complaints";
 import "./notifications.css";
 import { LoadingStatus } from "./activity";
+import {
+  DesktopNotifications,
+  useDesktopNotifications,
+} from "./desktop-notifications";
 export function NotificationBell() {
+  const desktop = useDesktopNotifications();
   const [summary, setSummary] = useState<NotificationSummary | null>(null);
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
@@ -132,6 +137,7 @@ export function NotificationBell() {
         >
           Ver todas as solicitações
         </Link>
+        <DesktopNotifications {...desktop} />
         <p className="vn-popover-hint">
           O alerta permanece até você atender às pendências.
         </p>

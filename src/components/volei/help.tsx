@@ -15,6 +15,23 @@ export function VoleiHelp({ admin = false }: { admin?: boolean }) {
           Abrir membros para liberar acesso
         </Link>
       )}
+      {admin && (
+        <section className={`volley-card ${styles.section}`}>
+          <h2>Avisos no computador</h2>
+          <p>
+            No sino do painel, escolha Ativar avisos neste navegador e autorize.
+            Você receberá novos pedidos de cadastro e confirmações de presença
+            mesmo com a aba fechada. Use Testar aviso para conferir a entrega.
+          </p>
+          <p>
+            É necessário ativar o serviço no servidor primeiro. Se não receber,
+            confira a permissão do site, as notificações do navegador no sistema
+            e o modo Não Perturbe. Sair da conta tenta desligar os avisos neste
+            navegador; para garantir, desative-os pelo sino antes de sair de um
+            computador compartilhado.
+          </p>
+        </section>
+      )}
       {helpSections.map((section) => (
         <section
           className={`volley-card ${styles.section}`}
