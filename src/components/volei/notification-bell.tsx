@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Bell, ChevronRight, UserPlus, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,11 +11,15 @@ import {
 import type { NotificationSummary } from "@/lib/volei/complaints";
 import "./notifications.css";
 import { LoadingStatus } from "./activity";
+import {
+  DesktopNotifications,
+  useDesktopNotifications,
+} from "./desktop-notifications";
 export function NotificationBell() {
+  const desktop = useDesktopNotifications();
   const [summary, setSummary] = useState<NotificationSummary | null>(null);
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
   useEffect(() => {
     let active = true,
       inflight = false;
@@ -52,7 +55,7 @@ export function NotificationBell() {
       window.removeEventListener("focus", refresh);
       window.removeEventListener("volley-notifications-changed", refresh);
     };
-  }, [pathname]);
+  }, []);
   const total = summary ? summary.pendingMembers + summary.openComplaints : 0;
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -134,6 +137,7 @@ export function NotificationBell() {
         >
           Ver todas as solicitações
         </Link>
+        <DesktopNotifications {...desktop} />
         <p className="vn-popover-hint">
           O alerta permanece até você atender às pendências.
         </p>

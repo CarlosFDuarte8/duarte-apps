@@ -1,5 +1,9 @@
 "use server";
 import { z } from "zod";
+import {
+  studentEnrollmentSchema,
+  studentDaysSchema,
+} from "@/lib/volei/students";
 import { revalidatePath } from "next/cache";
 import { requireVoleiAdmin as requireAdmin } from "@/lib/volei/auth";
 import { phoneSchema } from "@/lib/volei/phone";
@@ -115,14 +119,54 @@ export async function setAttendance(
   return done(error);
 }
 
-export async function addMember(name: string, phone = ""): Promise<Result> {
+export async function addAdminGuest(
+  eventId: string,
+  memberId: string,
+  name: string,
+): Promise<Result & { status?: string; name?: string }> {
   const { client } = await requireAdmin();
+  const parsed = z
+    .object({
+      eventId: id,
+      memberId: id,
+      name: z.string().trim().min(1, "Informe o nome do convidado.").max(100),
+    })
+    .safeParse({ eventId, memberId, name });
+  if (!parsed.success) return invalid(parsed.error);
+  const { data, error } = await client.rpc("volei_admin_add_guest", {
+    p_event: parsed.data.eventId,
+    p_member: parsed.data.memberId,
+    p_name: parsed.data.name,
+  });
+  if (error?.code === "PGRST202" || error?.code === "42883")
+    return {
+      error:
+        "A inclusão administrativa precisa ser habilitada no banco de dados. Aplique a migration de convidados administrativos.",
+    };
+  const result = done(error);
+  if (result.error) return result;
+  return {
+    ...result,
+    status: data?.status,
+    name: data?.name ?? parsed.data.name,
+  };
+}
+
+export async function addMember(
+  name: string,
+  phone = "",
+  enrollment: unknown = { isStudent: false, days: [] },
+): Promise<Result> {
+  const { client } = await requireAdmin();
+  const student = studentEnrollmentSchema.safeParse(enrollment);
+  if (!student.success) return invalid(student.error);
   const parsed = memberNameSchema.safeParse(name);
   if (!parsed.success) return invalid(parsed.error);
   const contact = phone ? phoneSchema.safeParse(phone) : null;
   if (contact && !contact.success) return invalid(contact.error);
   const { error } = await client.from("volei_members").insert({
     name: parsed.data,
+    student_weekdays: student.data,
     phone: contact?.data ?? null,
     membership_status: "approved",
   });
@@ -397,5 +441,28 @@ export async function reviewMembership(
     .update({ membership_status: decision, is_active: decision === "approved" })
     .eq("id", memberId)
     .in("membership_status", ["pending", "rejected"]);
+  return done(error);
+}
+
+export async function saveStudentDays(
+  memberId: string,
+  input: unknown,
+): Promise<Result> {
+  const { client } = await requireAdmin();
+  const parsed = z
+    .object({
+      enrollment: studentEnrollmentSchema,
+      expectedDays: studentDaysSchema,
+      expectedRequest: studentDaysSchema.nullable(),
+    })
+    .safeParse(input);
+  if (!id.safeParse(memberId).success) return { error: "Membro inválido." };
+  if (!parsed.success) return invalid(parsed.error);
+  const { error } = await client.rpc("volei_save_student_days", {
+    p_member: memberId,
+    p_days: parsed.data.enrollment,
+    p_expected_days: parsed.data.expectedDays,
+    p_expected_request: parsed.data.expectedRequest,
+  });
   return done(error);
 }

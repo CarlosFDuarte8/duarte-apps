@@ -1,4 +1,5 @@
 ﻿"use client";
+import { StudentFields } from "./student-fields";
 import { useId, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -39,6 +40,8 @@ export function GameResponse({
   finished?: boolean;
 }) {
   const [phone, setPhone] = useState("");
+  const [isStudent, setIsStudent] = useState(false);
+  const [studentDays, setStudentDays] = useState<number[]>([]);
   const [name, setName] = useState("");
   const [register, setRegister] = useState(false);
   const [guest, setGuest] = useState("");
@@ -325,7 +328,13 @@ export function GameResponse({
             e.preventDefault();
             if (register)
               run(
-                () => registerForGame({ eventId, name, phone }),
+                () =>
+                  registerForGame({
+                    eventId,
+                    name,
+                    phone,
+                    enrollment: { isStudent, days: studentDays },
+                  }),
                 "Cadastro enviado para aprovação.",
               );
             else {
@@ -386,6 +395,14 @@ export function GameResponse({
                   autoComplete="name"
                 />
               </label>
+              <StudentFields
+                isStudent={isStudent}
+                days={studentDays}
+                onStudentChange={setIsStudent}
+                onDaysChange={setStudentDays}
+                disabled={pending}
+                selfRegistration
+              />
             </>
           )}
           <Button

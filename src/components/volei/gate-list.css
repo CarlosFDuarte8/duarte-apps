@@ -209,3 +209,101 @@
     font-size: 9px;
   }
 }
+
+/* Signature and notes stay blank; the app records the actual check-in. */
+.gate-sheet table {
+  table-layout: fixed;
+}
+.gate-sheet caption {
+  text-align: left;
+  caption-side: top;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 0 0 8px;
+  break-after: avoid;
+}
+.gate-number-col {
+  width: 5%;
+}
+.gate-name-col {
+  width: 34%;
+}
+.gate-signature-col {
+  width: 29%;
+}
+.gate-notes-col {
+  width: 25%;
+}
+.gate-check-col {
+  width: 7%;
+}
+.gate-sheet th:first-child,
+.gate-sheet th:nth-child(2),
+.gate-sheet th:last-child {
+  width: auto;
+}
+.gate-sheet .gate-check,
+.gate-sheet .gate-check-heading {
+  text-align: center;
+  width: auto;
+}
+.gate-checkbox {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid currentColor;
+  vertical-align: middle;
+}
+@media print {
+  .gate-sheet {
+    background: white;
+    color: black;
+  }
+  .gate-sheet header {
+    padding-bottom: 8px;
+  }
+  .gate-sheet h1 {
+    margin: 5px 0;
+    font-size: 20px;
+  }
+  .gate-sheet h2 {
+    margin: 4px 0;
+    font-size: 13px;
+  }
+  .gate-sheet header p {
+    margin: 4px 0;
+    font-size: 11px;
+  }
+  .gate-sheet header > strong {
+    margin-top: 6px;
+  }
+  .gate-sheet table {
+    margin-top: 12px;
+  }
+  .gate-sheet caption {
+    font-size: 11px;
+    padding-bottom: 5px;
+  }
+  .gate-sheet tbody td {
+    box-sizing: border-box;
+    height: 7.5mm;
+    padding: 2px 5px;
+    border-color: #999;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+  .gate-sheet th {
+    padding: 4px 5px;
+    border-color: #999;
+  }
+  .gate-sheet td small {
+    font-size: 8px;
+    margin-top: 1px;
+  }
+  .gate-sheet footer {
+    margin-top: 8px;
+  }
+  .gate-sheet footer p {
+    margin: 5px 0;
+  }
+}

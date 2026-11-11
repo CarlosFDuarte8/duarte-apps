@@ -1,0 +1,10 @@
+node_modules
+.next
+.next-e2e
+.git
+.env
+.env.*
+supabase/private
+coverage
+test-results
+playwright-report

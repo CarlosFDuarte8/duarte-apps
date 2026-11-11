@@ -8,10 +8,27 @@
   --vm-muted: #737373;
   --vm-accent: #00498c;
   --vm-hover: #edf4fb;
-  --vm-action: #264c35;
-  --vm-action-hover: #183e29;
+  --vm-action: #00498c;
+  --vm-action-hover: #003668;
   --vm-action-ink: #fff;
   --vm-danger-action: #a8423c;
+  color-scheme: light;
+  --vm-component-surface: var(--vm-surface);
+  --vm-component-subtle: var(--vm-subtle);
+  --vm-component-ink: var(--vm-ink);
+  --vm-component-muted: var(--vm-muted);
+  --vm-component-line: var(--vm-line);
+  --vm-component-accent: var(--vm-accent);
+  --vm-component-on-accent: var(--vm-action-ink);
+  --vm-component-success-surface: #edf7f0;
+  --vm-component-success-ink: #1b633c;
+  --vm-component-success-line: #a7cdb4;
+  --vm-component-warning-surface: #fff6e6;
+  --vm-component-warning-ink: #775014;
+  --vm-component-warning-line: #e4c793;
+  --vm-component-danger-surface: #fff0f0;
+  --vm-component-danger-ink: #a12c2c;
+  --vm-component-danger-line: #e4b8b8;
 }
 :root[data-volley-theme="dark"]:has(.volley-app) {
   color-scheme: dark;
@@ -614,4 +631,75 @@ body:has(.volley-app) .vn-popover .vn-view-all {
   .volley-theme-toggle {
     display: none !important;
   }
+}
+
+/* Admin tables inherit legacy schedules CSS. Override the actual surfaces,
+   not only their borders and text, including stacked mobile rows. */
+:root:has(.volley-app) .volley-app .volley-content .sc-table,
+:root:has(.volley-app) .volley-app .sc-table :is(tbody, tr, td) {
+  background: var(--vm-surface);
+  color: var(--vm-ink);
+  border-color: var(--vm-line);
+}
+:root:has(.volley-app) .volley-app .sc-table th {
+  background: var(--vm-subtle);
+  color: var(--vm-muted);
+  border-color: var(--vm-line);
+}
+:root:has(.volley-app) .volley-app .sc-table td::before {
+  color: var(--vm-muted);
+}
+:root:has(.volley-app) .volley-app .sc-table tbody tr:hover > td {
+  background: var(--vm-hover);
+}
+:root:has(.volley-app) .volley-app label.sc-check {
+  background: var(--vm-surface);
+  color: var(--vm-ink);
+  border-color: var(--vm-line);
+}
+:root:has(.volley-app) .volley-app label.sc-check:has(input:checked) {
+  background: var(--vm-subtle);
+  color: var(--vm-ink);
+  border-color: var(--vm-accent);
+}
+:root:has(.volley-app) .volley-app .sc-check input {
+  accent-color: var(--vm-accent);
+}
+@media (min-width: 641px) {
+  :root:has(.volley-app) .volley-app .volley-content .vl-attendance-table {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+}
+
+/* Shared stateful controls keep the same contrast in both themes. */
+:root:has(.volley-app)
+  .volley-app
+  .game-roster-filters
+  button[aria-pressed="true"] {
+  background: var(--vm-accent);
+  border-color: var(--vm-accent);
+  color: var(--vm-action-ink);
+}
+:root:has(.volley-app)
+  .volley-app
+  .game-roster-filters
+  button[aria-pressed="true"]
+  > span {
+  background: color-mix(in srgb, var(--vm-action-ink) 15%, transparent);
+  color: inherit;
+}
+:root:has(.volley-app) .volley-app .vl-day[aria-pressed="true"] {
+  background: var(--vm-accent);
+  color: var(--vm-action-ink);
+}
+:root:has(.volley-app) .volley-app .vl-day[aria-pressed="true"] small {
+  color: inherit;
+}
+:root:has(.volley-app) .volley-app .vl-pos {
+  color: var(--vm-component-success-ink);
+}
+:root:has(.volley-app) .volley-app :is(.vl-neg, .vl-reason) {
+  color: var(--vm-component-danger-ink);
 }

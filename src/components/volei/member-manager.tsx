@@ -1,5 +1,6 @@
 "use client";
 
+import { StudentFields } from "./student-fields";
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -87,6 +88,15 @@ function MemberStatus({ member }: { member: VoleiMember }) {
       )}
       {(member.membership_status ?? "approved") !== "approved" &&
         !member.is_active && <Badge variant="outline">Inativo</Badge>}
+      {member.requested_student_weekdays != null && (
+        <Badge variant="outline">Aluno: conferir dias</Badge>
+      )}
+      {!!member.student_weekdays?.length && (
+        <Badge variant="secondary">
+          Aluno ·{" "}
+          {member.student_weekdays.map((day) => WEEKDAY_LABELS[day]).join(", ")}
+        </Badge>
+      )}
       {member.blocked && (
         <Badge variant="destructive" className="vm-status-blocked">
           Bloqueado
@@ -100,6 +110,8 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
   const { run, pending, feedback } = useRun();
   const [creating, setCreating] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [isStudent, setIsStudent] = useState(false);
+  const [studentDays, setStudentDays] = useState<number[]>([]);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [search, setSearch] = useState("");
@@ -236,8 +248,10 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
             onSubmit={(e) => {
               e.preventDefault();
               run(
-                () => addMember(name, phone),
+                () => addMember(name, phone, { isStudent, days: studentDays }),
                 () => {
+                  setIsStudent(false);
+                  setStudentDays([]);
                   setName("");
                   setPhone("");
                   setCreating(false);
@@ -266,6 +280,13 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
                   aria-label="Telefone do novo membro"
                 />
               </label>
+              <StudentFields
+                isStudent={isStudent}
+                days={studentDays}
+                onStudentChange={setIsStudent}
+                onDaysChange={setStudentDays}
+                disabled={pending}
+              />
               <Button type="submit" loading={pending}>
                 {pending ? "Salvando…" : "Cadastrar membro"}
               </Button>

@@ -1,4 +1,5 @@
 "use server";
+import { unregisterBrowserOnLogout } from "@/lib/volei/web-push-logout";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -33,6 +34,7 @@ export async function login(input: unknown) {
 }
 export async function logout() {
   const client = await sessionClient();
+  await unregisterBrowserOnLogout(client);
   await client.auth.signOut();
   redirect("/admin/login");
 }

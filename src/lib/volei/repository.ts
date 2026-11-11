@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { serviceClient } from "@/lib/escalas/supabase";
 import { signPhotos } from "./photos";
 import {
+  weekdayOf,
   daysInMonth,
   isEventOpen,
   type AttendanceStatus,
@@ -14,7 +15,7 @@ import {
 const eventColumns =
   "id,date,title,start_time,location,notes,closed,registration_deadline,guests_open_at,presence_closed_at,max_teams";
 const memberColumns =
-  "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status,birth_date,photo_path,skill_level,emergency_name,emergency_phone,emergency_relationship";
+  "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,student_weekdays,requested_student_weekdays,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status,birth_date,photo_path,skill_level,emergency_name,emergency_phone,emergency_relationship";
 
 function fail(error: { message: string } | null): asserts error is null {
   if (error) throw new Error(error.message);
@@ -31,6 +32,8 @@ export type AttendanceRow = {
   member_id: string;
   status: AttendanceStatus;
   checked_in_at?: string | null;
+  registered_at?: string;
+  confirmed_at?: string | null;
 };
 export type PointLogRow = {
   id: string;
@@ -43,7 +46,7 @@ export type PointLogRow = {
 
 export async function listEvents(client: SupabaseClient, month: string) {
   const [from, to] = monthRange(month);
-  await publicEvents(month, from);
+  await syncPublicEventRange(serviceClient(), from, to);
   const { data, error } = await client
     .from("volei_events")
     .select(`${eventColumns}, volei_attendance(status), volei_guests(status)`)
@@ -110,7 +113,7 @@ export async function getEvent(client: SupabaseClient, id: string) {
   const { data, error } = await client
     .from("volei_events")
     .select(
-      `${eventColumns}, volei_attendance(member_id,status,checked_in_at), volei_guests(id,member_id,name,status,checked_in_at)`,
+      `${eventColumns}, volei_attendance(member_id,status,checked_in_at,registered_at,confirmed_at), volei_guests(id,member_id,name,status,checked_in_at,registered_at,confirmed_at)`,
     )
     .eq("id", id)
     .maybeSingle();
@@ -160,62 +163,98 @@ export async function publicLeaderboard() {
   return (data ?? []) as { name: string; points: number }[];
 }
 
-export async function publicEvents(month: string, fromDate: string) {
-  const [from, to] = monthRange(month);
-  const client = serviceClient();
+const publicEventColumns = `${eventColumns}, volei_attendance(member_id,status,registered_at,confirmed_at,queue_order, volei_members(name,is_core,student_weekdays)), volei_guests(id,member_id,name,status,registered_at,confirmed_at,queue_order)`;
+
+function presentPublicEvent(row: unknown) {
+  const {
+    volei_attendance: rows,
+    volei_guests: guests,
+    ...event
+  } = row as unknown as VoleiEvent & {
+    volei_guests: GuestRow[];
+    volei_attendance: {
+      member_id: string;
+      status: AttendanceStatus;
+      registered_at: string;
+      confirmed_at?: string | null;
+      queue_order: number;
+      volei_members: {
+        name: string;
+        is_core: boolean;
+        student_weekdays?: number[];
+      } | null;
+    }[];
+  };
+  return {
+    event,
+    guests: guests ?? [],
+    attendance: rows
+      .sort(
+        (a, b) =>
+          Number(
+            !!b.volei_members?.is_core ||
+              !!b.volei_members?.student_weekdays?.includes(
+                weekdayOf(event.date),
+              ),
+          ) -
+            Number(
+              !!a.volei_members?.is_core ||
+                !!a.volei_members?.student_weekdays?.includes(
+                  weekdayOf(event.date),
+                ),
+            ) ||
+          a.registered_at.localeCompare(b.registered_at) ||
+          a.queue_order - b.queue_order,
+      )
+      .map((r) => ({
+        member_id: r.member_id,
+        status: r.status,
+        name: r.volei_members?.name ?? "",
+        registered_at: r.registered_at,
+        confirmed_at: r.confirmed_at ?? null,
+        student: !!r.volei_members?.student_weekdays?.length,
+      })),
+  };
+}
+
+async function syncPublicEventRange(
+  client: SupabaseClient,
+  from: string,
+  to: string,
+) {
   const upcoming = await client
     .from("volei_events")
     .select("id")
-    .gte("date", from > fromDate ? from : fromDate)
+    .gte("date", from)
     .lte("date", to);
   fail(upcoming.error);
-  for (const e of upcoming.data ?? []) {
-    const { error } = await client.rpc("volei_fill_slots", { p_event: e.id });
-    fail(error);
+  const ids = upcoming.data ?? [];
+  // Different events have independent row locks. Bound concurrency to four.
+  for (let offset = 0; offset < ids.length; offset += 4) {
+    await Promise.all(
+      ids.slice(offset, offset + 4).map(async (event) => {
+        const { error } = await client.rpc("volei_fill_slots", {
+          p_event: event.id,
+        });
+        fail(error);
+      }),
+    );
   }
-  const { data, error } = await serviceClient()
+}
+
+export async function publicEvents(month: string, fromDate: string) {
+  const [monthStart, to] = monthRange(month);
+  const from = monthStart > fromDate ? monthStart : fromDate;
+  const client = serviceClient();
+  await syncPublicEventRange(client, from, to);
+  const { data, error } = await client
     .from("volei_events")
-    .select(
-      `${eventColumns}, volei_attendance(member_id,status,registered_at,queue_order, volei_members(name,is_core)), volei_guests(id,member_id,name,status,registered_at,queue_order)`,
-    )
-    .gte("date", from > fromDate ? from : fromDate)
+    .select(publicEventColumns)
+    .gte("date", from)
     .lte("date", to)
     .order("date");
   fail(error);
-  return (data ?? []).map((row) => {
-    const {
-      volei_attendance: rows,
-      volei_guests: guests,
-      ...event
-    } = row as unknown as VoleiEvent & {
-      volei_guests: GuestRow[];
-      volei_attendance: {
-        member_id: string;
-        status: AttendanceStatus;
-        registered_at: string;
-        queue_order: number;
-        volei_members: { name: string; is_core: boolean } | null;
-      }[];
-    };
-    return {
-      event,
-      guests: guests ?? [],
-      attendance: rows
-        .sort(
-          (a, b) =>
-            Number(!!b.volei_members?.is_core) -
-              Number(!!a.volei_members?.is_core) ||
-            a.registered_at.localeCompare(b.registered_at) ||
-            a.queue_order - b.queue_order,
-        )
-        .map((r) => ({
-          member_id: r.member_id,
-          status: r.status,
-          name: r.volei_members?.name ?? "",
-          registered_at: r.registered_at,
-        })),
-    };
-  });
+  return (data ?? []).map(presentPublicEvent);
 }
 
 export async function savePublicAttendance(
@@ -262,6 +301,7 @@ export async function savePublicAttendance(
 }
 
 export type GuestRow = {
+  confirmed_at?: string | null;
   id: string;
   member_id: string;
   name: string;
@@ -383,13 +423,12 @@ export async function publicEvent(id: string) {
   fail(syncError);
   const { data, error } = await client
     .from("volei_events")
-    .select(eventColumns)
+    .select(publicEventColumns)
     .eq("id", id)
     .maybeSingle();
   fail(error);
   if (!data) return null;
-  const events = await publicEvents(data.date.slice(0, 7), data.date);
-  return events.find((e) => e.event.id === id) ?? null;
+  return presentPublicEvent(data);
 }
 
 export async function frequencyEvents(
@@ -400,7 +439,7 @@ export async function frequencyEvents(
   const { data, error } = await client
     .from("volei_events")
     .select(
-      "id,date,title,presence_closed_at,volei_attendance(member_id,status,checked_in_at),volei_guests(status,checked_in_at)",
+      "id,date,title,presence_closed_at,volei_attendance(member_id,status,checked_in_at,registered_at,confirmed_at),volei_guests(status,checked_in_at)",
     )
     .gte("date", from)
     .lte("date", to)

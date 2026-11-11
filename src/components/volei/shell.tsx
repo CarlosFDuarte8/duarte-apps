@@ -5,7 +5,7 @@ import { ActivityProvider } from "./activity";
 import { CircleHelp, PanelLeft, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { logoutVolei as logout } from "@/app/volei/entrar/actions";
 import { VolleyIcon } from "./volley-icon";
 import { NotificationBell } from "./notification-bell";
@@ -25,18 +25,33 @@ export function VoleiShell({
   const path = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const [refreshing, startRefresh] = useTransition();
+  const lastRefresh = useRef(0);
   useEffect(() => {
-    if (path?.includes("lista-presenca") || path?.includes("entrar")) return;
-    const timer = window.setInterval(() => {
-      if (document.visibilityState === "visible") router.refresh();
-    }, 30000);
-    const refresh = () => router.refresh();
+    if (
+      path?.includes("lista-presenca") ||
+      path?.includes("entrar") ||
+      path?.endsWith("/portaria")
+    )
+      return;
+    const refresh = () => {
+      if (
+        document.visibilityState !== "visible" ||
+        refreshing ||
+        Date.now() - lastRefresh.current < 5000 ||
+        document.activeElement?.closest("form")
+      )
+        return;
+      lastRefresh.current = Date.now();
+      startRefresh(() => router.refresh());
+    };
+    const timer = window.setInterval(refresh, 30000);
     window.addEventListener("focus", refresh);
     return () => {
       window.clearInterval(timer);
       window.removeEventListener("focus", refresh);
     };
-  }, [path, router]);
+  }, [path, router, refreshing]);
   const links = admin
     ? ([
         ["/admin/volei", "Visão geral", "ball", "Jogos"],
@@ -52,7 +67,9 @@ export function VoleiShell({
       ] as const);
   return (
     <ActivityProvider>
-      <div className={`volley-app${admin ? "" : " volley-public"}${collapsed ? " volley-sidebar-collapsed" : ""}`}>
+      <div
+        className={`volley-app${admin ? "" : " volley-public"}${collapsed ? " volley-sidebar-collapsed" : ""}`}
+      >
         <aside className="volley-sidebar" id="volley-navigation">
           <Link
             href={admin ? "/admin/volei" : "/volei"}
@@ -106,14 +123,28 @@ export function VoleiShell({
           </nav>
           <footer>
             <div className="volley-account">
-              <span><VolleyIcon name={admin ? "shield" : "ball"} /></span>
-              <div><strong>{admin ? "Administrador" : "Vôlei da galera"}</strong><small>{admin ? "Gestão do grupo" : "Área dos participantes"}</small></div>
+              <span>
+                <VolleyIcon name={admin ? "shield" : "ball"} />
+              </span>
+              <div>
+                <strong>{admin ? "Administrador" : "Vôlei da galera"}</strong>
+                <small>
+                  {admin ? "Gestão do grupo" : "Área dos participantes"}
+                </small>
+              </div>
             </div>
             {admin ? (
               <>
                 <Link href="/admin">Sistema de escalas ↗</Link>
                 <form action={logout}>
-                  <Button variant="outline" type="submit" aria-label="Sair da conta"><LogOut aria-hidden="true" /><span>Sair da conta</span></Button>
+                  <Button
+                    variant="outline"
+                    type="submit"
+                    aria-label="Sair da conta"
+                  >
+                    <LogOut aria-hidden="true" />
+                    <span>Sair da conta</span>
+                  </Button>
                 </form>
               </>
             ) : (
@@ -139,9 +170,33 @@ export function VoleiShell({
               </span>
             </Link>
             <div className="vx-desktop-context">
-              <Button variant="ghost" size="icon" onClick={() => setCollapsed(!collapsed)} aria-controls="volley-navigation" aria-expanded={!collapsed} aria-label={collapsed ? "Expandir menu lateral" : "Recolher menu lateral"}><PanelLeft aria-hidden="true" /></Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setCollapsed(!collapsed)}
+                aria-controls="volley-navigation"
+                aria-expanded={!collapsed}
+                aria-label={
+                  collapsed ? "Expandir menu lateral" : "Recolher menu lateral"
+                }
+              >
+                <PanelLeft aria-hidden="true" />
+              </Button>
               <span className="volley-header-divider" />
-              <strong>{path?.includes("notificacoes") ? "Solicitações" : path?.includes("ajuda") ? "Ajuda" : links.find(([href]) => path === href || (href !== "/admin/volei" && href !== "/volei" && path?.startsWith(`${href}/`)))?.[1] ?? (admin ? "Gestão do encontro" : "Jogos e presenças")}</strong>
+              <strong>
+                {path?.includes("notificacoes")
+                  ? "Solicitações"
+                  : path?.includes("ajuda")
+                    ? "Ajuda"
+                    : (links.find(
+                        ([href]) =>
+                          path === href ||
+                          (href !== "/admin/volei" &&
+                            href !== "/volei" &&
+                            path?.startsWith(`${href}/`)),
+                      )?.[1] ??
+                      (admin ? "Gestão do encontro" : "Jogos e presenças"))}
+              </strong>
             </div>
             <div className="vn-header-actions">
               <Link

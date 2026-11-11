@@ -2,6 +2,7 @@
 import { randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { z } from "zod";
+import { studentEnrollmentSchema } from "@/lib/volei/students";
 import { revalidatePath } from "next/cache";
 import { serviceClient } from "@/lib/escalas/supabase";
 import {
@@ -32,6 +33,7 @@ export async function registerForGame(
 ): Promise<{ error: string }> {
   const parsed = z
     .object({
+      enrollment: studentEnrollmentSchema.default([]),
       eventId: z.uuid(),
       name: z.string().trim().min(2, "Informe seu nome completo.").max(100),
       phone: phoneSchema,
@@ -43,14 +45,17 @@ export async function registerForGame(
         parsed.error.issues[0]?.message ?? "Confira os dados da inscrição.",
     };
   const secret = (await deviceSecret()) ?? randomBytes(32).toString("hex");
-  const { eventId, name, phone } = parsed.data;
-  const { error } = await serviceClient().rpc("volei_phone_register", {
-    p_event: eventId,
-    p_name: name,
-    p_phone: phone,
-    p_secret_hash: hashDevice(secret),
-    p_guest_name: null,
-  });
+  const { eventId, name, phone, enrollment } = parsed.data;
+  const { error } = await serviceClient().rpc(
+    "volei_register_student_request",
+    {
+      p_event: eventId,
+      p_name: name,
+      p_phone: phone,
+      p_secret_hash: hashDevice(secret),
+      p_student_weekdays: enrollment,
+    },
+  );
   if (error) return { error: errorMessage(error) };
   (await cookies()).set(DEVICE_COOKIE, secret, {
     httpOnly: true,

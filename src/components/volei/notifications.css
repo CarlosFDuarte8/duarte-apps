@@ -455,3 +455,16 @@
     display: none;
   }
 }
+
+.vn-desktop {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--vm-component-line, #dce5d6);
+}
+.vn-desktop [data-slot="button"] {
+  margin-top: 12px;
+  width: 100%;
+  white-space: normal;
+  height: auto;
+  min-height: 40px;
+}

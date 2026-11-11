@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 export type AttendanceStatus =
-  "confirmado" | "nao_vai" | "espera" | "ausente" | "reservado";
+  | "confirmado"
+  | "nao_vai"
+  | "espera"
+  | "ausente"
+  | "reservado";
 
 export type VoleiMember = {
   id: string;
@@ -19,6 +23,8 @@ export type VoleiMember = {
   emergency_name?: string;
   emergency_phone?: string;
   emergency_relationship?: string;
+  student_weekdays?: number[];
+  requested_student_weekdays?: number[] | null;
   is_core?: boolean;
   membership_status?: "approved" | "pending" | "rejected";
   preferred_weekdays?: number[];
@@ -43,7 +49,11 @@ export type VoleiEvent = {
 export function eventCapacity(event: Pick<VoleiEvent, "max_teams">) {
   return (event.max_teams ?? 3) * 6;
 }
-export function eventFreeSlots(event: Pick<VoleiEvent, "max_teams">, confirmed: number, reserved = 0) {
+export function eventFreeSlots(
+  event: Pick<VoleiEvent, "max_teams">,
+  confirmed: number,
+  reserved = 0,
+) {
   return Math.max(0, eventCapacity(event) - confirmed - reserved);
 }
 
@@ -137,8 +147,15 @@ export function isEventOpen(event: VoleiEvent, now = today()) {
 }
 
 /** Texto da lista de confirmados, pronto para colar no WhatsApp. */
-export function buildWhatsAppText(event: VoleiEvent, names: string[]) {
+export function buildWhatsAppText(
+  event: VoleiEvent,
+  names: string[],
+  guests: { name: string; responsible: string }[] = [],
+) {
   const sorted = [...names].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  const sortedGuests = [...guests].sort((a, b) =>
+    a.name.localeCompare(b.name, "pt-BR"),
+  );
   const details = [
     event.start_time && `Horário: ${event.start_time}`,
     event.location && `Local: ${event.location}`,
@@ -150,8 +167,20 @@ export function buildWhatsAppText(event: VoleiEvent, names: string[]) {
     "",
     ...(sorted.length
       ? sorted.map((name, i) => `${String(i + 1).padStart(2, "0")}. ${name}`)
-      : ["Ninguém confirmado ainda."]),
+      : sortedGuests.length
+        ? []
+        : ["Ninguém confirmado ainda."]),
+    ...(sortedGuests.length
+      ? [
+          ...(sorted.length ? [""] : []),
+          "*Convidados confirmados*",
+          ...sortedGuests.map(
+            (guest, i) =>
+              `${String(sorted.length + i + 1).padStart(2, "0")}. ${guest.name} (convidado de ${guest.responsible})`,
+          ),
+        ]
+      : []),
     "",
-    `Total: ${sorted.length}`,
+    `Total: ${sorted.length + sortedGuests.length}`,
   ].join("\n");
 }

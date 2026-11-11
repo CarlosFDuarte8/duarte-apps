@@ -1,4 +1,5 @@
 "use client";
+import { participationTime } from "@/lib/volei/participation-time";
 import { useState } from "react";
 import {
   deleteEvent,
@@ -16,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { defaultDeadline } from "@/lib/volei/phone";
 import "./volei.css";
 import { NativeSelect } from "@/components/ui/native-select";
+import { buildGateList } from "@/lib/volei/gate-list";
 
 type Status = AttendanceStatus | "limpar";
 
@@ -23,20 +25,33 @@ export function EventManager({
   event,
   members,
   attendance,
+  guests,
 }: {
   event: VoleiEvent;
   members: VoleiMember[];
-  attendance: { member_id: string; status: AttendanceStatus }[];
+  attendance: {
+    member_id: string;
+    status: AttendanceStatus;
+    registered_at?: string;
+    confirmed_at?: string | null;
+  }[];
+  guests: {
+    id: string;
+    member_id: string;
+    name: string;
+    status: AttendanceStatus;
+  }[];
 }) {
   const router = useRouter();
-  const { run, pending, feedback } = useRun();
+  const { run, pending, feedback } = useRun({ revalidated: true });
   const { copied, copy } = useCopy();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const statusOf = new Map(attendance.map((a) => [a.member_id, a.status]));
   const confirmedNames = members
     .filter((m) => statusOf.get(m.id) === "confirmado")
     .map((m) => m.name);
-  const text = buildWhatsAppText(event, confirmedNames);
+  const confirmedGuests = buildGateList(members, [], guests);
+  const text = buildWhatsAppText(event, confirmedNames, confirmedGuests);
   const localInput = (value?: string | null) =>
     value
       ? new Intl.DateTimeFormat("sv-SE", {
@@ -212,7 +227,7 @@ export function EventManager({
               type="button"
               className="sc-btn"
               onClick={() => copy(text)}
-              disabled={confirmedNames.length === 0}
+              disabled={confirmedNames.length + confirmedGuests.length === 0}
             >
               {copied ? "Copiado ✓" : "Copiar lista"}
             </button>
@@ -232,7 +247,7 @@ export function EventManager({
       <section className="sc-card sc-form-card">
         <h2>Presença ({confirmedNames.length} confirmados)</h2>
         {feedback}
-        <table className="sc-table">
+        <table className="sc-table vl-attendance-table">
           <thead>
             <tr>
               <th>Membro</th>
@@ -242,45 +257,67 @@ export function EventManager({
           <tbody>
             {members
               .filter((m) => m.is_active && m.membership_status === "approved")
-              .map((m) => (
-                <tr key={m.id}>
-                  <td data-label="Membro">
-                    {m.name}
-                    {m.blocked && (
-                      <span className="sc-badge sc-badge-danger vl-gap">
-                        Bloqueado
-                      </span>
-                    )}
-                  </td>
-                  <td data-label="Situação">
-                    <select
-                      aria-label={`Situação de ${m.name}`}
-                      value={statusOf.get(m.id) ?? "limpar"}
-                      disabled={pending}
-                      onChange={(e) =>
-                        run(() =>
-                          setAttendance(
-                            event.id,
-                            m.id,
-                            e.target.value as Status,
-                          ),
-                        )
-                      }
-                    >
-                      <option value="limpar">Pendente</option>
-                      <option value="reservado" disabled>
-                        Vaga reservada
-                      </option>
-                      <option value="confirmado">Confirmado</option>
-                      <option value="espera" disabled>
-                        Em espera
-                      </option>
-                      <option value="ausente">Ausente</option>
-                      <option value="nao_vai">Não vai</option>
-                    </select>
-                  </td>
-                </tr>
-              ))}
+              .map((m) => {
+                const record = attendance.find((row) => row.member_id === m.id);
+                const time = record
+                  ? participationTime(
+                      record.status,
+                      record.registered_at,
+                      record.confirmed_at,
+                    )
+                  : null;
+                return (
+                  <tr key={m.id}>
+                    <td data-label="Membro">
+                      {m.name}
+                      {!!m.student_weekdays?.length && (
+                        <small className="vl-participation-detail">
+                          {record?.status === "confirmado"
+                            ? "Aluno confirmado"
+                            : "Aluno"}
+                        </small>
+                      )}
+                      {time && (
+                        <small className="vl-participation-detail">
+                          <time dateTime={time.dateTime}>{time.label}</time>
+                        </small>
+                      )}
+                      {m.blocked && (
+                        <span className="sc-badge sc-badge-danger vl-gap">
+                          Bloqueado
+                        </span>
+                      )}
+                    </td>
+                    <td data-label="Situação">
+                      <select
+                        aria-label={`Situação de ${m.name}`}
+                        value={statusOf.get(m.id) ?? "limpar"}
+                        disabled={pending}
+                        onChange={(e) =>
+                          run(() =>
+                            setAttendance(
+                              event.id,
+                              m.id,
+                              e.target.value as Status,
+                            ),
+                          )
+                        }
+                      >
+                        <option value="limpar">Pendente</option>
+                        <option value="reservado" disabled>
+                          Vaga reservada
+                        </option>
+                        <option value="confirmado">Confirmado</option>
+                        <option value="espera" disabled>
+                          Em espera
+                        </option>
+                        <option value="ausente">Ausente</option>
+                        <option value="nao_vai">Não vai</option>
+                      </select>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </section>
