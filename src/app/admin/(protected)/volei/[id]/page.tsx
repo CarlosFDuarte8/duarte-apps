@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Printer } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requireVoleiAdmin as requireAdmin } from "@/lib/volei/auth";
 import { PageHeader } from "@/components/escalas/admin-ui";
@@ -29,12 +30,19 @@ export default async function Page({
         eyebrow="Vôlei"
         title={formatDate(found.event.date)}
         actions={
-          <Link
-            className="sc-button sc-btn-ghost"
-            href={`/admin/volei?mes=${found.event.date.slice(0, 7)}`}
-          >
-            ← Voltar
-          </Link>
+          <>
+            <Button asChild>
+              <Link href={`/admin/volei/${id}/portaria`}>
+                <Printer aria-hidden="true" /> Imprimir lista da portaria
+              </Link>
+            </Button>
+            <Link
+              className="sc-button sc-btn-ghost"
+              href={`/admin/volei?mes=${found.event.date.slice(0, 7)}`}
+            >
+              ← Voltar
+            </Link>
+          </>
         }
       />
       <Button asChild variant="outline">
@@ -45,11 +53,6 @@ export default async function Page({
       <Button asChild variant="outline">
         <Link href={`/admin/volei/frequencia/${id}`}>
           Conferir quem compareceu
-        </Link>
-      </Button>
-      <Button asChild>
-        <Link href={`/admin/volei/${id}/portaria`}>
-          Lista de entrada para a portaria / imprimir
         </Link>
       </Button>
       <AdminGuestForm
