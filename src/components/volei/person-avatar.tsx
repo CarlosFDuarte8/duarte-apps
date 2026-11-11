@@ -13,7 +13,7 @@ export function PersonAvatar({
 }) {
   const [failed, setFailed] = useState("");
   return (
-    <span className={`vp-avatar${large ? " vp-avatar-large" : ""}`}>
+    <span className={`vp-avatar${large ? " vp-avatar-large" : " vp-avatar-medium"}`}>
       {photoUrl && failed !== photoUrl ? (
         <Image
           src={photoUrl}
