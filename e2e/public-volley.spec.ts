@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { readFileSync } from "node:fs";
 
 const game = "/volei/jogo/11111111-1111-4111-8111-111111111111";
-test("development assets share the server session ID", async ({ page }) => {
+test("development assets identify the server session or require revalidation", async ({ page, request }) => {
   test.skip(process.env.VOLLEY_E2E_PRODUCTION === "1", "Session IDs only apply in development");
   const session = readFileSync(".next-e2e/development-session", "utf8").trim();
   const response = await page.goto(game);
@@ -10,11 +10,20 @@ test("development assets share the server session ID", async ({ page }) => {
   const scriptURLs = await page.locator("script[src]").evaluateAll(elements => elements
     .map(el => (el as HTMLScriptElement).src).filter(url => url.includes("/_next/static/")));
   expect(scriptURLs.length).toBeGreaterThan(0);
-  for (const url of scriptURLs) expect(new URL(url).searchParams.get("dpl")).toBe(session);
+  for (const url of scriptURLs) {
+    const deployment = new URL(url).searchParams.get("dpl");
+    if (deployment) expect(deployment).toBe(session);
+    // Next also injects streamed route chunks without deployment parameters.
+    // Neither kind may retain client code from an older development render.
+    const asset = await request.get(url);
+    expect(asset.ok()).toBe(true);
+    expect(asset.headers()["cache-control"]).toContain("no-store");
+  }
 });
 for (const width of [320, 390, 768, 1280]) {
   for (const theme of ["light", "dark"]) {
     test(`${width}px ${theme}: public pages fit their cards`, async ({ page, context }, testInfo) => {
+      test.setTimeout(120_000);
       const browserErrors: string[] = [];
       page.on("pageerror", error => browserErrors.push(error.message));
       page.on("console", message => {
@@ -24,12 +33,14 @@ for (const width of [320, 390, 768, 1280]) {
       });
       await page.setViewportSize({ width, height: 900 });
       await page.addInitScript(t => localStorage.setItem("volley-theme", t), theme);
-      for (const route of ["/volei", game, "/volei/meu-cadastro", "/volei/ajuda", "/volei/entrar"]) {
+      for (const route of ["/volei", game, "/volei/meu-cadastro", "/volei/ajuda", "/volei/entrar", "/volei/relatar", "/volei/lista-presenca", `/volei/${"a".repeat(64)}`, `/volei/convidado/${"b".repeat(64)}`]) {
         if (route === "/volei/meu-cadastro") {
           await context.addCookies([{ name: "volley_device_v1", value: "a".repeat(64), domain: "127.0.0.1", path: "/" }]);
         }
         await page.goto(route);
         await expect(page.locator(".volley-content")).toBeVisible();
+        await expect(page.locator('main[data-slot="volley-page"]')).toHaveCount(1);
+        await expect(page.locator("main main")).toHaveCount(0);
         await expect(page.locator("html")).toHaveAttribute("data-volley-theme", theme);
         if (route === game) {
           const ink = theme === "dark" ? "rgb(250, 250, 250)" : "rgb(0, 31, 59)";
@@ -42,7 +53,7 @@ for (const width of [320, 390, 768, 1280]) {
         const overflow = await page.evaluate(() => {
           const issues: string[] = [];
           if (document.documentElement.scrollWidth > innerWidth + 1) issues.push("page");
-          for (const el of document.querySelectorAll(".volley-content input, .volley-content select, .volley-content textarea")) {
+          for (const el of document.querySelectorAll('.volley-content input:not([type="checkbox"]):not([type="radio"]), .volley-content select, .volley-content textarea')) {
             const box = el.getBoundingClientRect();
             if (!box.width || !box.height) continue;
             const parent = el.parentElement!.getBoundingClientRect();
@@ -52,6 +63,12 @@ for (const width of [320, 390, 768, 1280]) {
         });
         expect(overflow, route).toEqual([]);
         if (route === "/volei") {
+          const metrics = page.locator(".volley-metric");
+          await expect(metrics).toHaveCount(4);
+          const positions = await metrics.evaluateAll(elements => elements.map(el => ({ x: el.getBoundingClientRect().x, y: el.getBoundingClientRect().y })));
+          expect(positions[0].y).toBe(positions[1].y);
+          expect(positions[0].x).toBeLessThan(positions[1].x);
+          if (width >= 1024) expect(positions[0].y).toBe(positions[3].y);
           const wrappedLabels = await page.locator(".vx-overview-stat > div > span").evaluateAll(elements =>
             elements.filter(el => el.getBoundingClientRect().height > parseFloat(getComputedStyle(el).lineHeight) + 1).map(el => el.textContent),
           );
@@ -81,6 +98,13 @@ for (const width of [320, 390, 768, 1280]) {
         }
         await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
         await page.screenshot({ path: testInfo.outputPath(`${route.replace(/\W/g, "-")}.png`), fullPage: true });
+        if (route === "/volei/lista-presenca") {
+          await page.emulateMedia({ media: "print" });
+          await expect(page.locator('[data-slot="volley-hero"]')).toBeHidden();
+          await expect(page.locator(".volley-sidebar")).toBeHidden();
+          await expect(page.getByText("Assinatura", { exact: true })).toBeVisible();
+          await page.emulateMedia({ media: "screen" });
+        }
         expect(browserErrors, `Browser errors on ${route}`).toEqual([]);
       }
     });

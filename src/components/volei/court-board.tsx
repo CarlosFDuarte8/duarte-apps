@@ -1,4 +1,6 @@
 "use client";
+import { VolleyCard } from "@/components/volei/page-frame";
+
 import { useState } from "react";
 import Link from "next/link";
 import { LogOut, Shuffle, Trophy } from "lucide-react";
@@ -180,7 +182,7 @@ export function CourtBoard({
           até concluir a chamada.
         </p>
       )}
-      <section className="volley-card vc-section">
+      <VolleyCard as="section" className="vc-section">
         <div className="vc-heading">
           <div>
             <h2>Quadra e rodízio</h2>
@@ -430,8 +432,8 @@ export function CourtBoard({
             </p>
           </div>
         )}
-      </section>
-      <section className="volley-card vc-section">
+      </VolleyCard>
+      <VolleyCard as="section" className="vc-section">
         <h2>Registrar chegadas</h2>
         <p className="vc-help">
           A chegada conta como presença na frequência. A lista de espera da
@@ -522,9 +524,9 @@ export function CourtBoard({
             ))}
           </details>
         )}
-      </section>
+      </VolleyCard>
       {state.history.length > 0 && (
-        <section className="volley-card vc-section">
+        <VolleyCard as="section" className="vc-section">
           <h2>Últimos rodízios · {state.round} partidas</h2>
           <ol className="vc-history">
             {state.history
@@ -558,7 +560,7 @@ export function CourtBoard({
                 </li>
               ))}
           </ol>
-        </section>
+        </VolleyCard>
       )}
     </div>
   );

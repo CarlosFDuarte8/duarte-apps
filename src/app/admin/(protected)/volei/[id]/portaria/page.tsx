@@ -1,3 +1,4 @@
+import { VolleyPageHeader, VolleyCard } from "@/components/volei/page-frame";
 import { buildGateList } from "@/lib/volei/gate-list";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,6 +9,8 @@ import { formatDate } from "@/lib/volei/domain";
 import { PrintGateList } from "@/components/volei/print-gate-list";
 import { GateListTables } from "@/components/volei/gate-list-tables";
 import { Button } from "@/components/ui/button";
+import { publicWhatsAppGroup } from "@/lib/volei/group-settings";
+import { WhatsAppGroupPrint } from "@/components/volei/whatsapp-group";
 import "@/components/volei/gate-list.css";
 export default async function Page({
   params,
@@ -17,26 +20,22 @@ export default async function Page({
   const { client } = await requireVoleiAdmin();
   const { id } = await params;
   if (!z.uuid().safeParse(id).success) notFound();
-  const [found, members] = await Promise.all([
+  const [found, members, group] = await Promise.all([
     getEvent(client, id),
     listMembers(client),
+    publicWhatsAppGroup(),
   ]);
   if (!found) notFound();
   const rows = buildGateList(members, found.attendance, found.guests);
   return (
     <div className="gate-page">
-      <div className="gate-actions">
-        <Button asChild variant="outline">
+      <div className="gate-actions"><VolleyPageHeader eyebrow="CONTROLE DE ACESSO" title="Lista da portaria" description="Somente confirmados aprovados e convidados confirmados. Reservas e lista de espera não autorizam entrada." actions={<> <Button asChild variant="outline">
           <Link href={`/admin/volei/${id}`}>← Voltar ao jogo</Link>
         </Button>
-        <PrintGateList />
-        <p>
-          Somente confirmados aprovados e convidados confirmados. Reservas e
-          lista de espera não autorizam entrada.
-        </p>
-      </div>
-      <section className="gate-sheet">
+<PrintGateList /> </>} /></div>
+      <VolleyCard as="section" className="gate-sheet" data-variant="print">
         <header>
+          <div className="gate-title">
           <span>CONTROLE DE ACESSO · PORTARIA</span>
           <h1>{found.event.title}</h1>
           <h2>{formatDate(found.event.date)}</h2>
@@ -46,6 +45,8 @@ export default async function Page({
               .join(" · ")}
           </p>
           <strong>Entrada autorizada somente para os nomes abaixo</strong>
+          </div>
+          <WhatsAppGroupPrint group={group} />
         </header>
         <GateListTables rows={rows} />
         {!rows.length && <p>Nenhum participante confirmado para este dia.</p>}
@@ -68,7 +69,7 @@ export default async function Page({
             . Consulte a organização em caso de atualização da lista.
           </small>
         </footer>
-      </section>
+      </VolleyCard>
     </div>
   );
 }

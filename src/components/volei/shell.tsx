@@ -10,11 +10,15 @@ import { logoutVolei as logout } from "@/app/volei/entrar/actions";
 import { VolleyIcon } from "./volley-icon";
 import { NotificationBell } from "./notification-bell";
 import { ThemeToggle } from "./theme-toggle";
+import { VolleyPage } from "./page-frame";
+import "./design-tokens.css";
 import "./shell.css";
 import "@/components/ui/shadcn.css";
 import "./mobile.css";
 import "./theme.css";
 import "./color-mode.css";
+import "./navigation.css";
+import "./primitives.css";
 export function VoleiShell({
   children,
   admin = false,
@@ -68,6 +72,7 @@ export function VoleiShell({
   return (
     <ActivityProvider>
       <div
+        data-ui="quadra"
         className={`volley-app${admin ? "" : " volley-public"}${collapsed ? " volley-sidebar-collapsed" : ""}`}
       >
         <aside className="volley-sidebar" id="volley-navigation">
@@ -92,7 +97,6 @@ export function VoleiShell({
                 href={href}
                 aria-label={label}
                 title={collapsed ? label : undefined}
-                style={{ position: "relative" }}
                 aria-current={
                   path === href ||
                   (href === "/volei" &&
@@ -171,6 +175,7 @@ export function VoleiShell({
             </Link>
             <div className="vx-desktop-context">
               <Button
+                className="volley-menu-toggle"
                 variant="ghost"
                 size="icon"
                 onClick={() => setCollapsed(!collapsed)}
@@ -184,7 +189,9 @@ export function VoleiShell({
               </Button>
               <span className="volley-header-divider" />
               <strong>
-                {path?.includes("notificacoes")
+                {path?.includes("configuracoes")
+                  ? "Configurações do grupo"
+                  : path?.includes("notificacoes")
                   ? "Solicitações"
                   : path?.includes("ajuda")
                     ? "Ajuda"
@@ -217,7 +224,7 @@ export function VoleiShell({
               )}
             </div>
           </header>
-          <div className="volley-content">{children}</div>
+          <VolleyPage>{children}</VolleyPage>
         </div>
       </div>
     </ActivityProvider>

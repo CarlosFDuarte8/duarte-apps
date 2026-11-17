@@ -1,0 +1,66 @@
+/* The group owns the border and focus ring; the inner control stays seamless. */
+.volley-app [data-slot="input-group"] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  height: 52px;
+  padding: 0 12px;
+  border: 1px solid var(--vm-line);
+  border-radius: 12px;
+  background: var(--vm-surface);
+  color: var(--vm-ink);
+  box-shadow: 0 1px 2px #001f3b03;
+  transition: border-color 150ms, box-shadow 150ms;
+}
+
+.volley-app [data-slot="input-group"]:focus-within {
+  border-color: var(--vm-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--vm-accent) 12%, transparent);
+}
+
+.volley-app [data-slot="input-group"] > [data-slot="input-group-control"] {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  color: var(--vm-ink);
+  font: inherit;
+  font-size: 14px;
+  box-shadow: none;
+}
+
+.volley-app [data-slot="input-group"] > [data-slot="input-group-control"]:focus-visible {
+  border: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.volley-app [data-slot="input-group-control"]::placeholder {
+  color: var(--vm-muted);
+  opacity: 0.85;
+}
+
+.volley-app [data-slot="input-group-addon"] {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 100%;
+  padding: 0;
+  color: var(--vm-muted);
+}
+
+.volley-app [data-slot="input-group-addon"][data-align="inline-start"] { order: -1; }
+.volley-app [data-slot="input-group-addon"][data-align="inline-end"] { order: 1; margin-right: -6px; }
+.volley-app [data-slot="input-group-addon"] > svg { width: 18px; height: 18px; stroke-width: 1.7; }
+
+@media (max-width: 640px) {
+  .volley-app [data-slot="input-group"] > [data-slot="input-group-control"] { font-size: 16px; }
+}

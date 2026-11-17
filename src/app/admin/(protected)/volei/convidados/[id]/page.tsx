@@ -1,3 +1,4 @@
+import { VolleyCard, VolleyPageHeader } from "@/components/volei/page-frame";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
@@ -5,7 +6,7 @@ import { requireVoleiAdmin } from "@/lib/volei/auth";
 import { getGuestProfile } from "@/lib/volei/repository";
 import { today, formatDate } from "@/lib/volei/domain";
 import { ageLabel } from "@/lib/volei/profile";
-import { PageHeader } from "@/components/escalas/admin-ui";
+
 import { ProfileForm } from "@/components/volei/profile-form";
 import { GuestAdminControls } from "@/components/volei/guest-admin-controls";
 import { SkillLevelForm } from "@/components/volei/skill-level-form";
@@ -22,7 +23,7 @@ export default async function Page({
   if (!guest) notFound();
   return (
     <>
-      <PageHeader
+      <VolleyPageHeader
         eyebrow="Vôlei · Convidados"
         title={guest.name}
         description={ageLabel(guest.birth_date)}
@@ -35,7 +36,7 @@ export default async function Page({
           </Link>
         }
       />
-      <section className="volley-card vp-profile-form">
+      <VolleyCard as="section" className="vp-profile-form">
         <p>
           Convidado de{" "}
           <Link href={`/admin/volei/membros/${guest.member_id}`}>
@@ -66,7 +67,7 @@ export default async function Page({
           reason={guest.blocked_reason}
         />
         <SkillLevelForm id={id} guest level={guest.skill_level} />
-      </section>
+      </VolleyCard>
     </>
   );
 }

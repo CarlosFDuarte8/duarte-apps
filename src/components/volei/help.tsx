@@ -1,3 +1,4 @@
+import { VolleyCard, VolleyPageHeader } from "@/components/volei/page-frame";
 import Link from "next/link";
 import { helpSections } from "@/lib/volei/help";
 import styles from "./help.module.css";
@@ -5,18 +6,18 @@ import styles from "./help.module.css";
 export function VoleiHelp({ admin = false }: { admin?: boolean }) {
   return (
     <>
-      <section className="volley-hero">
-        <span className="volley-eyebrow">ACESSO E ORIENTAÇÕES</span>
-        <h1>Como podemos ajudar?</h1>
-        <p>Dicas para acessar o grupo e resolver os problemas mais comuns.</p>
-      </section>
+      <VolleyPageHeader
+        eyebrow="ACESSO E ORIENTAÇÕES"
+        title="Como podemos ajudar?"
+        description="Dicas para acessar o grupo e resolver os problemas mais comuns."
+      />
       {admin && (
         <Link className="sc-button" href="/admin/volei/membros">
           Abrir membros para liberar acesso
         </Link>
       )}
       {admin && (
-        <section className={`volley-card ${styles.section}`}>
+        <VolleyCard as="section" className={styles.section}>
           <h2>Avisos no computador</h2>
           <p>
             No sino do painel, escolha Ativar avisos neste navegador e autorize.
@@ -30,11 +31,11 @@ export function VoleiHelp({ admin = false }: { admin?: boolean }) {
             navegador; para garantir, desative-os pelo sino antes de sair de um
             computador compartilhado.
           </p>
-        </section>
+        </VolleyCard>
       )}
       {helpSections.map((section) => (
-        <section
-          className={`volley-card ${styles.section}`}
+        <VolleyCard as="section"
+          className={styles.section}
           key={section.title}
         >
           <h2>{section.title}</h2>
@@ -46,7 +47,7 @@ export function VoleiHelp({ admin = false }: { admin?: boolean }) {
               </details>
             ))}
           </div>
-        </section>
+        </VolleyCard>
       ))}
       <Link className="volley-link" href={admin ? "/admin/volei" : "/volei"}>
         ← Voltar aos jogos

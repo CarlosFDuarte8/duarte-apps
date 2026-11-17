@@ -1,3 +1,4 @@
+import { VolleyCard, VolleyPageHeader, VolleySectionHeader } from "@/components/volei/page-frame";
 import { notFound } from "next/navigation";
 import { guestByProfileToken } from "@/lib/volei/repository";
 import { today, formatDate } from "@/lib/volei/domain";
@@ -20,8 +21,9 @@ export default async function Page({
   if (!guest) notFound();
   return (
     <div className="vp-page">
-      <section className="volley-card">
-        <h1>Olá, {guest.name}</h1>
+      <VolleyPageHeader eyebrow="SEU ESPAÇO NO GRUPO" title="Cadastro de convidado" description="Confira seus dados para participar do encontro." />
+      <VolleyCard as="section">
+        <VolleySectionHeader title={`Olá, ${guest.name}`} />
         <p>
           Convidado de <strong>{guest.volei_members?.name}</strong> para{" "}
           {formatDate(guest.volei_events!.date)}.
@@ -43,7 +45,7 @@ export default async function Page({
           Este link é pessoal e vale para este jogo. Você participa como
           convidado, sem entrar no cadastro de membros.
         </small>
-      </section>
+      </VolleyCard>
     </div>
   );
 }

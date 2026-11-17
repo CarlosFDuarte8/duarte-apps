@@ -46,6 +46,15 @@ export const birthDateSchema = z
     "Informe uma data de nascimento válida, sem data futura.",
   )
   .transform((value) => value || null);
+export const requiredBirthDateSchema = z
+  .string({ error: "Informe sua data de nascimento." })
+  .min(1, "Informe sua data de nascimento.")
+  .refine(
+    (value) => value >= "1900-01-01" && ageOn(value) !== null,
+    "Informe uma data de nascimento válida, sem data futura.",
+  );
+export const duplicateMemberMessage =
+  "Já existe um cadastro com este telefone, navegador ou nome e data de nascimento. Confira os dados com o responsável.";
 export function ageLabel(birthDate: string | null | undefined) {
   const age = ageOn(birthDate);
   return age === null

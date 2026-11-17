@@ -1,5 +1,8 @@
-﻿"use client";
+"use client";
+import { VolleyCard, VolleySectionHeader } from "@/components/volei/page-frame";
+
 import { StudentFields } from "./student-fields";
+import { BirthDateField } from "./birth-date-field";
 import { useId, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -22,6 +25,7 @@ export type MyGame = {
   blocked: boolean;
   active: boolean;
   membershipStatus: "approved" | "pending" | "rejected";
+  needsBirthDate: boolean;
   canReport?: boolean;
   status?: AttendanceStatus;
   guest?: { name: string; status: AttendanceStatus; profileToken?: string };
@@ -43,6 +47,7 @@ export function GameResponse({
   const [isStudent, setIsStudent] = useState(false);
   const [studentDays, setStudentDays] = useState<number[]>([]);
   const [name, setName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [register, setRegister] = useState(false);
   const [guest, setGuest] = useState("");
   const [guestPhone, setGuestPhone] = useState("");
@@ -88,18 +93,8 @@ export function GameResponse({
     });
   }
   return (
-    <section className="volley-card game-signup" id="minha-presenca">
-      <header className="game-section-heading">
-        <span className="game-icon-box">
-          <VolleyIcon name={participating ? "check" : "phone"} />
-        </span>
-        <div>
-          <span className="game-kicker">SUA PARTICIPAÇÃO</span>
-          <h2>
-            {participating ? "Você está na lista!" : "Entre com seu celular"}
-          </h2>
-        </div>
-      </header>
+    <VolleyCard as="section" className="game-signup" id="minha-presenca">
+      <VolleySectionHeader eyebrow="SUA PARTICIPAÇÃO" title={participating ? "Você está na lista!" : "Entre com seu celular"} icon={<VolleyIcon name={participating ? "check" : "phone"} />} />
       {mine ? (
         <>
           <div className="game-identity">
@@ -184,22 +179,39 @@ export function GameResponse({
                   o responsável.
                 </p>
               )}
-              {!participating && (
-                <Button
-                  className="game-primary"
-                  disabled={pending || !canJoin}
-                  onClick={() =>
+              {(!participating || mine.needsBirthDate) && (
+                <form
+                  className="game-form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
                     run(
-                      () => manageGame({ eventId, action: "join" }),
-                      "Participação registrada.",
-                    )
-                  }
+                      () => manageGame({
+                        eventId,
+                        action: "join",
+                        ...(mine.needsBirthDate ? { birthDate } : {}),
+                      }),
+                      participating ? "Nascimento salvo." : "Participação registrada.",
+                    );
+                  }}
                 >
-                  <VolleyIcon name="check" />
-                  {free
-                    ? "Confirmar minha presença"
-                    : "Entrar na lista de espera"}
-                </Button>
+                  {mine.needsBirthDate && (
+                    <>
+                      <p className="game-description">
+                        {participating
+                          ? "Complete sua data de nascimento no cadastro."
+                          : "Complete sua data de nascimento para confirmar presença."}
+                        {" "}Você só precisa informar uma vez.
+                      </p>
+                      <BirthDateField value={birthDate} onChange={setBirthDate} disabled={pending || !canJoin} />
+                    </>
+                  )}
+                  <Button type="submit" className="game-primary" disabled={pending || !canJoin}>
+                    <VolleyIcon name="check" />
+                    {participating
+                      ? "Salvar data de nascimento"
+                      : free ? "Confirmar minha presença" : "Entrar na lista de espera"}
+                  </Button>
+                </form>
               )}
               {participating && (
                 <>
@@ -333,6 +345,7 @@ export function GameResponse({
                     eventId,
                     name,
                     phone,
+                    birthDate,
                     enrollment: { isStudent, days: studentDays },
                   }),
                 "Cadastro enviado para aprovação.",
@@ -395,6 +408,7 @@ export function GameResponse({
                   autoComplete="name"
                 />
               </label>
+              <BirthDateField value={birthDate} onChange={setBirthDate} disabled={pending} />
               <StudentFields
                 isStudent={isStudent}
                 days={studentDays}
@@ -487,6 +501,6 @@ export function GameResponse({
           </p>
         )}
       </dialog>
-    </section>
+    </VolleyCard>
   );
 }

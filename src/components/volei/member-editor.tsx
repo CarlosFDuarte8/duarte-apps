@@ -1,4 +1,6 @@
 "use client";
+import { VolleyCard } from "@/components/volei/page-frame";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -63,8 +65,8 @@ export function MemberEditor({
   }
 
   return (
-    <article
-      className={`sc-card vl-member${member.blocked ? " vl-blocked" : ""}`}
+    <VolleyCard as="article"
+      className={`vl-member${member.blocked ? " vl-blocked" : ""}`}
     >
       <header className="vl-row">
         <PersonAvatar name={member.name} photoUrl={member.photo_url} />
@@ -204,6 +206,7 @@ export function MemberEditor({
           <section className="vl-box">
             <h2 className="vm-editor-heading">Foto e nascimento</h2>
             <ProfileForm
+              birthRequired
               emergency={member}
               name={member.name}
               birthDate={member.birth_date}
@@ -363,6 +366,6 @@ export function MemberEditor({
           </div>
         </div>
       </section>
-    </article>
+    </VolleyCard>
   );
 }

@@ -1,4 +1,6 @@
 "use client";
+import { VolleyCard, VolleyFormCard } from "@/components/volei/page-frame";
+
 import { useRef, useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,7 +33,7 @@ export function ComplaintForm({
   const key = useRef("");
   if (sent)
     return (
-      <section className="volley-card vn-sent" role="status">
+      <VolleyCard as="section" className="vn-sent" role="status">
         <h2>Relato enviado</h2>
         <p>
           O responsável recebeu sua solicitação para análise. Seu relato não
@@ -50,11 +52,11 @@ export function ComplaintForm({
         >
           Enviar outro relato
         </Button>
-      </section>
+      </VolleyCard>
     );
   return (
-    <form
-      className="volley-card vn-complaint-form"
+    <VolleyFormCard
+      className="vn-complaint-form"
       onSubmit={(e) => {
         e.preventDefault();
         setError("");
@@ -164,6 +166,6 @@ export function ComplaintForm({
       <Button type="submit" loading={pending} loadingText="Enviando relato…">
         {pending ? "Enviando…" : "Enviar ao responsável"}
       </Button>
-    </form>
+    </VolleyFormCard>
   );
 }

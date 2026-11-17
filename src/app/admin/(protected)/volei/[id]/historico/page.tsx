@@ -1,10 +1,11 @@
+import { VolleyCard, VolleyPageHeader } from "@/components/volei/page-frame";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { requireVoleiAdmin } from "@/lib/volei/auth";
 import { courtData } from "@/lib/volei/court-repository";
 import { formatDate } from "@/lib/volei/domain";
-import { PageHeader } from "@/components/escalas/admin-ui";
+
 import { Button } from "@/components/ui/button";
 import "@/components/volei/court.css";
 import { formatCourtTime } from "@/lib/volei/court";
@@ -32,7 +33,7 @@ export default async function Page({
       }
   return (
     <>
-      <PageHeader
+      <VolleyPageHeader
         eyebrow="Vôlei · Histórico das partidas"
         title={formatDate(data.event.date)}
         description="Resultados e formações registrados na quadra."
@@ -43,7 +44,7 @@ export default async function Page({
         }
       />
       <div className="vc-board">
-        <section className="volley-card vc-section">
+        <VolleyCard as="section" className="vc-section">
           <h2>{state.round} partidas registradas</h2>
           <p className="vc-help">
             As letras identificam os times durante o jogo. Os jogadores podem
@@ -69,8 +70,8 @@ export default async function Page({
               abaixo consideram esse período.
             </p>
           )}
-        </section>
-        <section className="volley-card vc-section">
+        </VolleyCard>
+        <VolleyCard as="section" className="vc-section">
           <h2>Participação nas partidas</h2>
           <p className="vc-help">
             Contagem de partidas jogadas, em ordem alfabética. A frequência do
@@ -93,8 +94,8 @@ export default async function Page({
               registradas.
             </p>
           )}
-        </section>
-        <section className="volley-card vc-section">
+        </VolleyCard>
+        <VolleyCard as="section" className="vc-section">
           <h2>Partida por partida</h2>
           {!state.history.length ? (
             <p className="vc-empty">
@@ -161,7 +162,7 @@ export default async function Page({
               ))}
             </ol>
           )}
-        </section>
+        </VolleyCard>
       </div>
     </>
   );

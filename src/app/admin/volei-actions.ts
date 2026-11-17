@@ -7,6 +7,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { requireVoleiAdmin as requireAdmin } from "@/lib/volei/auth";
 import { phoneSchema } from "@/lib/volei/phone";
+import { duplicateMemberMessage, requiredBirthDateSchema } from "@/lib/volei/profile";
 import { deleteStoredPhotos } from "@/lib/volei/photos";
 import { preferencesSchema } from "@/lib/volei/frequency";
 import {
@@ -26,7 +27,8 @@ function done(error: { message: string; code?: string } | null): Result {
     revalidatePath("/volei", "layout");
     return ok;
   }
-  if (error.code === "23505") return { error: "Já existe um registro igual." };
+  if (error.code === "23505")
+    return { error: error.message.includes("volei_members_") ? duplicateMemberMessage : "Já existe um registro igual." };
   if (error.code === "P0001") return { error: error.message };
   return { error: "Não foi possível salvar. Tente novamente." };
 }
@@ -156,8 +158,11 @@ export async function addMember(
   name: string,
   phone = "",
   enrollment: unknown = { isStudent: false, days: [] },
+  birthDate = "",
 ): Promise<Result> {
   const { client } = await requireAdmin();
+  const birth = requiredBirthDateSchema.safeParse(birthDate);
+  if (!birth.success) return invalid(birth.error);
   const student = studentEnrollmentSchema.safeParse(enrollment);
   if (!student.success) return invalid(student.error);
   const parsed = memberNameSchema.safeParse(name);
@@ -169,6 +174,7 @@ export async function addMember(
     student_weekdays: student.data,
     phone: contact?.data ?? null,
     membership_status: "approved",
+    birth_date: birth.data,
   });
   return done(error);
 }

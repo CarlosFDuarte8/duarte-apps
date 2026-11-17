@@ -13,6 +13,7 @@ import {
 import { phoneSchema } from "@/lib/volei/phone";
 import { currentPlayer } from "@/lib/volei/player-session";
 import { deleteStoredPhotos } from "@/lib/volei/photos";
+import { duplicateMemberMessage, requiredBirthDateSchema } from "@/lib/volei/profile";
 const guestSchema = z
   .string()
   .trim()
@@ -25,7 +26,7 @@ function refresh() {
 function errorMessage(error: { code?: string; message: string }) {
   if (error.code === "P0001") return error.message;
   if (error.code === "23505")
-    return "Este telefone ou navegador já possui um cadastro. Use o acesso original ou fale com o responsável.";
+    return duplicateMemberMessage;
   return "Não foi possível registrar agora. Tente novamente em instantes.";
 }
 export async function registerForGame(
@@ -37,6 +38,7 @@ export async function registerForGame(
       eventId: z.uuid(),
       name: z.string().trim().min(2, "Informe seu nome completo.").max(100),
       phone: phoneSchema,
+      birthDate: requiredBirthDateSchema,
     })
     .safeParse(input);
   if (!parsed.success)
@@ -45,15 +47,16 @@ export async function registerForGame(
         parsed.error.issues[0]?.message ?? "Confira os dados da inscrição.",
     };
   const secret = (await deviceSecret()) ?? randomBytes(32).toString("hex");
-  const { eventId, name, phone, enrollment } = parsed.data;
+  const { eventId, name, phone, enrollment, birthDate } = parsed.data;
   const { error } = await serviceClient().rpc(
-    "volei_register_student_request",
+    "volei_register_member_profile",
     {
       p_event: eventId,
       p_name: name,
       p_phone: phone,
       p_secret_hash: hashDevice(secret),
       p_student_weekdays: enrollment,
+      p_birth_date: birthDate,
     },
   );
   if (error) return { error: errorMessage(error) };
@@ -74,6 +77,7 @@ export async function manageGame(input: unknown): Promise<{ error: string }> {
       action: z.enum(["join", "cancel", "guest_join", "guest_cancel"]),
       guest: guestSchema.optional(),
       guestPhone: phoneSchema.optional(),
+      birthDate: requiredBirthDateSchema.optional(),
     })
     .safeParse(input);
   if (!parsed.success) return { error: "Confira os dados da solicitação." };
@@ -83,7 +87,7 @@ export async function manageGame(input: unknown): Promise<{ error: string }> {
       error:
         "Use o mesmo navegador em que você se inscreveu para gerenciar sua presença.",
     };
-  const { eventId, action, guest, guestPhone } = parsed.data;
+  const { eventId, action, guest, guestPhone, birthDate } = parsed.data;
   if (action === "guest_join") {
     if (!guest || !guestPhone)
       return { error: "Informe o nome e o telefone do convidado." };
@@ -107,11 +111,12 @@ export async function manageGame(input: unknown): Promise<{ error: string }> {
     refresh();
     return { error: "" };
   }
-  const { error } = await serviceClient().rpc("volei_phone_manage", {
+  const { error } = await serviceClient().rpc("volei_phone_manage_profile", {
     p_event: eventId,
     p_secret_hash: hashDevice(secret),
     p_action: action,
     p_guest_name: guest ?? null,
+    p_birth_date: birthDate ?? null,
   });
   if (error) return { error: errorMessage(error) };
   refresh();

@@ -1,0 +1,126 @@
+.page {
+  --login-ink: #07274d;
+  --login-muted: #72829b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+}
+
+.page .card {
+  width: min(100%, 520px);
+  gap: 26px;
+  padding: 32px;
+  border-radius: 24px;
+  box-shadow: 0 16px 40px -16px #285c9033;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  text-align: center;
+}
+
+.badge {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 2px;
+  border-radius: 16px;
+  background: #e0f1ff;
+  color: #00549a;
+}
+.badge svg { width: 28px; height: 28px; stroke-width: 1.6; }
+
+.page .title {
+  margin: 0;
+  color: var(--login-ink);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.2;
+}
+.description {
+  margin: 0;
+  color: var(--login-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.cardContent { padding: 0; }
+.form { display: grid; gap: 20px; }
+.field { display: grid; gap: 8px; min-width: 0; }
+.field label {
+  color: var(--login-ink);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.passwordToggle svg { width: 18px; height: 18px; stroke-width: 1.7; }
+.page .passwordToggle {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--login-muted);
+  cursor: pointer;
+}
+.passwordToggle:hover { background: var(--vm-subtle); color: var(--vm-accent); }
+.page .form .submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: var(--v-control-height);
+  margin-top: 4px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: #004e96;
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 3px #00498c0a;
+  transition: background 150ms;
+}
+.page .form .submit:hover { background: #003c77; }
+.page .form .submit:disabled { opacity: 0.65; cursor: wait; }
+.page .submit svg { width: 18px; height: 18px; stroke-width: 1.7; }
+.error {
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--vm-component-danger-line);
+  border-radius: 12px;
+  background: var(--vm-component-danger-surface);
+  color: var(--vm-component-danger-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.setup {
+  width: min(100%, 744px);
+  padding: 32px;
+  border-radius: 24px;
+  background: var(--vm-surface);
+  color: var(--vm-ink);
+}
+
+:global(:root[data-volley-theme="dark"]) .page {
+  --login-ink: var(--vm-ink); --login-muted: var(--vm-muted);
+}
+:global(:root[data-volley-theme="dark"]) .badge { background: var(--vm-subtle); color: var(--vm-accent); }
+
+@media (max-width: 600px) {
+  .page { gap: 26px; }
+  .page .card { padding: 26px 22px; border-radius: 20px; }
+  .page .title { font-size: clamp(24px, 6.4vw, 28px); }
+  .description { max-width: 290px; font-size: 14px; }
+  .form { gap: 18px; }
+}

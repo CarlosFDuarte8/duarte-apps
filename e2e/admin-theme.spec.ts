@@ -24,6 +24,11 @@ runInNewContext(
         return nodeRequire(name);
       if (name === "@/lib/volei/domain") return domain;
       if (name === "@/lib/volei/participation-time") return participationTime;
+      if (name === "@/components/volei/page-frame") return {
+        VolleyCard: ({ as = "div", children, ...props }: Record<string, unknown>) => createElement(as as string, props, children as never),
+        VolleySectionHeader: ({ title, description, actions }: Record<string, unknown>) => createElement("header", null,
+          createElement("h2", null, title as never), createElement("p", null, description as never), actions as never),
+      };
       if (name === "@/lib/volei/gate-list") return { buildGateList: () => [] };
       if (name === "./use-run")
         return {
@@ -39,6 +44,8 @@ runInNewContext(
           NativeSelect: (props: Record<string, unknown>) =>
             createElement("select", props),
         };
+      if (name === "@/components/ui/input") return { Input: (props: Record<string, unknown>) => createElement("input", props) };
+      if (name === "@/components/ui/button") return { Button: (props: Record<string, unknown>) => createElement("button", props) };
       if (name === "@/app/admin/volei-actions" || name.endsWith(".css"))
         return {};
       throw new Error(`Unexpected component dependency: ${name}`);
@@ -75,6 +82,8 @@ const baseCSS = [
   "src/components/volei/mobile.css",
   "src/components/volei/theme.css",
   "src/components/volei/volei.css",
+  "src/components/volei/design-tokens.css",
+  "src/components/volei/primitives.css",
 ]
   .map((file) => readFileSync(file, "utf8"))
   .join("\n");

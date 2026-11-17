@@ -1,4 +1,9 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+import { VolleyCard, VolleySectionHeader } from "@/components/volei/page-frame";
+
 import { participationTime } from "@/lib/volei/participation-time";
 import { useState } from "react";
 import {
@@ -18,6 +23,7 @@ import { defaultDeadline } from "@/lib/volei/phone";
 import "./volei.css";
 import { NativeSelect } from "@/components/ui/native-select";
 import { buildGateList } from "@/lib/volei/gate-list";
+import { ageLabel, ageOn } from "@/lib/volei/profile";
 
 type Status = AttendanceStatus | "limpar";
 
@@ -69,24 +75,22 @@ export function EventManager({
 
   return (
     <>
-      <section className="volley-hero">
-        <span className="volley-eyebrow">COMPARTILHE COM O GRUPO</span>
-        <h1>O jogo está marcado.</h1>
-        <p>
-          Envie o link deste dia para os jogadores acompanharem as vagas e
-          confirmarem com nome e celular, sem precisar de um link individual.
-        </p>
-        <button
-          type="button"
-          className="sc-btn"
-          onClick={() =>
-            copy(`${window.location.origin}/volei/jogo/${event.id}`)
+      <VolleyCard as="section">
+        <VolleySectionHeader
+          eyebrow="COMPARTILHE COM O GRUPO"
+          title="O jogo está marcado."
+          description="Envie o link deste dia para os jogadores acompanharem as vagas e confirmarem com nome e celular, sem precisar de um link individual."
+          actions={
+            <Button
+              type="button"
+              onClick={() => copy(`${window.location.origin}/volei/jogo/${event.id}`)}
+            >
+              {copied ? "Link copiado" : "Copiar link público do jogo"}
+            </Button>
           }
-        >
-          {copied ? "Link copiado" : "Copiar link público do jogo"}
-        </button>
-      </section>
-      <section className="sc-card sc-form-card">
+        />
+      </VolleyCard>
+      <VolleyCard as="section" className="sc-form-card">
         <h2>Detalhes do dia</h2>
         <form
           onSubmit={(e) => {
@@ -127,7 +131,7 @@ export function EventManager({
             </label>
             <label>
               Prazo de inscrição (Brasília)
-              <input
+              <Input
                 type="datetime-local"
                 name="registration_deadline"
                 required
@@ -138,7 +142,7 @@ export function EventManager({
             </label>
             <label>
               Liberar convidados a partir de (Brasília)
-              <input
+              <Input
                 type="datetime-local"
                 name="guests_open_at"
                 defaultValue={localInput(event.guests_open_at)}
@@ -146,7 +150,7 @@ export function EventManager({
             </label>
             <label>
               Título
-              <input
+              <Input
                 name="title"
                 defaultValue={event.title}
                 required
@@ -155,7 +159,7 @@ export function EventManager({
             </label>
             <label>
               Horário
-              <input
+              <Input
                 name="start_time"
                 defaultValue={event.start_time}
                 maxLength={20}
@@ -163,7 +167,7 @@ export function EventManager({
             </label>
             <label>
               Local
-              <input
+              <Input
                 name="location"
                 defaultValue={event.location}
                 maxLength={120}
@@ -171,7 +175,7 @@ export function EventManager({
             </label>
             <label>
               Observações
-              <input name="notes" defaultValue={event.notes} maxLength={500} />
+              <Input name="notes" defaultValue={event.notes} maxLength={500} />
             </label>
           </div>
           <p className="volley-muted">
@@ -189,11 +193,11 @@ export function EventManager({
             Fechar confirmações deste dia
           </label>
           <div className="vl-actions">
-            <button type="submit" className="sc-btn" disabled={pending}>
+            <Button type="submit" className="sc-btn" disabled={pending}>
               Salvar detalhes
-            </button>
+            </Button>
             {confirmDelete ? (
-              <button
+              <Button
                 type="button"
                 className="sc-btn sc-btn-danger"
                 disabled={pending}
@@ -205,32 +209,32 @@ export function EventManager({
                 }
               >
                 Confirmar exclusão
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
                 type="button"
                 className="sc-btn sc-btn-ghost"
                 onClick={() => setConfirmDelete(true)}
               >
                 Excluir dia
-              </button>
+              </Button>
             )}
           </div>
         </form>
-      </section>
+      </VolleyCard>
 
-      <section className="sc-card sc-form-card">
+      <VolleyCard as="section" className="sc-form-card">
         <div className="vl-row">
           <h2>Lista para o WhatsApp</h2>
           <div className="vl-actions">
-            <button
+            <Button
               type="button"
               className="sc-btn"
               onClick={() => copy(text)}
               disabled={confirmedNames.length + confirmedGuests.length === 0}
             >
               {copied ? "Copiado ✓" : "Copiar lista"}
-            </button>
+            </Button>
             <a
               className="sc-button sc-btn-ghost"
               href={`https://wa.me/?text=${encodeURIComponent(text)}`}
@@ -242,9 +246,9 @@ export function EventManager({
           </div>
         </div>
         <pre className="vl-preview">{text}</pre>
-      </section>
+      </VolleyCard>
 
-      <section className="sc-card sc-form-card">
+      <VolleyCard as="section" className="sc-form-card">
         <h2>Presença ({confirmedNames.length} confirmados)</h2>
         {feedback}
         <table className="sc-table vl-attendance-table">
@@ -270,6 +274,11 @@ export function EventManager({
                   <tr key={m.id}>
                     <td data-label="Membro">
                       {m.name}
+                      <small className="vl-participation-detail">
+                        {ageOn(m.birth_date) !== null && ageOn(m.birth_date)! < 18
+                          ? <strong>{ageLabel(m.birth_date)}</strong>
+                          : ageLabel(m.birth_date)}
+                      </small>
                       {!!m.student_weekdays?.length && (
                         <small className="vl-participation-detail">
                           {record?.status === "confirmado"
@@ -289,7 +298,7 @@ export function EventManager({
                       )}
                     </td>
                     <td data-label="Situação">
-                      <select
+                      <NativeSelect
                         aria-label={`Situação de ${m.name}`}
                         value={statusOf.get(m.id) ?? "limpar"}
                         disabled={pending}
@@ -313,14 +322,14 @@ export function EventManager({
                         </option>
                         <option value="ausente">Ausente</option>
                         <option value="nao_vai">Não vai</option>
-                      </select>
+                      </NativeSelect>
                     </td>
                   </tr>
                 );
               })}
           </tbody>
         </table>
-      </section>
+      </VolleyCard>
     </>
   );
 }

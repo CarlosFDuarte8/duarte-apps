@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Clock3, MapPin } from "lucide-react";
+import { Armchair, ArrowUpRight, Clock3, Hourglass, MapPin, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { eventCapacity, eventFreeSlots, type VoleiEvent } from "@/lib/volei/domain";
 export type EventSummary = {
@@ -59,17 +59,18 @@ export function EventCard({
       </div>
       <div className="vx-row-stats">
         <span>
+          <Users aria-hidden="true" />
           <strong>
             {confirmed}
             <small>/{capacity}</small>
           </strong>
-          confirmados
+          <span>confirmados</span>
         </span>
         <span>
-          <strong>{free}</strong>vagas
+          <Armchair aria-hidden="true" /><strong>{free}</strong><span>vagas</span>
         </span>
         <span>
-          <strong>{waiting + guestsWaiting}</strong>na espera
+          <Hourglass aria-hidden="true" /><strong>{waiting + guestsWaiting}</strong><span>na espera</span>
         </span>
       </div>
       <Button asChild variant="outline">

@@ -1,3 +1,5 @@
+import { VolleyMetric, VolleyMetrics } from "@/components/volei/metric";
+import { VolleyCard, VolleyPageHeader } from "@/components/volei/page-frame";
 import Link from "next/link";
 import { WEEKDAY_LABELS } from "@/lib/volei/frequency";
 import { z } from "zod";
@@ -9,7 +11,7 @@ import {
 import { complaintStatuses } from "@/lib/volei/complaints";
 import { displayPhone } from "@/lib/volei/phone";
 import { signPhotos } from "@/lib/volei/photos";
-import { PageHeader } from "@/components/escalas/admin-ui";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PersonAvatar } from "@/components/volei/person-avatar";
@@ -54,25 +56,16 @@ export default async function Page({
     `/admin/volei/notificacoes?tipo=${type}&estado=${resolved ? "concluidas" : "pendentes"}&pagina=${next}`;
   return (
     <>
-      <PageHeader
+      <VolleyPageHeader
         eyebrow="Vôlei"
         title="Central de solicitações"
         description="Cadastros e relatos que precisam da sua atenção. O sininho mantém a contagem até cada atendimento ser concluído."
       />
-      <div className="vn-summary">
-        <Link href="/admin/volei/notificacoes?tipo=cadastros">
-          <strong>{summary.pendingMembers}</strong>
-          <span>Cadastros pendentes</span>
-        </Link>
-        <Link href="/admin/volei/notificacoes?tipo=queixas">
-          <strong>{summary.openComplaints}</strong>
-          <span>Queixas pendentes</span>
-        </Link>
-        <div>
-          <strong>{summary.unreadComplaints}</strong>
-          <span>Queixas não lidas</span>
-        </div>
-      </div>
+      <VolleyMetrics columns={3}>
+        <VolleyMetric href="/admin/volei/notificacoes?tipo=cadastros" value={summary.pendingMembers} label="Cadastros pendentes" />
+        <VolleyMetric href="/admin/volei/notificacoes?tipo=queixas" value={summary.openComplaints} label="Queixas pendentes" />
+        <VolleyMetric  value={summary.unreadComplaints} label="Queixas não lidas" />
+      </VolleyMetrics>
       <nav className="vn-tabs" aria-label="Filtrar solicitações">
         {[
           ["todos", "Todas"],
@@ -94,7 +87,7 @@ export default async function Page({
         ))}
       </nav>
       {(type === "todos" || type === "cadastros") && (
-        <section className="volley-card vn-section">
+        <VolleyCard as="section" className="vn-section">
           <h2>Novos membros</h2>
           <p className="vn-help">
             Aprove ou recuse cada solicitação para retirá-la das pendências.
@@ -135,10 +128,10 @@ export default async function Page({
           {!members.length && (
             <p className="vn-empty">Nenhum cadastro aguardando aprovação.</p>
           )}
-        </section>
+        </VolleyCard>
       )}
       {(type === "todos" || type === "queixas") && (
-        <section className="volley-card vn-section">
+        <VolleyCard as="section" className="vn-section">
           <header className="vn-section-heading">
             <h2>Queixas e relatos</h2>
             <nav className="vn-tabs" aria-label="Situação dos relatos">
@@ -206,7 +199,7 @@ export default async function Page({
               )}
             </div>
           </footer>
-        </section>
+        </VolleyCard>
       )}
     </>
   );

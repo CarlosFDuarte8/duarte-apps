@@ -5,5 +5,5 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <main className="sc">{children}</main>;
+  return <div className="sc">{children}</div>;
 }

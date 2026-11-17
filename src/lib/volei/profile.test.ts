@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ageOn, birthDateSchema, emergencyContactSchema } from "./profile";
+import { ageOn, birthDateSchema, requiredBirthDateSchema, emergencyContactSchema } from "./profile";
 describe("Idade do participante", () => {
   it("normaliza telefone de emergência e exige nome com telefone", () => {
     expect(
@@ -40,5 +40,11 @@ describe("Idade do participante", () => {
     expect(birthDateSchema.safeParse("").success).toBe(true);
     expect(birthDateSchema.safeParse("2025-02-29").success).toBe(false);
     expect(birthDateSchema.safeParse("2099-01-01").success).toBe(false);
+  });
+  it("exige nascimento válido nos cadastros e confirmações", () => {
+    for (const value of [undefined, null, "", "1899-12-31", "2008-02-30", "2099-01-01", "17/11/2008"]) {
+      expect(requiredBirthDateSchema.safeParse(value).success).toBe(false);
+    }
+    expect(requiredBirthDateSchema.parse("2008-02-29")).toBe("2008-02-29");
   });
 });

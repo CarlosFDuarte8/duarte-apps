@@ -14,8 +14,11 @@ import {
   UserRound,
   Plus,
   ChevronDown,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { VolleyCard, VolleyHero, VolleyPageHeader } from "./page-frame";
+import { VolleyMetric, VolleyMetrics } from "./metric";
 import { EventCard, type EventSummary } from "./event-card";
 import { ShareGameButton } from "./share-game-button";
 import {
@@ -33,11 +36,13 @@ export function VolleyDashboard({
   admin = false,
   month,
   creator,
+  groupInvite,
 }: {
   items: EventSummary[];
   admin?: boolean;
   month: string;
   creator?: ReactNode;
+  groupInvite?: ReactNode;
 }) {
   const upcoming = items.find(
     (item) => item.event.date >= today() && !item.event.closed,
@@ -68,6 +73,12 @@ export function VolleyDashboard({
           text: "Pendências para acompanhar",
           icon: Bell,
         },
+        {
+          href: "/admin/volei/configuracoes",
+          title: "Grupo do WhatsApp",
+          text: "Link público e QR code",
+          icon: MessageCircle,
+        },
       ]
     : [
         {
@@ -85,44 +96,34 @@ export function VolleyDashboard({
       ];
   return (
     <div className="vx-dashboard">
-      <header className="vx-page-intro">
-        <div>
-          <p className="vx-eyebrow">
-            {admin ? "SEU PAINEL DE CONTROLE" : "VÔLEI DA GALERA"}
-          </p>
-          <h1>
-            {admin
-              ? "Visão geral"
-              : "Jogos e presenças"}
-          </h1>
-          <p>
-            {admin
-              ? "Acompanhe a próxima partida e organize o que vem depois."
-              : "Escolha seu jogo. Confirme a presença. A gente se vê na quadra."}
-          </p>
-        </div>
-        {admin && (
+      {admin ? (
+        <VolleyPageHeader eyebrow="SEU PAINEL DE CONTROLE" title="Visão geral" description="Acompanhe a próxima partida e organize o que vem depois." actions={
           <Button asChild variant="outline">
             <Link href="/volei">
               Área pública
               <ArrowUpRight aria-hidden="true" />
             </Link>
           </Button>
-        )}
-      </header>
-      <section className="vx-overview-stats" aria-label="Resumo dos encontros">
+        } />
+      ) : (
+        <VolleyHero
+          id="volley-games-title"
+          eyebrow="VÔLEI DA GALERA"
+          title="Jogos e presenças"
+          description="Escolha seu jogo. Confirme a presença. A gente se vê na quadra."
+          compact
+        />
+      )}
+      <VolleyMetrics aria-label="Resumo dos encontros">
         {[
           { label: "Encontros", value: items.length, detail: admin ? formatMonth(month) : "Na agenda", icon: CalendarDays, tone: "blue" },
           { label: "Confirmados", value: occupied, detail: "No próximo encontro", icon: Users, tone: "green" },
           { label: "Vagas livres", value: free, detail: next ? "No próximo encontro" : "Sem encontro agendado", icon: ShieldCheck, tone: "blue" },
           { label: "Na espera", value: (upcoming?.waiting ?? 0) + (upcoming?.guestsWaiting ?? 0), detail: "Membros e convidados", icon: Clock3, tone: "amber" },
         ].map(({ label, value, detail, icon: Icon, tone }) => (
-          <article key={label} className={`vx-overview-stat vx-stat-${tone}`}>
-            <div><span>{label}</span><i><Icon aria-hidden="true" /></i></div>
-            <strong>{value}</strong><p>{detail}</p>
-          </article>
+          <VolleyMetric key={label} className="vx-overview-stat" label={label} value={value} detail={detail} icon={<Icon />} tone={tone as "blue" | "green" | "amber"} />
         ))}
-      </section>
+      </VolleyMetrics>
       <div className="vx-dashboard-columns">
         <div className="vx-main-column">
           <section
@@ -138,8 +139,8 @@ export function VolleyDashboard({
               <h2>{next ? next.title : "A próxima partida está por vir."}</h2>
               {next ? (
                 <>
-                  <p className="vx-feature-date">{formatDate(next.date)}</p>
                   <div className="vx-feature-meta">
+                    <span><CalendarDays aria-hidden="true" />{formatDate(next.date)}</span>
                     {next.start_time && (
                       <span>
                         <Clock3 aria-hidden="true" />
@@ -207,13 +208,14 @@ export function VolleyDashboard({
               </span>
             </Link>
           )}
-          <section className="vx-agenda-section">
+          <VolleyCard className="vx-agenda-section" aria-labelledby="volley-agenda-title">
             <header className="vx-agenda-head">
               <div>
                 <span className="vx-eyebrow">
-                  {admin ? "PLANEJE OS PRÓXIMOS DIAS" : "PROGRAME-SE"}
+                  <CalendarDays aria-hidden="true" />
+                  {admin ? "PLANEJE OS PRÓXIMOS DIAS" : "PRÓXIMOS ENCONTROS"}
                 </span>
-                <h2>{admin ? "Agenda da quadra" : "Mais encontros"}</h2>
+                <h2 id="volley-agenda-title">{admin ? "Agenda da quadra" : "Mais encontros"}</h2>
               </div>
               {admin && (
                 <div className="vx-agenda-month">
@@ -229,6 +231,11 @@ export function VolleyDashboard({
                     </Link>
                   </Button>
                 </div>
+              )}
+              {!admin && other.length > 0 && (
+                <Button asChild variant="outline">
+                  <a href="#lista-encontros"><CalendarDays aria-hidden="true" />Ver agenda completa<ArrowRight aria-hidden="true" /></a>
+                </Button>
               )}
             </header>
             {items.length > 0 && (
@@ -276,7 +283,7 @@ export function VolleyDashboard({
                 <div id="agendar-jogos">{creator}</div>
               </details>
             )}
-            <div className="vx-event-list">
+            <div className="vx-event-list" id="lista-encontros" tabIndex={-1}>
               {other.map((item) => (
                 <EventCard key={item.event.id} {...item} admin={admin} />
               ))}
@@ -298,17 +305,18 @@ export function VolleyDashboard({
                 </div>
               </div>
             )}
-          </section>
+          </VolleyCard>
         </div>
         <aside className="vx-side-column">
-          <section className="vx-tools">
+          {groupInvite}
+          <VolleyCard className="vx-tools" aria-labelledby="volley-tools-title">
             <header>
               <span className="vx-tool-icon">
                 <Users aria-hidden="true" />
               </span>
               <div>
-                <span className="vx-eyebrow">FORA DAS QUATRO LINHAS</span>
-                <h2>{admin ? "Cuide do seu grupo" : "Seu espaço no grupo"}</h2>
+                <span className="vx-eyebrow">{admin ? "GESTÃO DO GRUPO" : "SEU ESPAÇO NO GRUPO"}</span>
+                <h2 id="volley-tools-title">{admin ? "Cuide do seu grupo" : "Seu espaço no grupo"}</h2>
               </div>
             </header>
             <div className="vx-shortcuts">
@@ -321,13 +329,13 @@ export function VolleyDashboard({
                     <strong>{title}</strong>
                     <small>{text}</small>
                   </div>
-                  <ArrowUpRight aria-hidden="true" />
+                  <ArrowRight aria-hidden="true" />
                 </Link>
               ))}
             </div>
-          </section>
+          </VolleyCard>
           {admin ? (
-            <section className="vx-month-summary">
+            <VolleyCard className="vx-month-summary">
               <span className="vx-eyebrow">
                 EM {formatMonth(month).toLocaleUpperCase("pt-BR")}
               </span>
@@ -355,11 +363,11 @@ export function VolleyDashboard({
                 </div>
               </dl>
               <p>Uma pessoa pode participar de mais de um encontro.</p>
-            </section>
+            </VolleyCard>
           ) : (
-            <section className="vx-how">
+            <VolleyCard className="vx-how" aria-labelledby="volley-how-title">
               <span className="vx-eyebrow">SIMPLES ASSIM</span>
-              <h2>Da lista para a quadra.</h2>
+              <h2 id="volley-how-title">Da lista para a quadra.</h2>
               <ol>
                 <li>
                   <span>01</span>
@@ -383,7 +391,7 @@ export function VolleyDashboard({
                   </div>
                 </li>
               </ol>
-            </section>
+            </VolleyCard>
           )}
         </aside>
       </div>

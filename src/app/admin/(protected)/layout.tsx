@@ -57,7 +57,7 @@ export default async function Layout({
                 </form>
               </div>
             </header>
-            <div className="sc-app-content">{children}</div>
+            <main className="sc-app-content">{children}</main>
           </div>
           <AdminNav variant="bottom" />
         </div>

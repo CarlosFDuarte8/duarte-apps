@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PersonAvatar } from "./person-avatar";
 import { PhotoCropper } from "./photo-cropper";
 import { PhoneInput } from "./phone-input";
+import { BirthDateField } from "./birth-date-field";
 import "./profile.css";
 import { useOperationStatus } from "./activity";
 
@@ -16,11 +17,13 @@ export function ProfileForm({
   maxDate,
   save,
   emergency,
+  birthRequired = false,
 }: {
   name: string;
   birthDate?: string | null;
   photoUrl?: string | null;
   maxDate: string;
+  birthRequired?: boolean;
   save: (form: FormData) => Promise<{ error: string }>;
   emergency?: {
     emergency_name?: string;
@@ -158,19 +161,7 @@ export function ProfileForm({
             </small>
           </div>
         </div>
-        <label className="vp-birth-label">
-          Data de nascimento
-          <Input
-            type="date"
-            min="1900-01-01"
-            max={maxDate}
-            value={birth}
-            onChange={(e) => setBirth(e.target.value)}
-          />
-          <small>
-            Ajuda o responsável a identificar participantes menores de 18 anos.
-          </small>
-        </label>
+        <BirthDateField value={birth} onChange={setBirth} maxDate={maxDate} required={birthRequired} disabled={pending} />
         <fieldset className="vp-emergency">
           <legend>Contato de emergência (opcional)</legend>
           <p>

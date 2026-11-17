@@ -1,4 +1,6 @@
-﻿"use client";
+"use client";
+import { VolleyCard } from "@/components/volei/page-frame";
+
 import { useState } from "react";
 import type { summarizeFrequency } from "@/lib/volei/frequency";
 import { Input } from "@/components/ui/input";
@@ -21,7 +23,7 @@ export function FrequencyRanking({
         (!core || row.member.is_core),
     );
   return (
-    <section className="volley-card">
+    <VolleyCard as="section">
       <header className="vm-section-head">
         <div>
           <span className="game-kicker">PRESENÇA REAL, NÃO CONFIRMAÇÃO</span>
@@ -119,6 +121,6 @@ export function FrequencyRanking({
           </p>
         </>
       )}
-    </section>
+    </VolleyCard>
   );
 }

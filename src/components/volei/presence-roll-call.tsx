@@ -1,4 +1,6 @@
-﻿"use client";
+"use client";
+import { VolleyCard } from "@/components/volei/page-frame";
+
 import { useRun } from "./use-run";
 import { recordPresence, closePresence } from "@/app/admin/volei-actions";
 import { Button } from "@/components/ui/button";
@@ -37,7 +39,7 @@ export function PresenceRollCall({
   );
   const present = attendees.filter((p) => p.checkedIn).length;
   return (
-    <section className="volley-card">
+    <VolleyCard as="section">
       <div className="vm-section-head">
         <div>
           <h2>Quem compareceu?</h2>
@@ -118,6 +120,6 @@ export function PresenceRollCall({
           Chamada concluída. As presenças deste jogo já contam no ranking.
         </p>
       )}
-    </section>
+    </VolleyCard>
   );
 }

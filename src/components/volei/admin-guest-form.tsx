@@ -1,4 +1,10 @@
 "use client";
+import { NativeSelect } from "@/components/ui/native-select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import { VolleyCard } from "@/components/volei/page-frame";
+
 import { useRef, useState } from "react";
 import { addAdminGuest } from "@/app/admin/volei-actions";
 import { useRun } from "./use-run";
@@ -19,9 +25,9 @@ export function AdminGuestForm({
   const lock = useRef(false);
   const unavailable = finalized || sponsors.length === 0;
   return (
-    <section
+    <VolleyCard as="section"
       id="adicionar-convidado"
-      className="sc-card sc-form-card scroll-mt-24"
+      className="sc-form-card scroll-mt-24"
     >
       <h2>Adicionar convidado</h2>
       <p>
@@ -66,7 +72,7 @@ export function AdminGuestForm({
       >
         <label>
           Responsável pelo convidado
-          <select
+          <NativeSelect
             required
             value={memberId}
             disabled={pending || unavailable}
@@ -78,11 +84,11 @@ export function AdminGuestForm({
                 {person.name}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </label>
         <label>
           Nome completo do convidado
-          <input
+          <Input
             required
             maxLength={100}
             value={name}
@@ -94,14 +100,14 @@ export function AdminGuestForm({
         </label>
         {feedback}
         {receipt && <p role="status">{receipt}</p>}
-        <button
+        <Button
           type="submit"
           className="sc-btn"
           disabled={pending || unavailable || !memberId || !name.trim()}
         >
           {pending ? "Adicionando…" : "Adicionar convidado ao jogo"}
-        </button>
+        </Button>
       </form>
-    </section>
+    </VolleyCard>
   );
 }

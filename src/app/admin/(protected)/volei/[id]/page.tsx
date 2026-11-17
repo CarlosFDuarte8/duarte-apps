@@ -1,8 +1,9 @@
+import { VolleyPageHeader } from "@/components/volei/page-frame";
 import Link from "next/link";
 import { Printer } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requireVoleiAdmin as requireAdmin } from "@/lib/volei/auth";
-import { PageHeader } from "@/components/escalas/admin-ui";
+
 import { EventManager } from "@/components/volei/event-manager";
 import { getEvent, listMembers, publicEvent } from "@/lib/volei/repository";
 import { GameRoster } from "@/components/volei/game-roster";
@@ -26,11 +27,21 @@ export default async function Page({
   if (!found) notFound();
   return (
     <>
-      <PageHeader
+      <VolleyPageHeader
         eyebrow="Vôlei"
         title={formatDate(found.event.date)}
         actions={
           <>
+            <Button asChild variant="outline">
+              <Link href={`/admin/volei/${id}/quadra`}>
+                Montar times e controlar a quadra
+              </Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href={`/admin/volei/frequencia/${id}`}>
+                Conferir quem compareceu
+              </Link>
+            </Button>
             <Button asChild>
               <Link href={`/admin/volei/${id}/portaria`}>
                 <Printer aria-hidden="true" /> Imprimir lista da portaria
@@ -45,16 +56,6 @@ export default async function Page({
           </>
         }
       />
-      <Button asChild variant="outline">
-        <Link href={`/admin/volei/${id}/quadra`}>
-          Montar times e controlar a quadra
-        </Link>
-      </Button>
-      <Button asChild variant="outline">
-        <Link href={`/admin/volei/frequencia/${id}`}>
-          Conferir quem compareceu
-        </Link>
-      </Button>
       <AdminGuestForm
         eventId={id}
         finalized={!!found.event.presence_closed_at}

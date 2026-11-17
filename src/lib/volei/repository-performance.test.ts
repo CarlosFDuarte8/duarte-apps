@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 import { transpileModule, ModuleKind } from "typescript";
 import * as domain from "./domain";
+import * as profile from "./profile";
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 function fixture() {
@@ -47,6 +48,7 @@ function fixture() {
       if (name === "server-only") return {};
       if (name === "@/lib/escalas/supabase") return { serviceClient: () => client };
       if (name === "./domain") return domain;
+      if (name === "./profile") return profile;
       if (name === "./photos") return { signPhotos: async (rows: unknown[]) => rows };
       throw new Error(name);
     },

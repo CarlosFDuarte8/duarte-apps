@@ -1,0 +1,104 @@
+/* Components own appearance; screen styles only compose their layout. */
+.volley-app[data-ui="quadra"] {
+  font-family: var(--v-font-family);
+  font-size: var(--v-text-body);
+  line-height: var(--v-line-height);
+}
+
+.volley-app[data-ui="quadra"] .volley-surface {
+  min-width: 0;
+  border: 1px solid var(--vm-line);
+  border-radius: var(--v-card-radius);
+  background: var(--vm-surface);
+  color: var(--vm-ink);
+  box-shadow: var(--v-card-shadow);
+}
+
+.volley-app[data-ui="quadra"] .volley-surface:where(:not([data-variant="print"])) :is(h2, h3) {
+  margin-top: 0;
+  color: var(--vm-ink);
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -0.4px;
+}
+.volley-app[data-ui="quadra"] .volley-surface:where(:not([data-variant="print"])) h2 { font-size: var(--v-title-section); }
+.volley-app[data-ui="quadra"] .volley-surface:where(:not([data-variant="print"])) h3 { font-size: var(--v-title-subsection); }
+.volley-app[data-ui="quadra"] .volley-content :is(label, legend) { font-size: var(--v-text-label); }
+.volley-app[data-ui="quadra"] .volley-content form label:has(> :is(input, select, textarea)):not(:has(> input:is([type="checkbox"], [type="radio"]))) { display: grid; gap: var(--v-field-gap); }
+.volley-app[data-ui="quadra"] .volley-content .sc-form-card form { display: grid; gap: var(--v-section-gap); }
+.volley-app[data-ui="quadra"] .vp-birth-label { display: grid; gap: var(--v-field-gap); min-width: 0; }
+.volley-app[data-ui="quadra"] .vp-birth-label small { color: var(--vm-muted); font-size: var(--v-text-label); font-weight: 400; }
+.volley-app[data-ui="quadra"] .volley-surface > :is(p, small) { margin: 0; color: var(--vm-muted); line-height: var(--v-line-height); }
+
+.volley-app[data-ui="quadra"] .volley-content :is(input, select, textarea):where(:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [data-slot="input-group-control"])) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--v-control-height);
+  padding: 12px 14px;
+  border: 1px solid var(--vm-line);
+  border-radius: var(--v-control-radius);
+  background: var(--vm-surface);
+  color: var(--vm-ink);
+  font: inherit;
+  font-size: var(--v-text-body);
+  line-height: 1.5;
+  box-shadow: 0 1px 2px #001f3b03;
+}
+.volley-app[data-ui="quadra"] .volley-content textarea { min-height: 120px; resize: vertical; }
+.volley-app[data-ui="quadra"] .volley-content [data-slot="native-select-wrapper"] { width: 100%; min-width: 0; max-width: 100%; }
+.volley-app[data-ui="quadra"] .volley-content select[data-slot="native-select"] { padding-right: 40px; }
+.volley-app[data-ui="quadra"] .volley-content input:where([type="checkbox"], [type="radio"]) { width: 18px; height: 18px; min-height: 18px; padding: 0; accent-color: var(--vm-accent); }
+.volley-app[data-ui="quadra"] .volley-content :is(input, textarea)::placeholder { color: var(--vm-muted); opacity: 0.8; }
+.volley-app[data-ui="quadra"] .volley-content :is(input, select, textarea):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--vm-accent) 14%, transparent);
+  outline-offset: 1px;
+  border-color: var(--vm-accent);
+}
+.volley-app[data-ui="quadra"] .volley-content [data-slot="input-group"] { height: var(--v-control-height); border-radius: var(--v-control-radius); }
+.volley-app[data-ui="quadra"] .volley-content [data-slot="input-group-control"]:focus-visible { outline: none; border: 0; box-shadow: none; }
+
+.volley-app[data-ui="quadra"] .volley-content :is([data-slot="button"], .sc-button, .sc-btn, .volley-link) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--v-control-height);
+  padding: 11px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--v-control-radius);
+  background: var(--v-button-bg, var(--vm-action));
+  color: var(--v-button-ink, var(--vm-action-ink)) !important;
+  font-family: var(--v-font-family);
+  font-size: var(--v-text-body);
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  white-space: normal;
+  cursor: pointer;
+}
+.volley-app[data-ui="quadra"] .volley-content :is([data-variant="outline"], [data-variant="ghost"], .sc-btn-ghost) {
+  background: var(--v-button-outline-bg, var(--vm-surface));
+  color: var(--v-button-outline-ink, var(--vm-ink)) !important;
+  border-color: var(--v-button-outline-line, var(--vm-line));
+}
+.volley-app[data-ui="quadra"] .volley-content [data-variant="ghost"] { border-color: transparent; }
+.volley-app[data-ui="quadra"] .volley-content :is([data-variant="destructive"], .sc-btn-danger) { background: var(--vm-danger-action); color: #fff !important; }
+.volley-app[data-ui="quadra"] .volley-content [data-variant="secondary"] { background: var(--vm-subtle); color: var(--vm-ink) !important; }
+.volley-app[data-ui="quadra"] .volley-content [data-size="sm"] { min-height: var(--v-control-small); padding: 8px 12px; font-size: var(--v-text-label); }
+.volley-app[data-ui="quadra"] .volley-content [data-size^="icon"] { width: var(--v-control-icon); min-height: var(--v-control-icon); padding: 10px; }
+.volley-app[data-ui="quadra"] .volley-content [data-slot="button"]:disabled { cursor: not-allowed; opacity: 0.55; }
+.volley-app[data-ui="quadra"] .volley-content [data-slot="button"] > svg { width: 18px; height: 18px; flex-shrink: 0; }
+.volley-app[data-ui="quadra"] .volley-content :is(.sc-fields, .game-form, .vp-profile-form) { gap: var(--v-section-gap); }
+.volley-app[data-ui="quadra"] .volley-content :is(.sc-fields > div, .game-form > label, .vp-profile-form > label) { gap: var(--v-field-gap); }
+.volley-app[data-ui="quadra"] .volley-content :is(.sc-table, [data-slot="table"]) { font-size: var(--v-text-label); }
+.volley-app[data-ui="quadra"] .volley-content :is(.vp-page, .game-page, .vc-board) { gap: var(--v-page-gap); }
+
+@media (max-width: 640px) {
+  .volley-app[data-ui="quadra"] .volley-content :is(input, select, textarea):where(:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"])) { font-size: 16px; }
+}
+
+@media print {
+  .volley-app[data-ui="quadra"] .volley-surface { box-shadow: none; background: #fff; color: #000; break-inside: avoid; }
+  .volley-app[data-ui="quadra"] .volley-surface[data-variant="print"] { gap: 0; padding: 0; border: 0; border-radius: 0; }
+}

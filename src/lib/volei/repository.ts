@@ -2,6 +2,7 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { serviceClient } from "@/lib/escalas/supabase";
 import { signPhotos } from "./photos";
+import { duplicateMemberMessage } from "./profile";
 import {
   weekdayOf,
   daysInMonth,
@@ -142,13 +143,13 @@ export async function memberByToken(token: string) {
   if (!/^[a-f0-9]{64}$/.test(token)) return null;
   const { data, error } = await serviceClient()
     .from("volei_members")
-    .select("id,name,points,blocked,is_active,phone")
+    .select("id,name,points,blocked,is_active,phone,birth_date")
     .eq("token", token)
     .maybeSingle();
   fail(error);
   return data as Pick<
     VoleiMember,
-    "id" | "name" | "points" | "blocked" | "is_active" | "phone"
+    "id" | "name" | "points" | "blocked" | "is_active" | "phone" | "birth_date"
   > | null;
 }
 
@@ -262,6 +263,7 @@ export async function savePublicAttendance(
   eventId: string,
   status: AttendanceStatus | "limpar",
   now: string,
+  birthDate?: string,
 ) {
   const member = await memberByToken(token);
   if (!member || !member.is_active) return { error: "Link inválido." };
@@ -286,16 +288,21 @@ export async function savePublicAttendance(
     (status === "confirmado" && !isEventOpen(event as VoleiEvent, now))
   )
     return { error: "Este dia não aceita mais confirmações." };
-  const result = await client.rpc("volei_respond", {
+  const result = await client.rpc("volei_respond_profile", {
     p_event: eventId,
     p_member: member.id,
     p_status: status,
     p_token: token,
+    p_birth_date: birthDate ?? null,
   });
   if (result.error)
     return {
       error:
-        "Não foi possível registrar. Verifique se as inscrições estão abertas.",
+        result.error.code === "P0001"
+          ? result.error.message
+          : result.error.code === "23505"
+            ? duplicateMemberMessage
+            : "Não foi possível registrar. Verifique se as inscrições estão abertas.",
     };
   return { error: "" };
 }

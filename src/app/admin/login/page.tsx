@@ -9,7 +9,7 @@ export default async function Page({
 }) {
   const { denied } = await searchParams;
   return (
-    <section className="sc-login" aria-labelledby="login-title">
+    <main className="sc-login" aria-labelledby="login-title">
       <div className="sc-login-card">
         <div className="sc-login-brand">
           <span className="sc-login-mark" aria-hidden="true">
@@ -63,6 +63,6 @@ export default async function Page({
       <p className="sc-login-caption">
         Congregação Cristã no Brasil · INCRA-08
       </p>
-    </section>
+    </main>
   );
 }

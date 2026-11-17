@@ -17,6 +17,11 @@ escuro, e geram capturas completas em `test-results/` para revisão visual.
 Também verificam o tema antes da hidratação, filtros e falhas de cópia de links.
 Em desenvolvimento, verificam que o HTML e os scripts usam o mesmo identificador
 de execução, renovado pelos comandos `dev` e `dev:turbopack` a cada inicialização.
+Os arquivos estáticos de desenvolvimento usam `no-store` para impedir a mistura
+de código cliente antigo com HTML novo. `hydration-stability.spec.ts` verifica
+as atualizações automáticas do painel sem recarregar o documento, navegação de
+volta e a recuperação do React sem avisos sobre scripts. A inicialização do tema
+também é verificada antes de carregar o JavaScript do Next.
 As capturas são artefatos de revisão, não comparações automáticas com imagens de referência.
 
 Os testes unitários (`npm test`) cobrem o cálculo de vagas, a inicialização do

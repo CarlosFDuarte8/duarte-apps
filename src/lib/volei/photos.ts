@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import sharp from "sharp";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { serviceClient } from "@/lib/escalas/supabase";
-import { birthDateSchema, emergencyContactSchema } from "./profile";
+import { birthDateSchema, duplicateMemberMessage, requiredBirthDateSchema, emergencyContactSchema } from "./profile";
 
 const bucket = "volei-profiles";
 export async function deleteStoredPhotos(paths: (string | null | undefined)[]) {
@@ -38,7 +38,8 @@ export async function saveProfilePhoto(
     value: string;
   },
 ) {
-  const birth = birthDateSchema.safeParse(form.get("birth_date") ?? "");
+  const birth = (table === "volei_members" ? requiredBirthDateSchema : birthDateSchema)
+    .safeParse(form.get("birth_date") ?? "");
   if (!birth.success) return { error: birth.error.issues[0].message };
   const contact = form.has("emergency_name")
     ? emergencyContactSchema.safeParse({
@@ -97,7 +98,9 @@ export async function saveProfilePhoto(
     if (uploaded) await serviceClient().storage.from(bucket).remove([uploaded]);
     return {
       error:
-        "Não foi possível salvar o cadastro. Verifique seu acesso e tente novamente.",
+        error?.code === "23505"
+          ? duplicateMemberMessage
+          : "Não foi possível salvar o cadastro. Verifique seu acesso e tente novamente.",
     };
   }
   if (person.photo_path && person.photo_path !== photoPath)

@@ -1,6 +1,10 @@
 "use client";
+import { VolleyMetric, VolleyMetrics } from "./metric";
+import { VolleyCard } from "@/components/volei/page-frame";
+
 
 import { StudentFields } from "./student-fields";
+import { BirthDateField } from "./birth-date-field";
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -14,6 +18,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -106,6 +111,22 @@ function MemberStatus({ member }: { member: VoleiMember }) {
   );
 }
 
+function matchesGroup(member: VoleiMember, group: string) {
+  const age = ageOn(member.birth_date);
+  switch (group) {
+    case "pending": return member.membership_status === "pending";
+    case "rejected": return member.membership_status === "rejected";
+    case "principal": return member.is_core;
+    case "ativos": return member.is_active && !member.blocked && (member.membership_status ?? "approved") === "approved";
+    case "inativos": return !member.is_active;
+    case "bloqueados": return member.blocked;
+    case "minors": return age !== null && age < 18;
+    case "adults": return age !== null && age >= 18;
+    case "missing-birth": return age === null;
+    default: return true;
+  }
+}
+
 export function MemberManager({ members }: { members: VoleiMember[] }) {
   const { run, pending, feedback } = useRun();
   const [creating, setCreating] = useState(false);
@@ -114,6 +135,7 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
   const [studentDays, setStudentDays] = useState<number[]>([]);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [search, setSearch] = useState("");
   const [group, setGroup] = useState("todos");
   const [day, setDay] = useState("");
@@ -132,20 +154,7 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
         (normalize(m.name).includes(normalize(query)) ||
           (!!phoneQuery &&
             (m.phone ?? "").replace(/\D/g, "").includes(phoneQuery))) &&
-        (group === "todos" ||
-          (group === "pending"
-            ? m.membership_status === "pending"
-            : group === "principal"
-              ? m.is_core
-              : group === "ativos"
-                ? m.is_active &&
-                  (m.membership_status ?? "approved") === "approved" &&
-                  !m.blocked
-                : group === "bloqueados"
-                  ? m.blocked
-                  : group === "rejected"
-                    ? m.membership_status === "rejected"
-                    : !m.is_active)) &&
+        matchesGroup(m, group) &&
         (!day || m.preferred_weekdays?.includes(Number(day))),
     )
     .sort((a, b) => {
@@ -176,53 +185,22 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
 
   return (
     <>
-      <div className="vm-metrics vm-member-metrics">
-        <button
-          type="button"
-          onClick={() => setGroup("todos")}
-          aria-pressed={group === "todos"}
-        >
-          <strong>{members.length}</strong>
-          <span>Todos</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => setGroup("ativos")}
-          aria-pressed={group === "ativos"}
-        >
-          <strong>
-            {
+      <VolleyMetrics>
+        <VolleyMetric onClick={() => setGroup("todos")} aria-pressed={group === "todos"} value={members.length} label="Todos" />
+        <VolleyMetric onClick={() => setGroup("ativos")} aria-pressed={group === "ativos"} value={
               members.filter(
                 (m) =>
                   m.is_active &&
                   !m.blocked &&
                   (m.membership_status ?? "approved") === "approved",
               ).length
-            }
-          </strong>
-          <span>Ativos</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => setGroup("principal")}
-          aria-pressed={group === "principal"}
-        >
-          <strong>{members.filter((m) => m.is_core).length}</strong>
-          <span>Principais</span>
-        </button>
-        <button
-          type="button"
-          className={pendingCount ? "vm-pending-metric" : ""}
-          onClick={() => setGroup(group === "pending" ? "todos" : "pending")}
-          aria-pressed={group === "pending"}
-        >
-          <strong>{pendingCount}</strong>
-          <span>Pendentes</span>
-        </button>
-      </div>
+            } label="Ativos" />
+        <VolleyMetric onClick={() => setGroup("principal")} aria-pressed={group === "principal"} value={members.filter((m) => m.is_core).length} label="Principais" />
+        <VolleyMetric tone={pendingCount ? "amber" : "blue"} onClick={() => setGroup(group === "pending" ? "todos" : "pending")} aria-pressed={group === "pending"} value={pendingCount} label="Pendentes" />
+      </VolleyMetrics>
 
-      <section
-        className="volley-card vm-members-panel"
+      <VolleyCard as="section"
+        className="vm-members-panel"
         aria-labelledby="vm-members-heading"
       >
         <header className="vm-section-head vm-members-toolbar">
@@ -248,12 +226,13 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
             onSubmit={(e) => {
               e.preventDefault();
               run(
-                () => addMember(name, phone, { isStudent, days: studentDays }),
+                () => addMember(name, phone, { isStudent, days: studentDays }, birthDate),
                 () => {
                   setIsStudent(false);
                   setStudentDays([]);
                   setName("");
                   setPhone("");
+                  setBirthDate("");
                   setCreating(false);
                 },
               );
@@ -280,6 +259,7 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
                   aria-label="Telefone do novo membro"
                 />
               </label>
+              <BirthDateField value={birthDate} onChange={setBirthDate} disabled={pending} />
               <StudentFields
                 isStudent={isStudent}
                 days={studentDays}
@@ -298,15 +278,15 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
         <div className="vm-members-filters">
           <label className="vm-members-search">
             Buscar membro
-            <span>
-              <Search aria-hidden="true" />
-              <Input
+            <InputGroup>
+              <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
+              <InputGroupInput
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Nome ou telefone"
                 type="search"
               />
-            </span>
+            </InputGroup>
           </label>
           <Button
             className="vm-filter-toggle"
@@ -336,6 +316,9 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
                 <option value="inativos">Inativos</option>
                 <option value="bloqueados">Bloqueados</option>
                 <option value="rejected">Não aprovados</option>
+                <option value="minors">Menores de 18 anos</option>
+                <option value="adults">18 anos ou mais</option>
+                <option value="missing-birth">Nascimento não informado</option>
               </NativeSelect>
             </label>
             <label>
@@ -534,7 +517,7 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
             )}
           </TableBody>
         </Table>
-      </section>
+      </VolleyCard>
     </>
   );
 }

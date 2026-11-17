@@ -1,0 +1,36 @@
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; min-width: 0; }
+.grid[data-columns="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid[data-columns="5"] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 900px) { .grid, .grid[data-columns] { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+:global(.volley-app) .metric {
+  --metric-color: #2563eb;
+  --metric-wash: #e5efff;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 150px;
+  padding: var(--v-card-padding, 24px);
+  text-align: left;
+  text-decoration: none;
+  font: inherit;
+}
+.metric::after { content: ""; position: absolute; z-index: -1; right: -14%; bottom: -87px; width: 105%; height: 110px; border-radius: 50% 55% 0 0; background: var(--metric-wash); transform: rotate(-15deg); opacity: 0.65; }
+.metric > div { display: flex; align-items: center; gap: 12px; }
+.metric > div > span { min-width: 0; color: var(--vm-muted); font-size: var(--v-text-label, 13px); font-weight: 600; line-height: 1.5; }
+.metric i { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; background: var(--metric-wash); color: var(--metric-color); }
+.metric svg { width: 22px; height: 22px; }
+.metric:global(.vx-stat-green) { --metric-color: #15996f; --metric-wash: #e0f4ee; }
+.metric:global(.vx-stat-amber) { --metric-color: #dc851b; --metric-wash: #fff2df; }
+:global(.volley-app) .metric > strong { display: block; margin: 12px 0 0; color: var(--vm-ink); font-size: 36px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.metric p { margin: 6px 0 0; color: var(--vm-muted); font-size: var(--v-text-small, 12px); line-height: 1.5; }
+:global(.volley-app[data-ui="quadra"]) .metric[aria-pressed="true"] { border-color: var(--vm-accent); background: var(--vm-subtle); }
+.metric:is(button, a) { cursor: pointer; }
+.metric:is(button, a):hover { border-color: var(--vm-accent); }
+:global(:root[data-volley-theme="dark"]) .metric::after { opacity: 0.06; }
+@media (max-width: 700px) { :global(.volley-app) .metric { min-height: 130px; padding: 16px; } .metric i { width: 30px; height: 30px; border-radius: 9px; } .metric svg { width: 18px; height: 18px; } .metric > div { gap: 8px; } .metric > div > span { font-size: 12px; } :global(.volley-app) .metric > strong { font-size: 30px; } }
+@media (max-width: 360px) { .metric > div { gap: 6px; } .metric i { width: 26px; height: 26px; } .metric > div > span { font-size: 11px; } }

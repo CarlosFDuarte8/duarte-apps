@@ -1,10 +1,11 @@
+import { VolleyPageHeader } from "@/components/volei/page-frame";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { requireVoleiAdmin } from "@/lib/volei/auth";
 import { courtData } from "@/lib/volei/court-repository";
 import { formatDate, today } from "@/lib/volei/domain";
-import { PageHeader } from "@/components/escalas/admin-ui";
+
 import { Button } from "@/components/ui/button";
 import { CourtBoard } from "@/components/volei/court-board";
 export default async function Page({
@@ -19,7 +20,7 @@ export default async function Page({
   if (!data) notFound();
   return (
     <>
-      <PageHeader
+      <VolleyPageHeader
         eyebrow="Vôlei · Gestão da quadra"
         title={formatDate(data.event.date)}
         description="Chegadas, times equilibrados, vencedor permanece e fila de rodízio."

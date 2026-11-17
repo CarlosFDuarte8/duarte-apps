@@ -1,4 +1,6 @@
-﻿"use client";
+"use client";
+import { VolleyCard, VolleySectionHeader } from "@/components/volei/page-frame";
+
 import { participationTime } from "@/lib/volei/participation-time";
 import { useMemo, useState } from "react";
 import type { publicEvent } from "@/lib/volei/repository";
@@ -73,17 +75,13 @@ export function GameRoster({
   const selected =
     tab === "confirmed" ? confirmed : tab === "waiting" ? waiting : guests;
   return (
-    <section className="volley-card game-roster" id="lista-do-dia">
-      <header className="game-roster-heading">
-        <div>
-          <span className="game-kicker">PARTICIPANTES DO ENCONTRO</span>
-          <h2>Quem vem para o jogo</h2>
-        </div>
+    <VolleyCard as="section" className="game-roster" id="lista-do-dia">
+      <VolleySectionHeader eyebrow="PARTICIPANTES DO ENCONTRO" title="Quem vem para o jogo" actions={
         <span className="game-live">
           <span />
           Atualização a cada 30 s
         </span>
-      </header>
+      } />
       <div className="game-capacity">
         <div>
           <strong>
@@ -231,6 +229,6 @@ export function GameRoster({
         <VolleyIcon name="shield" />A lista pública mostra nomes, vínculo de
         aluno e horários. Telefones ficam privados.
       </footer>
-    </section>
+    </VolleyCard>
   );
 }

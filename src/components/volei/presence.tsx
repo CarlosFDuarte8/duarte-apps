@@ -4,6 +4,8 @@ import { useState, useTransition } from "react";
 import { respond } from "@/app/volei/[token]/actions";
 import styles from "./publico.module.css";
 import { useOperationStatus } from "./activity";
+import { Button } from "@/components/ui/button";
+import { BirthDateField } from "./birth-date-field";
 
 type Mine =
   "confirmado" | "nao_vai" | "espera" | "ausente" | "reservado" | undefined;
@@ -14,16 +16,20 @@ export function Presence({
   mine,
   canRespond,
   canJoin = true,
+  needsBirthDate = false,
 }: {
   token: string;
   eventId: string;
   mine: Mine;
   canRespond: boolean;
   canJoin?: boolean;
+  needsBirthDate?: boolean;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const joining = mine !== "confirmado" && mine !== "espera";
   useOperationStatus(pending, "Atualizando sua presença…", error);
 
   function choose(status: "confirmado" | "nao_vai") {
@@ -35,6 +41,9 @@ export function Presence({
           mine === status || (mine === "espera" && status === "confirmado")
             ? "limpar"
             : status,
+          status === "confirmado" && joining && needsBirthDate
+            ? birthDate
+            : undefined,
         );
         setError(result.error);
         if (!result.error) router.refresh();
@@ -45,36 +54,40 @@ export function Presence({
   }
 
   return (
-    <div>
+    <form onSubmit={(event) => {
+      event.preventDefault();
+      choose("confirmado");
+    }}>
+      {needsBirthDate && joining && canJoin && canRespond && (
+        <BirthDateField value={birthDate} onChange={setBirthDate} disabled={pending} />
+      )}
       <div className={styles.botoes}>
-        <button
-          type="button"
+        <Button
+          type="submit"
           disabled={
             !canRespond ||
             pending ||
             (!canJoin && mine !== "confirmado" && mine !== "espera")
           }
           aria-pressed={mine === "confirmado" || mine === "espera"}
-          className={`${styles.botao} ${styles.vou}`}
-          onClick={() => choose("confirmado")}
         >
           {mine === "espera" ? "Na lista de espera" : "Eu vou"}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           disabled={!canRespond || pending}
           aria-pressed={mine === "nao_vai"}
-          className={`${styles.botao} ${styles.naoVou}`}
+          variant={mine === "nao_vai" ? "destructive" : "outline"}
           onClick={() => choose("nao_vai")}
         >
           Não vou
-        </button>
+        </Button>
       </div>
       {error && (
         <p role="alert" className={styles.erro}>
           {error}
         </p>
       )}
-    </div>
+    </form>
   );
 }

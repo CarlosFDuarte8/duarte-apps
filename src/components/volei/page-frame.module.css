@@ -1,0 +1,169 @@
+.page {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: start;
+  gap: var(--v-page-gap, 28px);
+  width: 100%;
+  min-height: calc(100dvh - 72px);
+  padding: var(--v-page-padding, 28px) var(--v-page-padding, 28px) 64px;
+  background: radial-gradient(ellipse at 54% 64%, #dbeafa 0, #edf4fe 48%, #f7faff 100%);
+  color: var(--vm-ink);
+}
+
+.court {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  stroke: #fff;
+  stroke-width: 5;
+  opacity: 0.72;
+}
+
+.hero {
+  --vm-ink: #fff;
+  --vm-muted: #d8e7fb;
+  --vm-component-ink: var(--vm-ink);
+  --vm-component-muted: var(--vm-muted);
+  --v-button-bg: #fff;
+  --v-button-ink: #092e50;
+  --v-button-outline-bg: #ffffff10;
+  --v-button-outline-ink: #fff;
+  --v-button-outline-line: #ffffff70;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  min-height: clamp(230px, 17.1vw, 290px);
+  padding: clamp(28px, 3vw, 50px) clamp(28px, 3.6vw, 62px);
+  border: 1px solid #ffffff40;
+  border-radius: 28px;
+  background: linear-gradient(115deg, #104c89, #073669 65%);
+  color: #fff;
+  box-shadow: 0 12px 36px #00498c08;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 auto;
+  z-index: -1;
+  width: min(70%, 1000px);
+  background: url("/images/volei-login-hero.webp") right center / cover no-repeat;
+  mask-image: linear-gradient(90deg, transparent, #000 30%);
+}
+
+.eyebrow {
+  color: #d5e7fd;
+  font-size: clamp(10px, 0.9vw, 15px);
+  font-weight: 550;
+  letter-spacing: 0.22em;
+}
+
+.page .hero .heroTitle {
+  max-width: 78%;
+  margin: 14px 0 28px;
+  color: #fff;
+  font-size: clamp(28px, 3.25vw, 56px);
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  line-height: 1.16;
+  overflow-wrap: normal;
+}
+
+.underlined span { position: relative; white-space: nowrap; }
+.underlined span::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -12px;
+  width: 165%;
+  height: 5px;
+  border-radius: 50%;
+  background: #22a7ec;
+  transform: rotate(-2deg);
+  box-shadow: 0 1px 4px #22a7ec66;
+}
+
+.heroDescription {
+  max-width: 72%;
+  margin: 10px 0 0;
+  color: #d8e7fb;
+  font-size: clamp(14px, 1.35vw, 23px);
+  line-height: 1.6;
+}
+
+.compact {
+  min-height: 190px;
+  padding: 28px 36px;
+  border-radius: 22px;
+  background: linear-gradient(110deg, #092b47, #104c89);
+}
+.compact::before { width: min(65%, 600px); }
+.page .compact .heroTitle { margin: 8px 0 0; font-size: var(--v-title-page, 42px); }
+.compact .heroDescription { margin-top: 8px; font-size: 16px; }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--v-card-padding, 24px);
+  gap: var(--v-section-gap, 20px);
+  border: 1px solid var(--vm-line);
+  border-radius: var(--v-card-radius, 22px);
+  background: var(--vm-surface);
+  color: var(--vm-ink);
+  box-shadow: var(--v-card-shadow, 0 8px 24px -12px #285c9029);
+}
+
+.page:global(.volley-content)[data-slot="volley-page"] { max-width: none; margin: 0; padding: var(--v-page-padding, 28px) var(--v-page-padding, 28px) 64px; gap: var(--v-page-gap, 28px); }
+:global(:root[data-volley-theme="dark"]) .page { background: radial-gradient(ellipse at 54% 64%, #17344d, #071725 85%); }
+:global(:root[data-volley-theme="dark"]) .court { opacity: 0.06; }
+
+@media (max-width: 1024px) {
+  .page { min-height: calc(100dvh - 160px); padding-bottom: 48px; }
+  .page .hero .heroTitle { max-width: 80%; font-size: clamp(28px, 4.3vw, 42px); }
+}
+
+@media (max-width: 600px) {
+  .page { gap: 22px; padding: 18px 16px 36px; }
+  .hero { min-height: 230px; padding: 26px 22px; border-radius: 20px; }
+  .hero::before { width: 100%; opacity: 0.65; mask-image: linear-gradient(90deg, transparent, #000 85%); }
+  .eyebrow { max-width: 220px; font-size: 9px; line-height: 1.8; }
+  .page .hero .heroTitle { max-width: 95%; margin: 12px 0 18px; font-size: 30px; }
+  .underlined span::after { bottom: -6px; height: 3px; }
+  .heroDescription { max-width: 90%; margin: 6px 0 0; font-size: 13px; }
+  .compact { min-height: 196px; }
+  .page .compact .heroTitle { margin: 10px 0; font-size: 30px; }
+  .compact .heroDescription { max-width: 95%; margin-top: 0; font-size: 13px; }
+  .card { padding: 20px; border-radius: 20px; }
+}
+
+.heroCopy { min-width: 0; width: 100%; }
+.heroActions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.withAside { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 0.45fr); gap: 28px; }
+.page .withAside .heroTitle, .withAside .heroDescription { max-width: 100%; }
+.heroAside { padding: 20px; border: 1px solid #ffffff30; border-radius: 16px; background: #082e53d9; }
+.heroDetail { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; color: #e0edfa; }
+.heroStatus { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: var(--v-text-small); font-weight: 650; letter-spacing: 0.5px; }
+.heroStatus::before { content: ""; width: 7px; height: 7px; flex-shrink: 0; border-radius: 50%; background: #fbbf69; }
+.heroStatus[data-active="true"]::before { background: #38d9a9; }
+.heroDetail p, .heroDetail small, .heroDetail > span:last-child { margin: 0; font-size: var(--v-text-small); }
+.heroDetail strong { color: #fff; font-size: 32px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.sectionHeader { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.sectionCopy { flex: 1; min-width: 0; }
+.sectionCopy h2 { margin: 0; font-size: var(--v-title-section, 20px); }
+.sectionCopy p { margin: 6px 0 0; color: var(--vm-muted); font-size: var(--v-text-body, 14px); line-height: 1.6; }
+.sectionEyebrow { display: block; margin-bottom: 5px; color: var(--vm-muted); font-size: var(--v-text-small, 12px); font-weight: 600; letter-spacing: 1px; }
+.sectionIcon { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border-radius: 13px; background: var(--vm-subtle); color: var(--vm-accent); }
+.sectionIcon svg { width: 23px; height: 23px; }
+.sectionActions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+@media (max-width: 700px) { .withAside { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+@media print { .page:global(.volley-content)[data-slot="volley-page"] { min-height: 0; padding: 0; background: #fff; } .court, .heroActions { display: none; } }

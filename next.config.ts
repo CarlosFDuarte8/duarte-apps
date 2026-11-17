@@ -28,6 +28,16 @@ const nextConfig: NextConfig = {
 export default function config(phase: string): NextConfig {
   return {
     ...nextConfig,
+    // Dev chunk URLs are reused after edits. Never keep an older client bundle
+    // alongside freshly rendered server HTML (production assets stay cached).
+    ...(phase === PHASE_DEVELOPMENT_SERVER ? {
+      async headers() {
+        return [{
+          source: "/_next/static/:path*",
+          headers: [{ key: "Cache-Control", value: "no-store, max-age=0" }],
+        }];
+      },
+    } : {}),
     // Bust browser asset URLs and detect old tabs after restarting development.
     deploymentId: phase === PHASE_DEVELOPMENT_SERVER && existsSync(sessionFile)
       ? readFileSync(sessionFile, "utf8").trim() : undefined,
