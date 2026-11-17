@@ -24,7 +24,7 @@
 .volley-app[data-ui="quadra"] .volley-surface:where(:not([data-variant="print"])) h2 { font-size: var(--v-title-section); }
 .volley-app[data-ui="quadra"] .volley-surface:where(:not([data-variant="print"])) h3 { font-size: var(--v-title-subsection); }
 .volley-app[data-ui="quadra"] .volley-content :is(label, legend) { font-size: var(--v-text-label); }
-.volley-app[data-ui="quadra"] .volley-content form label:has(> :is(input, select, textarea)):not(:has(> input:is([type="checkbox"], [type="radio"]))) { display: grid; gap: var(--v-field-gap); }
+.volley-app[data-ui="quadra"] .volley-content form label:has(> :is(input, select, textarea, .volley-phone-input)):not(:has(> input:is([type="checkbox"], [type="radio"]))) { display: grid; gap: var(--v-field-gap); }
 .volley-app[data-ui="quadra"] .volley-content .sc-form-card form { display: grid; gap: var(--v-section-gap); }
 .volley-app[data-ui="quadra"] .vp-birth-label { display: grid; gap: var(--v-field-gap); min-width: 0; }
 .volley-app[data-ui="quadra"] .vp-birth-label small { color: var(--vm-muted); font-size: var(--v-text-label); font-weight: 400; }
