@@ -34,3 +34,11 @@
 :global(:root[data-volley-theme="dark"]) .metric::after { opacity: 0.06; }
 @media (max-width: 700px) { :global(.volley-app) .metric { min-height: 130px; padding: 16px; } .metric i { width: 30px; height: 30px; border-radius: 9px; } .metric svg { width: 18px; height: 18px; } .metric > div { gap: 8px; } .metric > div > span { font-size: 12px; } :global(.volley-app) .metric > strong { font-size: 30px; } }
 @media (max-width: 360px) { .metric > div { gap: 6px; } .metric i { width: 26px; height: 26px; } .metric > div > span { font-size: 11px; } }
+@media (max-width: 640px) {
+  :global(.volley-app) .grid[data-mobile-compact] .metric {
+    min-height: var(--v-mobile-metric-height);
+    padding: var(--v-field-gap);
+  }
+  .grid[data-mobile-compact] .metric i { display: none; }
+  :global(.volley-app) .grid[data-mobile-compact] .metric > strong { margin-top: var(--v-field-gap); font-size: var(--v-title-section); }
+}

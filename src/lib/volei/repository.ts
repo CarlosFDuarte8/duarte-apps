@@ -14,7 +14,7 @@ import {
 } from "./domain";
 
 const eventColumns =
-  "id,date,title,start_time,location,notes,closed,registration_deadline,guests_open_at,presence_closed_at,max_teams";
+  "id,date,title,start_time,location,notes,closed,registration_deadline,guests_open_at,presence_closed_at,max_teams,calendar_enabled,directions_enabled,directions_url";
 const memberColumns =
   "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,student_weekdays,requested_student_weekdays,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status,birth_date,photo_path,skill_level,emergency_name,emergency_phone,emergency_relationship";
 
@@ -164,7 +164,7 @@ export async function publicLeaderboard() {
   return (data ?? []) as { name: string; points: number }[];
 }
 
-const publicEventColumns = `${eventColumns}, volei_attendance(member_id,status,registered_at,confirmed_at,queue_order, volei_members(name,is_core,student_weekdays)), volei_guests(id,member_id,name,status,registered_at,confirmed_at,queue_order)`;
+const publicEventColumns = `${eventColumns}, volei_attendance(member_id,status,registered_at,confirmed_at,queue_order, volei_members(name,is_core,student_weekdays,is_active,blocked,membership_status)), volei_guests(id,member_id,name,status,registered_at,confirmed_at,queue_order)`;
 
 function presentPublicEvent(row: unknown) {
   const {
@@ -183,13 +183,18 @@ function presentPublicEvent(row: unknown) {
         name: string;
         is_core: boolean;
         student_weekdays?: number[];
+        is_active?: boolean;
+        blocked?: boolean;
+        membership_status?: string;
       } | null;
     }[];
   };
+  const eligible = rows.filter(row => row.volei_members && row.volei_members.is_active !== false && !row.volei_members.blocked && !["pending", "rejected"].includes(row.volei_members.membership_status ?? ""));
+  const allowed = new Set(eligible.map(row => row.member_id));
   return {
     event,
-    guests: guests ?? [],
-    attendance: rows
+    guests: (guests ?? []).filter(guest => allowed.has(guest.member_id)),
+    attendance: eligible
       .sort(
         (a, b) =>
           Number(
@@ -256,6 +261,13 @@ export async function publicEvents(month: string, fromDate: string) {
     .order("date");
   fail(error);
   return (data ?? []).map(presentPublicEvent);
+}
+
+export async function publicEventDetails(id: string): Promise<VoleiEvent | null> {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return null;
+  const { data, error } = await serviceClient().from("volei_events").select(eventColumns).eq("id", id).maybeSingle();
+  fail(error);
+  return data as VoleiEvent | null;
 }
 
 export async function savePublicAttendance(

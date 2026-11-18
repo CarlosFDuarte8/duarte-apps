@@ -10,6 +10,15 @@ export async function deviceSecret() {
   const secret = (await cookies()).get(DEVICE_COOKIE)?.value;
   return secret && /^[a-f0-9]{64}$/.test(secret) ? secret : null;
 }
+export async function bindDevice(secret: string) {
+  (await cookies()).set(DEVICE_COOKIE, secret, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/volei",
+    maxAge: 60 * 60 * 24 * 365,
+  });
+}
 export async function currentPlayer() {
   const secret = await deviceSecret();
   if (!secret) return null;

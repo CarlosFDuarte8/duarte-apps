@@ -4,6 +4,7 @@ import { runInNewContext } from "node:vm";
 import { transpileModule, ModuleKind } from "typescript";
 import * as domain from "./domain";
 import * as profile from "./profile";
+import { guestQueuePosition, memberQueuePosition } from "./queue";
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 function fixture() {
@@ -53,7 +54,7 @@ function fixture() {
       throw new Error(name);
     },
   });
-  return { api: exports, client, reads, syncs, peak: () => peak };
+  return { api: exports, client, rows, reads, syncs, peak: () => peak };
 }
 it("opening one game syncs and reads only that game, preserving guests and roster priority", async () => {
   const f = fixture();
@@ -70,6 +71,27 @@ it("invalid game IDs do not trigger database work", async () => {
   expect(await f.api.publicEvent("invalid")).toBeNull();
   expect(f.reads).toHaveLength(0);
   expect(f.syncs).toHaveLength(0);
+});
+it("queue positions follow public priority, exclude unavailable members and keep a separate guest queue", async () => {
+  const f = fixture();
+  f.rows[0].volei_attendance = [
+    { member_id: "first", status: "espera", registered_at: "2026-11-01T10:00:00Z", queue_order: 1, volei_members: { name: "Primeiro", is_core: false } },
+    { member_id: "priority", status: "espera", registered_at: "2026-11-02T10:00:00Z", queue_order: 2, volei_members: { name: "Prioritário", is_core: true } },
+    { member_id: "confirmed", status: "confirmado", registered_at: "2026-11-03T10:00:00Z", queue_order: 3, volei_members: { name: "Confirmado", is_core: true } },
+  ];
+  Object.assign(f.rows[0].volei_attendance[2].volei_members, { blocked: true });
+  f.rows[0].volei_guests = [
+    { id: "guest2", member_id: "first", name: "Depois", status: "espera", registered_at: "2026-11-03T10:00:00Z", queue_order: 2 },
+    { id: "guest1", member_id: "priority", name: "Antes", status: "espera", registered_at: "2026-11-03T10:00:00Z", queue_order: 1 },
+  ];
+  const game = await f.api.publicEvent(id(1)) as { attendance: { member_id: string; status: domain.AttendanceStatus }[]; guests: { id: string; status: domain.AttendanceStatus; registered_at: string; queue_order: number }[] };
+  expect(memberQueuePosition(game.attendance, "first")).toBe(2);
+  expect(memberQueuePosition(game.attendance, "priority")).toBe(1);
+  expect(memberQueuePosition(game.attendance, "confirmed")).toBeNull();
+  expect(guestQueuePosition(game.guests, "guest2")).toBe(2);
+  expect(guestQueuePosition(game.guests, "guest1")).toBe(1);
+  expect(game.guests[0].id).toBe("guest2");
+  expect(JSON.stringify(game)).not.toMatch(/blocked|is_core|student_weekdays/);
 });
 it("monthly agenda syncs independent events with bounded concurrency and only two reads", async () => {
   const f = fixture();

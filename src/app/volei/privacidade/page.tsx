@@ -29,7 +29,7 @@ export default function Page() {
       />
       <div className={styles.document}>
         <VolleyCard as="section">
-          <p className={styles.updated}>Última atualização: <time dateTime="2026-11-17">17 de novembro de 2026</time>.</p>
+          <p className={styles.updated}>Última atualização: <time dateTime="2026-11-18">18 de novembro de 2026</time>.</p>
           <p>
             Esta política se aplica à área de vôlei do Quadra, às suas páginas
             públicas e às ferramentas administrativas que usam os mesmos cadastros.
@@ -150,6 +150,12 @@ export default function Page() {
             serviço externo. A solicitação de entrada e os dados visíveis dentro
             do grupo seguem as configurações e políticas do WhatsApp e a gestão dos
             administradores do grupo. O site não adiciona você automaticamente.
+          </p>
+          <p>
+            Quando habilitado pela administração, Abrir rota acessa o serviço de mapas
+            informado no encontro. Salvar no calendário baixa um arquivo com os dados públicos
+            do jogo, sem telefones, nascimento ou lista de participantes. Você decide
+            em qual aplicativo importar esse arquivo.
           </p>
           <p>
             Avisos do navegador dependem de autorização e do serviço de notificações

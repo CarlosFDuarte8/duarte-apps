@@ -17,6 +17,7 @@ const event = {
   id, date, title: "Vôlei da galera — encontro com título comprido para testar a responsividade",
   start_time: "20:00", location: "Ginásio com endereço e nome muito compridos para testar a quebra de linhas",
   notes: "Traga água e chegue com antecedência.", closed: false, max_teams: 3,
+  calendar_enabled: false, directions_enabled: false, directions_url: null,
   registration_deadline: `${date}T23:59:00-03:00`, guests_open_at: null, presence_closed_at: null,
   volei_attendance: ["confirmado", "confirmado", "reservado", "espera"].map((status, i) => ({
     member_id: i === 0 ? member.id : `member-${i}`, status, registered_at: `${date}T10:0${i}:00Z`, queue_order: i,
@@ -32,7 +33,9 @@ const guest = {
 };
 const groupSettings = { id: true, whatsapp_invite_url: null };
 const originalMember = structuredClone(member);
+const originalEvent = structuredClone(event);
 let birthScenario = false;
+let usabilityScenario = false;
 let deviceBinding = null;
 function readBody(request, done) {
   let body = "";
@@ -49,6 +52,45 @@ const complaint = {
 createServer((request, response) => {
   const url = new URL(request.url, "http://127.0.0.1:3101");
   // Test controls exist only in this standalone loopback fixture.
+  if (url.pathname === "/__test__/usability" && request.method === "POST") {
+    readBody(request, input => {
+      Object.assign(member, structuredClone(originalMember));
+      Object.assign(event, structuredClone(originalEvent));
+      usabilityScenario = !input.reset;
+      birthScenario = false;
+      deviceBinding = input.bound === false ? null : createHash("sha256").update("a".repeat(64)).digest("hex");
+      if (input.status) event.volei_attendance[0].status = input.status;
+      if (input.closed) event.closed = true;
+      event.calendar_enabled = input.calendarEnabled ?? false;
+      event.directions_enabled = input.directionsEnabled ?? false;
+      event.directions_url = input.directionsURL ?? null;
+      if (input.membershipStatus) member.membership_status = input.membershipStatus;
+      if (input.status === "espera") { event.volei_guests = [structuredClone(guest)]; }
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.end("{}");
+    });
+    return;
+  }
+  if (usabilityScenario && url.pathname === "/rest/v1/rpc/volei_phone_identify") {
+    readBody(request, input => {
+      let result = null;
+      let error = false;
+      if (input.p_phone === member.phone) {
+        if (deviceBinding && deviceBinding !== input.p_secret_hash) error = true;
+        else { deviceBinding = input.p_secret_hash; result = member.id; }
+      }
+      response.writeHead(error ? 400 : 200, { "Content-Type": "application/json" });
+      response.end(JSON.stringify(error ? { code: "P0001", message: "Este cadastro está vinculado a outro aparelho. Peça a liberação ao responsável." } : result));
+    });
+    return;
+  }
+  if (usabilityScenario && url.pathname === "/rest/v1/rpc/volei_admin_register_player") {
+    readBody(request, input => {
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ id: member.id, name: input.p_name, status: "confirmado" }));
+    });
+    return;
+  }
   if (url.pathname === "/__test__/birth-date" && request.method === "POST") {
     readBody(request, input => {
       Object.assign(member, originalMember);
@@ -95,6 +137,17 @@ createServer((request, response) => {
     });
     return;
   }
+  if (url.pathname === "/rest/v1/volei_events" && request.method === "PATCH") {
+    if (!request.headers.authorization?.startsWith("Bearer ey")) {
+      response.writeHead(403, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ code: "42501", message: "Fixture admin session required" }));
+    } else readBody(request, input => {
+      Object.assign(event, input);
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.end(JSON.stringify([event]));
+    });
+    return;
+  }
   let result;
   if (url.pathname === "/auth/v1/user") result = {
     id: "44444444-4444-4444-8444-444444444444", email: "admin@example.test",
@@ -109,7 +162,7 @@ createServer((request, response) => {
     result = dates.some(filter => filter.startsWith("gte.") && date < filter.slice(4) || filter.startsWith("lte.") && date > filter.slice(4)) ? [] : [event];
   } else if (url.pathname === "/rest/v1/volei_members") {
     const binding = url.searchParams.get("device_secret_hash");
-    result = url.searchParams.get("membership_status") === "eq.pending" || birthScenario && binding && binding !== `eq.${deviceBinding}` ? [] : [member];
+    result = url.searchParams.get("membership_status") === "eq.pending" || (birthScenario || usabilityScenario) && binding && binding !== `eq.${deviceBinding}` ? [] : [member];
   }
   else if (url.pathname === "/rest/v1/volei_attendance") result = event.volei_attendance;
   else if (url.pathname === "/rest/v1/volei_complaints") result = [complaint];

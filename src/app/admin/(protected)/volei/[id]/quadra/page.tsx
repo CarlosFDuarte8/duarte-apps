@@ -28,8 +28,8 @@ export default async function Page({
           <div className="flex flex-wrap gap-2">
             {!data.event.presence_closed_at && (
               <Button asChild>
-                <Link href={`/admin/volei/${id}#adicionar-convidado`}>
-                  Adicionar convidado
+                <Link href={`/admin/volei/${id}#adicionar-participante`}>
+                  Adicionar participante
                 </Link>
               </Button>
             )}

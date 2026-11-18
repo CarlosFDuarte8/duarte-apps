@@ -9,6 +9,7 @@ import { canSubmitComplaint } from "@/lib/volei/complaints";
 import { Button } from "@/components/ui/button";
 import { saveOwnProfile } from "../profile-actions";
 import "@/components/volei/profile.css";
+import { PhoneAccessForm } from "@/components/volei/phone-access-form";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Meu cadastro | Vôlei",
@@ -20,13 +21,7 @@ export default async function Page() {
     return (
       <div className="vp-page">
         <VolleyPageHeader eyebrow="SEU ESPAÇO NO GRUPO" title="Meu cadastro" description="Mantenha seus dados e sua identificação atualizados." />
-        <VolleyCard as="section">
-          <p>
-            Abra o link do jogo e informe seu telefone para acessar seu cadastro
-            neste navegador.
-          </p>
-          <Button asChild><Link href="/volei">Ver jogos</Link></Button>
-        </VolleyCard>
+        <PhoneAccessForm />
       </div>
     );
   const person = (await signPhotos([player]))[0];

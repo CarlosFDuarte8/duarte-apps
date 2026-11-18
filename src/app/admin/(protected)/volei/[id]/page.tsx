@@ -9,7 +9,7 @@ import { getEvent, listMembers, publicEvent } from "@/lib/volei/repository";
 import { GameRoster } from "@/components/volei/game-roster";
 import { formatDate } from "@/lib/volei/domain";
 import { Button } from "@/components/ui/button";
-import { AdminGuestForm } from "@/components/volei/admin-guest-form";
+import { AdminParticipantForm } from "@/components/volei/admin-participant-form";
 
 export default async function Page({
   params,
@@ -56,8 +56,9 @@ export default async function Page({
           </>
         }
       />
-      <AdminGuestForm
+      <AdminParticipantForm
         eventId={id}
+        members={members.filter(member => member.is_active && !member.blocked && member.membership_status === "approved").map(({ id, name, phone }) => ({ id, name, phone }))}
         finalized={!!found.event.presence_closed_at}
         sponsors={members
           .filter(

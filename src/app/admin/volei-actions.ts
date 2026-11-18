@@ -10,6 +10,7 @@ import { phoneSchema } from "@/lib/volei/phone";
 import { duplicateMemberMessage, requiredBirthDateSchema } from "@/lib/volei/profile";
 import { deleteStoredPhotos } from "@/lib/volei/photos";
 import { preferencesSchema } from "@/lib/volei/frequency";
+import { eventLinkSettingsSchema } from "@/lib/volei/event-link-settings";
 import {
   eventSchema,
   memberNameSchema,
@@ -79,6 +80,7 @@ export async function updateEvent(
         .nullable()
         .optional(),
     })
+    .and(eventLinkSettingsSchema)
     .safeParse(input);
   if (!parsed.success || !id.safeParse(eventId).success)
     return { error: "Dados inválidos." };
@@ -177,6 +179,17 @@ export async function addMember(
     birth_date: birth.data,
   });
   return done(error);
+}
+
+export async function registerAdminParticipant(input: unknown): Promise<Result & { name?: string; status?: string }> {
+  const { client } = await requireAdmin();
+  const parsed = z.object({ eventId: id, name: memberNameSchema.min(2), phone: phoneSchema, birthDate: requiredBirthDateSchema }).safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const { data, error } = await client.rpc("volei_admin_register_player", {
+    p_event: parsed.data.eventId, p_name: parsed.data.name, p_phone: parsed.data.phone, p_birth_date: parsed.data.birthDate,
+  });
+  const result = done(error);
+  return result.error ? result : { ...result, name: data?.name, status: data?.status };
 }
 
 export async function saveMemberContact(

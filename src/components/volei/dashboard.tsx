@@ -31,23 +31,37 @@ import {
 } from "@/lib/volei/domain";
 import "./dashboard.css";
 import type { ReactNode } from "react";
+import type { AttendanceStatus } from "@/lib/volei/domain";
+import { EventLinks } from "./event-links";
 export function VolleyDashboard({
   items,
   admin = false,
   month,
   creator,
   groupInvite,
+  personal,
 }: {
   items: EventSummary[];
   admin?: boolean;
   month: string;
   creator?: ReactNode;
   groupInvite?: ReactNode;
+  personal?: { name: string; membershipStatus: string; available: boolean; statuses: Record<string, AttendanceStatus>; positions: Record<string, number | null> } | null;
 }) {
   const upcoming = items.find(
-    (item) => item.event.date >= today() && !item.event.closed,
+    (item) => item.event.date >= today() && (admin ? !item.event.closed : !item.event.presence_closed_at),
   );
   const next = upcoming?.event;
+  const ownStatus = next ? personal?.statuses[next.id] : undefined;
+  const personalMessage = personal
+    ? personal.membershipStatus !== "approved" ? personal.membershipStatus === "pending" ? "Seu cadastro está aguardando aprovação." : "Seu cadastro não foi aprovado. Fale com o responsável."
+      : !personal.available ? "Seu cadastro está indisponível para novas inscrições."
+      : ownStatus === "confirmado" ? "Você está confirmado para este encontro."
+      : ownStatus === "espera" ? `Você está na lista de espera deste encontro.${next && personal.positions[next.id] ? ` Posição atual: ${personal.positions[next.id]}º na fila de membros.` : ""}`
+      : next && isEventOpen(next) ? "Você ainda não confirmou sua presença."
+      : next ? "As inscrições encerraram. Consulte sua participação."
+      : "Assim que houver um novo encontro, ele aparecerá aqui."
+    : null;
   const other = items.filter((item) => item.event.id !== next?.id);
   const occupied = upcoming?.confirmed ?? 0;
   const free = next
@@ -95,7 +109,7 @@ export function VolleyDashboard({
         },
       ];
   return (
-    <div className="vx-dashboard">
+    <div className={`vx-dashboard${admin ? "" : " vx-dashboard-public"}`}>
       {admin ? (
         <VolleyPageHeader eyebrow="SEU PAINEL DE CONTROLE" title="Visão geral" description="Acompanhe a próxima partida e organize o que vem depois." actions={
           <Button asChild variant="outline">
@@ -112,9 +126,10 @@ export function VolleyDashboard({
           title="Jogos e presenças"
           description="Escolha seu jogo. Confirme a presença. A gente se vê na quadra."
           compact
+          mobileCompact
         />
       )}
-      <VolleyMetrics aria-label="Resumo dos encontros">
+      <VolleyMetrics aria-label="Resumo dos encontros" mobileCompact={!admin}>
         {[
           { label: "Encontros", value: items.length, detail: admin ? formatMonth(month) : "Na agenda", icon: CalendarDays, tone: "blue" },
           { label: "Confirmados", value: occupied, detail: "No próximo encontro", icon: Users, tone: "green" },
@@ -137,6 +152,7 @@ export function VolleyDashboard({
                 {next?.date === today() ? "É HOJE!" : "PRÓXIMO ENCONTRO"}
               </span>
               <h2>{next ? next.title : "A próxima partida está por vir."}</h2>
+              {!admin && personal && <p className="vx-feature-description" data-slot="personal-game-status"><strong>Olá, {personal.name.split(" ")[0]}!</strong> {personalMessage}</p>}
               {next ? (
                 <>
                   <div className="vx-feature-meta">
@@ -160,11 +176,14 @@ export function VolleyDashboard({
                         href={
                           admin
                             ? `/admin/volei/${next.id}/quadra`
-                            : `/volei/jogo/${next.id}`
+                            : `/volei/jogo/${next.id}#minha-presenca`
                         }
                       >
                         {admin
                           ? "Abrir quadra e times"
+                          : ownStatus === "confirmado" ? "Gerenciar minha presença"
+                          : ownStatus === "espera" ? "Acompanhar minha posição"
+                          : personal && (personal.membershipStatus !== "approved" || !personal.available) ? "Consultar minha situação"
                           : isEventOpen(next)
                             ? "Confirmar minha presença"
                             : "Ver lista do encontro"}
@@ -173,6 +192,7 @@ export function VolleyDashboard({
                     </Button>
                     <ShareGameButton id={next.id} />
                   </div>
+                  {!admin && <EventLinks event={next} inverse />}
                   <p className="vx-feature-foot">
                     <Users aria-hidden="true" />
                     <strong>{occupied} confirmados</strong>

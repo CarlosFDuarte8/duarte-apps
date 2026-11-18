@@ -26,6 +26,7 @@ export function VolleyHero({
   title,
   description,
   compact = false,
+  mobileCompact = false,
   underline = false,
   actions,
   aside,
@@ -35,12 +36,13 @@ export function VolleyHero({
   title: ReactNode;
   description?: ReactNode;
   compact?: boolean;
+  mobileCompact?: boolean;
   underline?: boolean;
   actions?: ReactNode;
   aside?: ReactNode;
 }) {
   return (
-    <section data-slot="volley-hero" className={cn(styles.hero, compact && styles.compact, aside && styles.withAside)} aria-labelledby={id}>
+    <section data-slot="volley-hero" data-mobile-compact={mobileCompact || undefined} className={cn(styles.hero, compact && styles.compact, aside && styles.withAside)} aria-labelledby={id}>
       <div className={styles.heroCopy}>
         {eyebrow && <span className={styles.eyebrow}>{eyebrow}</span>}
         <h1 id={id} className={cn(styles.heroTitle, underline && styles.underlined)}>{title}</h1>

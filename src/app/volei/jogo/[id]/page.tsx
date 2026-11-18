@@ -12,6 +12,8 @@ import { VolleyIcon } from "@/components/volei/volley-icon";
 import { publicWhatsAppGroup } from "@/lib/volei/group-settings";
 import { WhatsAppGroupCard } from "@/components/volei/whatsapp-group";
 import "@/components/volei/game.css";
+import { guestQueuePosition, memberQueuePosition } from "@/lib/volei/queue";
+import { EventLinks } from "@/components/volei/event-links";
 export const dynamic = "force-dynamic";
 export default async function Page({
   params,
@@ -30,7 +32,7 @@ export default async function Page({
   const ownGuest = player
     ? await serviceClient()
         .from("volei_guests")
-        .select("name,status,profile_token")
+        .select("id,name,status,profile_token")
         .eq("event_id", id)
         .eq("member_id", player.id)
         .maybeSingle()
@@ -45,11 +47,13 @@ export default async function Page({
         needsBirthDate: !player.birth_date,
         canReport: canSubmitComplaint(player),
         status: attendance.find((p) => p.member_id === player.id)?.status,
+        queuePosition: memberQueuePosition(attendance, player.id),
         guest: ownGuest?.data
           ? {
               name: ownGuest.data.name,
               status: ownGuest.data.status,
               profileToken: ownGuest.data.profile_token,
+              queuePosition: guestQueuePosition(guests, ownGuest.data.id),
             }
           : undefined,
       }
@@ -68,6 +72,7 @@ export default async function Page({
         ← Todos os jogos
       </Link>
       <VolleyPageHeader
+        mobileCompact
         eyebrow="LISTA DO DIA"
         title={event.title}
         description={<>
@@ -106,6 +111,7 @@ export default async function Page({
               : formatDate(event.date)}
         />}
       />
+      <EventLinks event={event} />
       <div className="game-summary-strip">
         <span>
           <VolleyIcon name="users" />

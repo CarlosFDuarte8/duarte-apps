@@ -39,6 +39,51 @@ async function as(user: string | null, action: () => Promise<unknown>) {
   finally { await db.exec("reset role; reset request.jwt.claim.sub;"); }
 }
 const respond = (id: string, token?: string, status = "confirmado") => db.query("select volei_respond($1,$2,$3,$4)", [event,id,status,token ?? null]);
+const register = (name = "Novo participante", phone = "+5561999991234", birth: string | null = "1995-01-01") => db.query<{ volei_admin_register_player: { id: string; status: string } }>("select volei_admin_register_player($1,$2,$3,$4)", [event,name,phone,birth]);
+
+it("event links default to disabled and only the administrator may enable valid directions", async () => {
+  // Supabase grants table privileges to authenticated; RLS then restricts writes.
+  await db.exec("grant select,update on volei_events to authenticated");
+  const settings = async () => (await db.query<{ calendar_enabled: boolean; directions_enabled: boolean; directions_url: string | null }>("select calendar_enabled,directions_enabled,directions_url from volei_events where id=$1", [event])).rows[0];
+  expect(await settings()).toEqual({ calendar_enabled: false, directions_enabled: false, directions_url: null });
+  await as(outsider, () => db.query("update volei_events set calendar_enabled=true where id=$1", [event]));
+  expect((await settings()).calendar_enabled).toBe(false);
+  await expect(as(admin, () => db.query("update volei_events set directions_enabled=true where id=$1", [event]))).rejects.toThrow(/check constraint/);
+  await expect(as(admin, () => db.query("update volei_events set directions_url='javascript:alert(1)' where id=$1", [event]))).rejects.toThrow(/check constraint/);
+  await as(admin, () => db.query("update volei_events set calendar_enabled=true,directions_enabled=true,directions_url='https://maps.app.goo.gl/Quadra' where id=$1", [event]));
+  expect(await settings()).toEqual({ calendar_enabled: true, directions_enabled: true, directions_url: "https://maps.app.goo.gl/Quadra" });
+});
+
+it("only the administrator creates an approved member and registers them after the public deadline", async () => {
+  await expect(as(outsider, () => register())).rejects.toThrow(/restrito/);
+  expect((await db.query("select id from volei_members")).rows).toHaveLength(0);
+  await db.query("update volei_events set closed=true where id=$1", [event]);
+  const result = await as(admin, () => register()) as Awaited<ReturnType<typeof register>>;
+  const created = result.rows[0].volei_admin_register_player;
+  expect(created.status).toBe("confirmado");
+  expect((await db.query("select membership_status,phone,birth_date::text from volei_members where id=$1", [created.id])).rows[0]).toEqual({ membership_status: "approved", phone: "+5561999991234", birth_date: "1995-01-01" });
+});
+
+it("invalid or duplicate registrations leave no partial member or attendance", async () => {
+  await expect(as(admin, () => register("Novo", "+5561999991234", null))).rejects.toThrow(/nascimento/);
+  await expect(as(admin, () => register("Novo", "123"))).rejects.toThrow(/telefone/);
+  await as(admin, () => register());
+  await expect(as(admin, () => register("Outro nome"))).rejects.toThrow(/unique/);
+  await expect(as(admin, () => register("  NOVO   PARTICIPANTE  ", "+5561999995678"))).rejects.toThrow(/unique/);
+  expect((await db.query("select id from volei_members")).rows).toHaveLength(1);
+  expect((await db.query("select member_id from volei_attendance")).rows).toHaveLength(1);
+  await db.query("update volei_events set presence_closed_at=now() where id=$1", [event]);
+  await expect(as(admin, () => register("Terceiro", "+5561999995678"))).rejects.toThrow(/concluída/);
+  expect((await db.query("select id from volei_members")).rows).toHaveLength(1);
+});
+
+it("a new admin-created member joins the queue when the game is full", async () => {
+  for (let i = 0; i < 18; i++) { const person = await member(`Já inscrito ${i}`); await as(admin, () => respond(person.id)); }
+  const result = await as(admin, () => register()) as Awaited<ReturnType<typeof register>>;
+  expect(result.rows[0].volei_admin_register_player.status).toBe("espera");
+  expect((await db.query("select id from volei_members")).rows).toHaveLength(19);
+  expect((await db.query("select member_id from volei_attendance where status='confirmado'")).rows).toHaveLength(18);
+});
 const attendance = async (id: string) => (await db.query<{ status: string; confirmed_at: Date | null; queue_order: number }>("select status,confirmed_at,queue_order from volei_attendance where event_id=$1 and member_id=$2", [event,id])).rows[0];
 
 it("o administrador confirma e inclui convidados após o prazo e fechamento público", async () => {

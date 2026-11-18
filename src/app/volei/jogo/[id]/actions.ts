@@ -1,12 +1,11 @@
 ﻿"use server";
 import { randomBytes } from "node:crypto";
-import { cookies } from "next/headers";
 import { z } from "zod";
 import { studentEnrollmentSchema } from "@/lib/volei/students";
 import { revalidatePath } from "next/cache";
 import { serviceClient } from "@/lib/escalas/supabase";
 import {
-  DEVICE_COOKIE,
+  bindDevice,
   deviceSecret,
   hashDevice,
 } from "@/lib/volei/player-session";
@@ -60,13 +59,7 @@ export async function registerForGame(
     },
   );
   if (error) return { error: errorMessage(error) };
-  (await cookies()).set(DEVICE_COOKIE, secret, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/volei",
-    maxAge: 60 * 60 * 24 * 365,
-  });
+  await bindDevice(secret);
   refresh();
   return { error: "" };
 }
@@ -121,30 +114,4 @@ export async function manageGame(input: unknown): Promise<{ error: string }> {
   if (error) return { error: errorMessage(error) };
   refresh();
   return { error: "" };
-}
-
-export async function identifyByPhone(
-  input: unknown,
-): Promise<{ error: string; found: boolean }> {
-  const parsed = phoneSchema.safeParse(input);
-  if (!parsed.success)
-    return {
-      error: parsed.error.issues[0]?.message ?? "Celular inválido.",
-      found: false,
-    };
-  const secret = (await deviceSecret()) ?? randomBytes(32).toString("hex");
-  const { data, error } = await serviceClient().rpc("volei_phone_identify", {
-    p_phone: parsed.data,
-    p_secret_hash: hashDevice(secret),
-  });
-  if (error) return { error: errorMessage(error), found: false };
-  (await cookies()).set(DEVICE_COOKIE, secret, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/volei",
-    maxAge: 60 * 60 * 24 * 365,
-  });
-  refresh();
-  return { error: "", found: !!data };
 }

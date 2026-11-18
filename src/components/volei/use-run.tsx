@@ -10,7 +10,8 @@ type Result = { error: string };
 /** Executa uma server action, atualiza a tela e expõe pendência e erro. */
 export function useRun({
   revalidated = false,
-}: { revalidated?: boolean } = {}) {
+  successMessage = "Alterações salvas.",
+}: { revalidated?: boolean; successMessage?: string } = {}) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState("");
@@ -30,7 +31,7 @@ export function useRun({
         const result = await action();
         setError(result.error);
         if (!result.error) {
-          setSuccess("Alterações salvas.");
+          setSuccess(successMessage);
           setMessage("Atualizando informações…");
           window.dispatchEvent(new Event("volley-notifications-changed"));
           // Actions using revalidatePath already return the updated server tree.

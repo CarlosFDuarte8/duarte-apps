@@ -7,6 +7,7 @@ import * as profile from "./profile";
 import * as students from "./students";
 import * as phone from "./phone";
 import * as domain from "./domain";
+import * as eventLinkSettings from "./event-link-settings";
 
 const id = (n: number) =>
   `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
@@ -59,6 +60,7 @@ function fixture(
         if (name === "@/lib/volei/students") return students;
         if (name === "@/lib/volei/phone") return phone;
         if (name === "@/lib/volei/domain") return domain;
+        if (name === "@/lib/volei/event-link-settings") return eventLinkSettings;
         if (
           [
             "@/lib/volei/students",

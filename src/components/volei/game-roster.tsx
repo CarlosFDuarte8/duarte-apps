@@ -7,6 +7,7 @@ import type { publicEvent } from "@/lib/volei/repository";
 import { VolleyIcon } from "./volley-icon";
 import "./game.css";
 import { eventCapacity, eventFreeSlots } from "@/lib/volei/domain";
+import { queueRules } from "@/lib/volei/queue";
 type Game = NonNullable<Awaited<ReturnType<typeof publicEvent>>>;
 export function GameRoster({
   game,
@@ -151,7 +152,7 @@ export function GameRoster({
       )}
       {tab === "waiting" && (
         <p className="game-description">
-          A lista é atualizada automaticamente quando uma vaga é liberada.
+          {queueRules}
         </p>
       )}
       <div className="game-roster-content" aria-live="polite">

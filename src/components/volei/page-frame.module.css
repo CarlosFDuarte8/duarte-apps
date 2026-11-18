@@ -60,6 +60,24 @@
   mask-image: linear-gradient(90deg, transparent, #000 30%);
 }
 
+@media (max-width: 640px) {
+  .page .hero[data-mobile-compact] {
+    min-height: 0;
+    padding: var(--v-mobile-hero-padding);
+    gap: var(--v-field-gap);
+  }
+  .page .hero[data-mobile-compact] .heroTitle {
+    max-width: 100%;
+    margin: var(--v-field-gap) 0;
+    font-size: var(--v-title-section);
+  }
+  .page .hero[data-mobile-compact] .heroDescription {
+    max-width: 100%;
+    margin: 0;
+    font-size: var(--v-text-body);
+  }
+}
+
 .eyebrow {
   color: #d5e7fd;
   font-size: clamp(10px, 0.9vw, 15px);
@@ -167,3 +185,10 @@
 .sectionActions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 @media (max-width: 700px) { .withAside { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
 @media print { .page:global(.volley-content)[data-slot="volley-page"] { min-height: 0; padding: 0; background: #fff; } .court, .heroActions { display: none; } }
+@media (max-width: 640px) {
+  .page .hero[data-mobile-compact] .heroAside { padding: var(--v-field-gap); }
+  .page .hero[data-mobile-compact] .heroDetail { flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--v-field-gap); }
+  .page .hero[data-mobile-compact] .heroStatus { width: 100%; margin: 0; }
+  .page .hero[data-mobile-compact] .heroDetail strong { font-size: var(--v-title-section); }
+  .page .hero[data-mobile-compact] .heroDetail > span:last-child { width: 100%; }
+}

@@ -5,7 +5,7 @@ vi.mock("next/cache", () => ({ revalidatePath: mocks.revalidate }));
 vi.mock("next/headers", () => ({ cookies: async () => ({ set: mocks.setCookie }) }));
 vi.mock("@/lib/escalas/supabase", () => ({ serviceClient: () => ({ rpc: mocks.rpc }) }));
 vi.mock("@/lib/volei/player-session", () => ({
-  DEVICE_COOKIE: "volley_device_v1", deviceSecret: mocks.secret, hashDevice: () => "hashed-secret", currentPlayer: vi.fn(),
+  bindDevice: mocks.setCookie, deviceSecret: mocks.secret, hashDevice: () => "hashed-secret", currentPlayer: vi.fn(),
 }));
 vi.mock("@/lib/volei/photos", () => ({ deleteStoredPhotos: vi.fn() }));
 vi.mock("@/lib/volei/students", () => import("../../../../lib/volei/students"));

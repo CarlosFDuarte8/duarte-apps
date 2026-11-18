@@ -9,8 +9,8 @@ import Link from "next/link";
 import {
   registerForGame,
   manageGame,
-  identifyByPhone,
 } from "@/app/volei/jogo/[id]/actions";
+import { identifyByPhone } from "@/app/volei/access-actions";
 import { attendanceLabels, displayPhone } from "@/lib/volei/phone";
 import type { AttendanceStatus } from "@/lib/volei/domain";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import { VolleyIcon } from "./volley-icon";
 import { PhoneInput } from "./phone-input";
 import { useCopy } from "./use-run";
 import { useOperationStatus } from "./activity";
+import { QueuePosition } from "./queue-position";
 export type MyGame = {
   name: string;
   phone: string;
@@ -28,7 +29,8 @@ export type MyGame = {
   needsBirthDate: boolean;
   canReport?: boolean;
   status?: AttendanceStatus;
-  guest?: { name: string; status: AttendanceStatus; profileToken?: string };
+  queuePosition?: number | null;
+  guest?: { name: string; status: AttendanceStatus; profileToken?: string; queuePosition?: number | null };
 };
 export function GameResponse({
   eventId,
@@ -168,11 +170,12 @@ export function GameResponse({
                     {mine.status === "confirmado"
                       ? "Sua vaga está garantida. Seu nome está na lista da portaria."
                       : mine.status === "espera"
-                        ? "Você será confirmado automaticamente se uma vaga for liberada."
+                        ? "Acompanhe sua posição abaixo. A promoção depende das vagas e das regras da fila."
                         : "Confirme abaixo para participar deste encontro."}
                   </p>
                 </div>
               </div>
+              {mine.status === "espera" && <QueuePosition position={mine.queuePosition} />}
               {(!mine.active || mine.blocked) && (
                 <p className="game-notice is-warning">
                   Seu cadastro está indisponível para novas inscrições. Fale com
@@ -229,6 +232,7 @@ export function GameResponse({
                             ? "Confirmado · consta na portaria"
                             : "Aguardando vaga · membros têm prioridade"}
                         </span>
+                        {mine.guest!.status === "espera" && <QueuePosition position={mine.guest!.queuePosition} guest />}
                       </div>
                       <Button
                         variant="ghost"

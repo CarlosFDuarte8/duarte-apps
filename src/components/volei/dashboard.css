@@ -1,4 +1,14 @@
 .vx-dashboard { display: grid; align-content: start; gap: var(--v-page-gap); min-width: 0; }
+@media (max-width: 640px) {
+  .vx-dashboard-public > .vx-dashboard-columns,
+  .vx-dashboard-public .vx-main-column { display: contents; }
+  .vx-dashboard-public > [data-slot="volley-hero"] { order: 0; }
+  .vx-dashboard-public .vx-feature { order: 1; }
+  .vx-dashboard.vx-dashboard-public .vx-feature h2 { font-size: var(--v-title-section); margin-block: var(--v-field-gap); }
+  .vx-dashboard-public > [aria-label="Resumo dos encontros"] { order: 2; }
+  .vx-dashboard-public .vx-agenda-section { order: 3; }
+  .vx-dashboard-public .vx-side-column { order: 4; }
+}
 .vx-page-intro { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .vx-page-intro h1 { margin: 8px 0; color: var(--vm-ink); font-size: 32px; letter-spacing: -1px; }
 .vx-page-intro p:last-child { margin: 0; color: var(--vm-muted); font-size: 14px; }
@@ -46,6 +56,7 @@
 .vx-feature-foot strong { font-weight: 500; }
 .vx-feature-foot > span { margin-inline: 4px; }
 .vx-feature-description { max-width: 460px; margin: 0; color: #d5e5f4; font-size: 14px; line-height: 1.7; }
+.vx-feature-description[data-slot="personal-game-status"] { margin-bottom: var(--v-section-gap); }
 .vx-feature-text-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 14px; color: #fff; font-size: 14px; text-decoration: none; }
 .vx-feature-text-link svg { width: 18px; height: 18px; }
 .vx-match-manage { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: -12px; color: var(--vm-muted); font-size: 12px; text-decoration: none; }

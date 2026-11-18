@@ -24,6 +24,7 @@ import "./volei.css";
 import { NativeSelect } from "@/components/ui/native-select";
 import { buildGateList } from "@/lib/volei/gate-list";
 import { ageLabel, ageOn } from "@/lib/volei/profile";
+import { EventLinkSettings } from "./event-link-settings";
 
 type Status = AttendanceStatus | "limpar";
 
@@ -103,6 +104,9 @@ export function EventManager({
                 location: f.get("location"),
                 notes: f.get("notes"),
                 closed: f.get("closed") === "on",
+                calendar_enabled: f.get("calendar_enabled") === "on",
+                directions_enabled: f.get("directions_enabled") === "on",
+                directions_url: f.get("directions_url"),
                 max_teams: Number(f.get("max_teams")),
                 registration_deadline: f.get("registration_deadline")
                   ? new Date(
@@ -192,6 +196,7 @@ export function EventManager({
             />
             Fechar confirmações deste dia
           </label>
+          <EventLinkSettings event={event} pending={pending} />
           <div className="vl-actions">
             <Button type="submit" className="sc-btn" disabled={pending}>
               Salvar detalhes
@@ -250,7 +255,7 @@ export function EventManager({
 
       <VolleyCard as="section" className="sc-form-card">
         <h2>Presença ({confirmedNames.length} confirmados)</h2>
-        <p className="volley-muted">O administrador pode confirmar ou incluir membros após o prazo e com as inscrições fechadas, até a conclusão da chamada. A capacidade e a ordem da fila continuam valendo. Para incluir um convidado, use o formulário Adicionar convidado.</p>
+        <p className="volley-muted">O administrador pode confirmar ou incluir membros após o prazo e com as inscrições fechadas, até a conclusão da chamada. A capacidade e a ordem da fila continuam valendo. Para novas inclusões, use Adicionar participante.</p>
         {feedback}
         <table className="sc-table vl-attendance-table">
           <thead>

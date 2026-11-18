@@ -45,6 +45,9 @@ export type VoleiEvent = {
   registration_deadline?: string | null;
   guests_open_at?: string | null;
   presence_closed_at?: string | null;
+  calendar_enabled?: boolean;
+  directions_enabled?: boolean;
+  directions_url?: string | null;
 };
 export function eventCapacity(event: Pick<VoleiEvent, "max_teams">) {
   return (event.max_teams ?? 3) * 6;

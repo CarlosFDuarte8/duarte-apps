@@ -15,8 +15,8 @@ type Props = AriaAttributes & {
   onClick?: MouseEventHandler<HTMLButtonElement>;
 };
 
-export function VolleyMetrics({ className, columns = 4, ...props }: ComponentProps<"div"> & { columns?: 3 | 4 | 5 }) {
-  return <div className={cn(styles.grid, className)} data-columns={columns} {...props} />;
+export function VolleyMetrics({ className, columns = 4, mobileCompact = false, ...props }: ComponentProps<"div"> & { columns?: 3 | 4 | 5; mobileCompact?: boolean }) {
+  return <div className={cn(styles.grid, className)} data-columns={columns} data-mobile-compact={mobileCompact || undefined} {...props} />;
 }
 
 export function VolleyMetric({ label, value, detail, icon, tone = "blue", className, href, onClick, ...aria }: Props) {

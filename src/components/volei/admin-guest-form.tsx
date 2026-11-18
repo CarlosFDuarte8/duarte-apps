@@ -13,10 +13,12 @@ export function AdminGuestForm({
   eventId,
   sponsors,
   finalized,
+  embedded = false,
 }: {
   eventId: string;
   sponsors: { id: string; name: string }[];
   finalized: boolean;
+  embedded?: boolean;
 }) {
   const { run, pending, feedback } = useRun({ revalidated: true });
   const [memberId, setMemberId] = useState("");
@@ -26,6 +28,7 @@ export function AdminGuestForm({
   const unavailable = finalized || sponsors.length === 0;
   return (
     <VolleyCard as="section"
+      data-variant={embedded ? "embedded" : undefined}
       id="adicionar-convidado"
       className="sc-form-card scroll-mt-24"
     >
