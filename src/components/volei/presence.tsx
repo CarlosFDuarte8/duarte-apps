@@ -1,11 +1,11 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { respond } from "@/app/volei/[token]/actions";
 import styles from "./publico.module.css";
-import { useOperationStatus } from "./activity";
+import { useRun } from "./use-run";
 import { Button } from "@/components/ui/button";
-import { BirthDateField } from "./birth-date-field";
+import { ParticipationReview } from "./participation-review";
+import type { ParticipationProfile } from "@/lib/volei/students";
 
 type Mine =
   "confirmado" | "nao_vai" | "espera" | "ausente" | "reservado" | undefined;
@@ -16,51 +16,43 @@ export function Presence({
   mine,
   canRespond,
   canJoin = true,
-  needsBirthDate = false,
+  profile,
+  admissionMessage,
+  eventDate,
 }: {
   token: string;
   eventId: string;
   mine: Mine;
   canRespond: boolean;
   canJoin?: boolean;
-  needsBirthDate?: boolean;
+  profile: ParticipationProfile;
+  admissionMessage?: string;
+  eventDate?: string;
 }) {
-  const router = useRouter();
-  const [pending, start] = useTransition();
-  const [error, setError] = useState("");
-  const [birthDate, setBirthDate] = useState("");
+  const { run, pending, feedback } = useRun({ revalidated: true, successMessage: "Participação atualizada." });
+  const [profileSaved, setProfileSaved] = useState(false);
   const joining = mine !== "confirmado" && mine !== "espera";
-  useOperationStatus(pending, "Atualizando sua presença…", error);
 
   function choose(status: "confirmado" | "nao_vai") {
-    start(async () => {
-      try {
-        const result = await respond(
+    run(() => respond(
           token,
           eventId,
           mine === status || (mine === "espera" && status === "confirmado")
             ? "limpar"
             : status,
-          status === "confirmado" && joining && needsBirthDate
-            ? birthDate
-            : undefined,
-        );
-        setError(result.error);
-        if (!result.error) router.refresh();
-      } catch {
-        setError("Falha na conexão. Tente novamente.");
-      }
-    });
+        ), undefined, "Atualizando sua presença…");
   }
 
+  if (joining && !profile.reviewed) return <ParticipationReview eventId={eventId} eventDate={eventDate} token={token} profile={profile} onSaved={() => setProfileSaved(true)} disabled={!canRespond || pending} />;
   return (
+    <>
+    {!profile.reviewed && <ParticipationReview eventId={eventId} eventDate={eventDate} token={token} profile={profile} participating waiting={mine === "espera"} onSaved={() => setProfileSaved(true)} disabled={!canRespond || pending} />}
     <form onSubmit={(event) => {
       event.preventDefault();
       choose("confirmado");
     }}>
-      {needsBirthDate && joining && canJoin && canRespond && (
-        <BirthDateField value={birthDate} onChange={setBirthDate} disabled={pending} />
-      )}
+      {joining && !canJoin && admissionMessage && <p role="status" className="volley-muted">{admissionMessage}</p>}
+      {profileSaved && <p role="status" className="volley-muted">Dados do cadastro atualizados.</p>}
       <div className={styles.botoes}>
         <Button
           type="submit"
@@ -83,11 +75,8 @@ export function Presence({
           Não vou
         </Button>
       </div>
-      {error && (
-        <p role="alert" className={styles.erro}>
-          {error}
-        </p>
-      )}
+      {feedback}
     </form>
+    </>
   );
 }

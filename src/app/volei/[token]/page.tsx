@@ -4,6 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Presence } from "@/components/volei/presence";
 import { GameRoster } from "@/components/volei/game-roster";
+import { ownParticipationProfile } from "@/lib/volei/participation-profile";
+import { admissionForEvent } from "@/lib/volei/participation-policy";
 import { memberByToken, publicEvents } from "@/lib/volei/repository";
 import {
   currentMonth,
@@ -62,12 +64,14 @@ export default async function Page({
             <Presence
               token={token}
               eventId={game.event.id}
+              eventDate={game.event.date}
               mine={
                 game.attendance.find((a) => a.member_id === member.id)?.status
               }
               canRespond={!member.blocked}
-              canJoin={isEventOpen(game.event)}
-              needsBirthDate={!member.birth_date}
+              canJoin={isEventOpen(game.event) && admissionForEvent(game.event, member).open}
+              admissionMessage={admissionForEvent(game.event, member).message}
+              profile={ownParticipationProfile(member)}
             />
             <Link className="volley-link" href={`/volei/jogo/${game.event.id}`}>
               Página do jogo e convidados →

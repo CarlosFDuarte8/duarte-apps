@@ -10,7 +10,7 @@ import styles from "./whatsapp-group.module.css";
 export function WhatsAppGroupForm({ initialUrl, ready }: { initialUrl: string | null; ready: boolean }) {
   const [url, setUrl] = useState(initialUrl ?? "");
   const [saved, setSaved] = useState(false);
-  const { run, pending, error } = useRun({ revalidated: true });
+  const { run, pending, feedback } = useRun({ revalidated: true });
   return <VolleyFormCard onSubmit={event => {
     event.preventDefault();
     setSaved(false);
@@ -24,7 +24,7 @@ export function WhatsAppGroupForm({ initialUrl, ready }: { initialUrl: string | 
     </div>
     <p className={styles.help}>Ative a aprovação de novos participantes nas permissões do grupo do WhatsApp para analisar os pedidos antes de liberar a entrada.</p>
     {!ready && <p role="alert">Aplique a atualização do banco de configurações do grupo para habilitar este recurso.</p>}
-    {error && <p role="alert" className={`${styles.feedback} ${styles.error}`}>{error}</p>}
+    {feedback}
     <div className={styles.actions}>
       <Button type="submit" loading={pending} disabled={!ready}>Salvar link do grupo</Button>
       {saved && !pending && <p role="status" className={styles.feedback}>{url.trim() ? "Link do grupo salvo." : "Convite ocultado da área pública e das próximas impressões."}</p>}

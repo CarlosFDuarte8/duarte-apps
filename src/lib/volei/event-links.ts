@@ -1,4 +1,5 @@
 import type { VoleiEvent } from "./domain";
+import { brasiliaDateTime } from "./time-zone";
 
 export function eventStartTime(value: string) {
   const match = /^(\d{1,2})(?::([0-5]\d)|h([0-5]\d)?)?$/.exec(value.trim());
@@ -25,15 +26,12 @@ const utc = (value: Date) => value.toISOString().replace(/[-:]/g, "").replace(/\
 
 export function eventCalendar(event: VoleiEvent, origin: string, now = new Date()) {
   const time = eventStartTime(event.start_time);
-  const dateTime = `${event.date}T${time ?? "00:00"}:00`;
-  const zone = new Intl.DateTimeFormat("en", { timeZone: "America/Sao_Paulo", timeZoneName: "longOffset" })
-    .formatToParts(new Date(`${dateTime}Z`)).find(part => part.type === "timeZoneName")!.value;
-  const offset = zone.replace("GMT", "") || "+00:00";
+  const dateTime = brasiliaDateTime(event.date, time ?? "00:00");
   const description = [event.notes, `Horário informado: ${event.start_time || "a definir"} (Brasília).`,
     "Confirme o horário de término com a organização.", `${origin}/volei/jogo/${event.id}`].filter(Boolean).join("\n");
   return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Privaty Volleyball//Agenda//PT-BR", "BEGIN:VEVENT",
     `UID:${event.id}@privaty-volleyball`, `DTSTAMP:${utc(now)}`,
-    time ? `DTSTART:${utc(new Date(`${dateTime}${offset}`))}` : `DTSTART;VALUE=DATE:${event.date.replaceAll("-", "")}`,
+    time ? `DTSTART:${utc(new Date(dateTime))}` : `DTSTART;VALUE=DATE:${event.date.replaceAll("-", "")}`,
     `SUMMARY:${escapeText(event.title)}`, `LOCATION:${escapeText(event.location)}`,
     `DESCRIPTION:${escapeText(description)}`, `URL:${origin}/volei/jogo/${event.id}`, "END:VEVENT", "END:VCALENDAR",
   ].map(fold).join("\r\n") + "\r\n";

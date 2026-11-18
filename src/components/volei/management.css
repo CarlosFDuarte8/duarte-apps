@@ -388,11 +388,17 @@
     width: 100%;
   }
   .vm-roll-call > label {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
     padding: 12px;
   }
+  .vm-roll-call > label > [data-slot="checkbox"] { grid-column: 1; grid-row: 1 / span 2; }
+  .vm-roll-call > label > span:not([data-slot]) { grid-column: 2; }
   .vm-roll-call > label > [data-slot="badge"] {
-    margin-left: 32px;
+    grid-column: 2;
+    justify-self: start;
+    margin-left: 0;
   }
   .vm-date-input {
     grid-template-columns: minmax(0, 1fr);

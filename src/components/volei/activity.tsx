@@ -24,7 +24,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   const report = useCallback((next: Report) => {
     if (next.kind === "clear") {
       setActivity((current) =>
-        current?.id === next.id && current.kind === "loading" ? null : current,
+        current?.id === next.id && current.kind !== "success" ? null : current,
       );
       return;
     }

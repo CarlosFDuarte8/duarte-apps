@@ -1,6 +1,6 @@
 import type { AttendanceStatus } from "./domain";
 
-export const queueRules = "Membros prioritários e alunos no dia da aula têm preferência; dentro de cada grupo, vale a ordem de inscrição. Convidados aguardam depois dos membros e dependem da liberação. A posição pode mudar conforme essas regras.";
+export const queueRules = "A fila segue as regras do grupo e a ordem de inscrição dentro de cada faixa de prioridade. A turma declarada precisa ser validada pelo responsável. Convidados aguardam depois dos membros e dependem da liberação. A posição pode mudar; vagas já confirmadas são preservadas.";
 
 export function memberQueuePosition(rows: readonly { member_id: string; status: AttendanceStatus }[], memberId: string) {
   const index = rows.filter(row => row.status === "espera").findIndex(row => row.member_id === memberId);

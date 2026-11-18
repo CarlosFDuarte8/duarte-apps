@@ -25,6 +25,9 @@ export type VoleiMember = {
   emergency_relationship?: string;
   student_weekdays?: number[];
   requested_student_weekdays?: number[] | null;
+  student_class_time?: string | null;
+  requested_student_class_time?: string | null;
+  participation_reviewed_at?: string | null;
   is_core?: boolean;
   membership_status?: "approved" | "pending" | "rejected";
   preferred_weekdays?: number[];

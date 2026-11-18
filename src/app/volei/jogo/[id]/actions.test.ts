@@ -14,7 +14,7 @@ vi.mock("@/lib/volei/profile", () => import("../../../../lib/volei/profile"));
 import { manageGame, registerForGame } from "./actions";
 
 const eventId = "11111111-1111-4111-8111-111111111111";
-const registration = { eventId, name: "João da Silva", phone: "(61) 99999-1234", birthDate: "2010-05-10" };
+const registration = { eventId, name: "João da Silva", phone: "(61) 99999-1234", birthDate: "2010-05-10", enrollment: { isStudent: false, days: [], classTime: "" } };
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.secret.mockResolvedValue("a".repeat(64));
@@ -29,9 +29,9 @@ it("valida nascimento no servidor antes de cadastrar", async () => {
 });
 it("normaliza telefone e envia nascimento com o pedido de aprovação", async () => {
   expect(await registerForGame(registration)).toEqual({ error: "" });
-  expect(mocks.rpc).toHaveBeenCalledWith("volei_register_member_profile", {
+  expect(mocks.rpc).toHaveBeenCalledWith("volei_register_participation_profile", {
     p_event: eventId, p_name: "João da Silva", p_phone: "+5561999991234", p_birth_date: "2010-05-10",
-    p_secret_hash: "hashed-secret", p_student_weekdays: [],
+    p_secret_hash: "hashed-secret", p_days: [], p_class_time: null,
   });
   expect(mocks.setCookie).toHaveBeenCalled();
   expect(mocks.revalidate).toHaveBeenCalledWith("/admin/volei", "layout");

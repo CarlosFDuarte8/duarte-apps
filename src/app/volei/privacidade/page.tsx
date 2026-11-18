@@ -65,7 +65,7 @@ export default function Page() {
             <li><strong>Cadastro:</strong> nome, telefone com país e DDD, nascimento, situação do cadastro e identificadores de acesso. Servem para reconhecer o participante, analisar sua entrada, evitar duplicidade e identificar menores de idade.</li>
             <li><strong>Perfil opcional:</strong> foto e nome, telefone e vínculo de um contato de emergência. A foto auxilia a identificação; o contato pode ser usado quando for necessário falar com alguém indicado por você.</li>
             <li><strong>Participação:</strong> inscrições, confirmações, cancelamentos, fila de espera, horários, convidados, chamada, frequência e histórico de pontos. Esses registros ajudam a distribuir vagas e organizar os encontros.</li>
-            <li><strong>Organização do grupo:</strong> dias de aula declarados e aprovados, preferências de dias, indisponibilidades e avaliação esportiva registrada pela administração. Essas informações apoiam a agenda, os critérios de prioridade e a formação de times.</li>
+            <li><strong>Organização do grupo:</strong> dias e horários de aula declarados e validados, conferência cadastral, preferências de dias, indisponibilidades e avaliação esportiva registrada pela administração. Essas informações apoiam a agenda, os horários de inscrição, os critérios de prioridade e a formação de times.</li>
             <li><strong>Relatos:</strong> quando o recurso estiver disponível para seu cadastro, o sistema registra o autor, as pessoas envolvidas, o encontro, o assunto, a descrição e o acompanhamento administrativo do relato.</li>
             <li><strong>Administração e avisos:</strong> dados de autenticação da conta administrativa e, se os avisos forem ativados, identificadores da inscrição de notificações do navegador, necessários para entregar esses avisos.</li>
           </ul>
@@ -86,7 +86,7 @@ export default function Page() {
             por quem tiver o endereço, sem precisar entrar em uma conta.
           </p>
           <p>
-            <strong>Telefone, nascimento, idade, foto, contato de emergência e
+            <strong>Telefone, nascimento, idade, horário da turma, foto, contato de emergência e
             conteúdo dos relatos não são exibidos nas listas públicas.</strong>
             Dados do próprio perfil podem ser vistos no acesso pessoal; informações
             administrativas ficam restritas aos administradores autorizados. A

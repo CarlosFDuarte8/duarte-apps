@@ -14,6 +14,8 @@ import { WhatsAppGroupCard } from "@/components/volei/whatsapp-group";
 import "@/components/volei/game.css";
 import { guestQueuePosition, memberQueuePosition } from "@/lib/volei/queue";
 import { EventLinks } from "@/components/volei/event-links";
+import { ownParticipationProfile } from "@/lib/volei/participation-profile";
+import { admissionForEvent } from "@/lib/volei/participation-policy";
 export const dynamic = "force-dynamic";
 export default async function Page({
   params,
@@ -25,6 +27,7 @@ export default async function Page({
   if (!game) notFound();
   const { event, attendance, guests } = game;
   const open = isEventOpen(event);
+  const admission = admissionForEvent(event, player);
   const confirmed =
     attendance.filter((p) => p.status === "confirmado").length +
     guests.filter((p) => p.status === "confirmado").length;
@@ -44,7 +47,7 @@ export default async function Page({
         blocked: player.blocked,
         active: player.is_active,
         membershipStatus: player.membership_status,
-        needsBirthDate: !player.birth_date,
+        profile: ownParticipationProfile(player),
         canReport: canSubmitComplaint(player),
         status: attendance.find((p) => p.member_id === player.id)?.status,
         queuePosition: memberQueuePosition(attendance, player.id),
@@ -58,9 +61,7 @@ export default async function Page({
           : undefined,
       }
     : null;
-  const deadline = event.registration_deadline
-    ? new Date(event.registration_deadline)
-    : null;
+  const displayedDate = admission.state === "scheduled" && admission.opensAt ? new Date(admission.opensAt) : new Date(admission.closesAt);
   const timeFormat = new Intl.DateTimeFormat("pt-BR", {
     timeZone: "America/Sao_Paulo",
     hour: "2-digit",
@@ -97,18 +98,16 @@ export default async function Page({
           )}
         </>}
         aside={<VolleyHeroDetail
-          status={open ? "INSCRIÇÕES ABERTAS" : "INSCRIÇÕES ENCERRADAS"}
-          active={open}
-          label="Confirmações até"
-          value={deadline ? timeFormat.format(deadline) : "18:00"}
+          status={admission.open ? "INSCRIÇÕES ABERTAS" : admission.state === "closed" ? "INSCRIÇÕES ENCERRADAS" : admission.state === "scheduled" ? "AGUARDANDO ABERTURA" : "CONSULTE SUA INSCRIÇÃO"}
+          active={admission.open}
+          label={admission.state === "scheduled" ? "Suas inscrições abrem às" : "Confirmações até"}
+          value={timeFormat.format(displayedDate)}
           description="Horário de Brasília"
-          detail={deadline
-              ? new Intl.DateTimeFormat("pt-BR", {
+          detail={new Intl.DateTimeFormat("pt-BR", {
                   timeZone: "America/Sao_Paulo",
                   day: "2-digit",
                   month: "long",
-                }).format(deadline)
-              : formatDate(event.date)}
+                }).format(displayedDate)}
         />}
       />
       <EventLinks event={event} />
@@ -140,7 +139,9 @@ export default async function Page({
       <div className="game-page-grid">
         <GameResponse
           eventId={id}
+          eventDate={event.date}
           open={open}
+          admission={admission}
           finished={!!event.presence_closed_at}
           mine={mine}
           free={eventFreeSlots(event, confirmed, reserved)}

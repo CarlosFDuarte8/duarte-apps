@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import { VolleyCard } from "@/components/volei/page-frame";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { addAdminGuest } from "@/app/admin/volei-actions";
 import { useRun } from "./use-run";
 
@@ -24,7 +24,6 @@ export function AdminGuestForm({
   const [memberId, setMemberId] = useState("");
   const [name, setName] = useState("");
   const [receipt, setReceipt] = useState("");
-  const lock = useRef(false);
   const unavailable = finalized || sponsors.length === 0;
   return (
     <VolleyCard as="section"
@@ -50,23 +49,18 @@ export function AdminGuestForm({
       <form
         onSubmit={(event) => {
           event.preventDefault();
-          if (lock.current || pending || unavailable) return;
-          lock.current = true;
+          if (pending || unavailable) return;
           setReceipt("");
           run(
             async () => {
-              try {
-                const result = await addAdminGuest(eventId, memberId, name);
-                if (!result.error) {
-                  setReceipt(
-                    `${result.name}: ${result.status === "confirmado" ? "confirmado — já consta na lista do jogo" : "na lista de espera — aguarde a liberação de vaga"}.`,
-                  );
-                  setName("");
-                }
-                return result;
-              } finally {
-                lock.current = false;
+              const result = await addAdminGuest(eventId, memberId, name);
+              if (!result.error) {
+                setReceipt(
+                  `${result.name}: ${result.status === "confirmado" ? "confirmado — já consta na lista do jogo" : "na lista de espera — aguarde a liberação de vaga"}.`,
+                );
+                setName("");
               }
+              return result;
             },
             undefined,
             "Adicionando convidado…",

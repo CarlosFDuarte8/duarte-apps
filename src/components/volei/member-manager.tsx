@@ -94,8 +94,9 @@ function MemberStatus({ member }: { member: VoleiMember }) {
       {(member.membership_status ?? "approved") !== "approved" &&
         !member.is_active && <Badge variant="outline">Inativo</Badge>}
       {member.requested_student_weekdays != null && (
-        <Badge variant="outline">Aluno: conferir dias</Badge>
+        <Badge variant="outline">Aluno: conferir turma</Badge>
       )}
+      {!!member.student_weekdays?.length && !member.student_class_time && member.requested_student_weekdays == null && <Badge variant="outline">Aluno: conferir horário</Badge>}
       {!!member.student_weekdays?.length && (
         <Badge variant="secondary">
           Aluno ·{" "}
@@ -123,21 +124,23 @@ function matchesGroup(member: VoleiMember, group: string) {
     case "minors": return age !== null && age < 18;
     case "adults": return age !== null && age >= 18;
     case "missing-birth": return age === null;
+    case "student-class-pending": return member.requested_student_weekdays != null || (!!member.student_weekdays?.length && !member.student_class_time);
     default: return true;
   }
 }
 
-export function MemberManager({ members }: { members: VoleiMember[] }) {
+export function MemberManager({ members, initialGroup = "todos" }: { members: VoleiMember[]; initialGroup?: "todos" | "pending" }) {
   const { run, pending, feedback } = useRun();
   const [creating, setCreating] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [isStudent, setIsStudent] = useState(false);
   const [studentDays, setStudentDays] = useState<number[]>([]);
+  const [classTime, setClassTime] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [search, setSearch] = useState("");
-  const [group, setGroup] = useState("todos");
+  const [group, setGroup] = useState<string>(initialGroup);
   const [day, setDay] = useState("");
   const [order, setOrder] = useState("asc");
   const [sortBy, setSortBy] = useState<SortColumn>("name");
@@ -226,10 +229,11 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
             onSubmit={(e) => {
               e.preventDefault();
               run(
-                () => addMember(name, phone, { isStudent, days: studentDays }, birthDate),
+                () => addMember(name, phone, { isStudent, days: studentDays, classTime }, birthDate),
                 () => {
                   setIsStudent(false);
                   setStudentDays([]);
+                  setClassTime("");
                   setName("");
                   setPhone("");
                   setBirthDate("");
@@ -266,6 +270,8 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
                 onStudentChange={setIsStudent}
                 onDaysChange={setStudentDays}
                 disabled={pending}
+                classTime={classTime}
+                onClassTimeChange={setClassTime}
               />
               <Button type="submit" loading={pending}>
                 {pending ? "Salvando…" : "Cadastrar membro"}
@@ -311,6 +317,7 @@ export function MemberManager({ members }: { members: VoleiMember[] }) {
               >
                 <option value="todos">Todos os membros</option>
                 <option value="pending">Aprovação pendente</option>
+                <option value="student-class-pending">Turmas aguardando validação</option>
                 <option value="principal">Grupo principal</option>
                 <option value="ativos">Ativos</option>
                 <option value="inativos">Inativos</option>

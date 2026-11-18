@@ -12,6 +12,7 @@ import { NotificationBell } from "./notification-bell";
 import { ThemeToggle } from "./theme-toggle";
 import { VolleyPage } from "./page-frame";
 import { VolleyBrand } from "./brand";
+import { NetworkStatus } from "./network-status";
 import "./design-tokens.css";
 import "./shell.css";
 import "@/components/ui/shadcn.css";
@@ -42,7 +43,7 @@ export function VoleiShell({
       return;
     const refresh = () => {
       if (
-        document.visibilityState !== "visible" ||
+        !navigator.onLine || document.visibilityState !== "visible" ||
         refreshing ||
         Date.now() - lastRefresh.current < 5000 ||
         document.activeElement?.closest("form")
@@ -77,6 +78,7 @@ export function VoleiShell({
         data-ui="quadra"
         className={`volley-app${admin ? "" : " volley-public"}${collapsed ? " volley-sidebar-collapsed" : ""}`}
       >
+        <a href="#volley-main" className="volley-skip-link">Pular para o conteúdo</a>
         <aside className="volley-sidebar" id="volley-navigation">
           <VolleyBrand admin={admin} />
           <div className="volley-mode">
@@ -205,7 +207,7 @@ export function VoleiShell({
               )}
             </div>
           </header>
-          <VolleyPage>{children}</VolleyPage>
+          <VolleyPage><NetworkStatus />{children}</VolleyPage>
         </div>
       </div>
     </ActivityProvider>

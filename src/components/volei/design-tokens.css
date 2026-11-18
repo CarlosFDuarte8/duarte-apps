@@ -11,6 +11,8 @@
   --v-control-height: 48px;
   --v-control-small: 40px;
   --v-control-icon: 44px;
+  --v-focus-width: 3px;
+  --v-focus-offset: 3px;
   --v-brand-size: 52px;
   --v-mobile-hero-padding: 18px;
   --v-mobile-metric-height: 90px;

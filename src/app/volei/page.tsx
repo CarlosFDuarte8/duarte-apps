@@ -5,6 +5,7 @@ import { publicWhatsAppGroup } from "@/lib/volei/group-settings";
 import { WhatsAppGroupCard } from "@/components/volei/whatsapp-group";
 import { currentPlayer } from "@/lib/volei/player-session";
 import { memberQueuePosition } from "@/lib/volei/queue";
+import { admissionForEvent } from "@/lib/volei/participation-policy";
 export const dynamic = "force-dynamic";
 export default async function Page() {
   const months = [
@@ -26,6 +27,7 @@ export default async function Page() {
       groupInvite={<WhatsAppGroupCard group={group} />}
       items={events.map(({ event, attendance, guests }) => ({
         event,
+        admission: admissionForEvent(event, player),
         confirmed:
           attendance.filter((p) => p.status === "confirmado").length +
           guests.filter((p) => p.status === "confirmado").length,

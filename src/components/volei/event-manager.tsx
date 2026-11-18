@@ -25,6 +25,8 @@ import { NativeSelect } from "@/components/ui/native-select";
 import { buildGateList } from "@/lib/volei/gate-list";
 import { ageLabel, ageOn } from "@/lib/volei/profile";
 import { EventLinkSettings } from "./event-link-settings";
+import { VolleyListFilters } from "./list-filters";
+import { matchesName } from "@/lib/volei/list-search";
 
 type Status = AttendanceStatus | "limpar";
 
@@ -53,6 +55,9 @@ export function EventManager({
   const { run, pending, feedback } = useRun({ revalidated: true });
   const { copied, copy } = useCopy();
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [search, setSearch] = useState("");
+  const availableMembers = members.filter(member => member.is_active && member.membership_status === "approved");
+  const visibleMembers = availableMembers.filter(member => matchesName(member.name, search));
   const statusOf = new Map(attendance.map((a) => [a.member_id, a.status]));
   const confirmedNames = members
     .filter((m) => statusOf.get(m.id) === "confirmado")
@@ -257,6 +262,7 @@ export function EventManager({
         <h2>Presença ({confirmedNames.length} confirmados)</h2>
         <p className="volley-muted">O administrador pode confirmar ou incluir membros após o prazo e com as inscrições fechadas, até a conclusão da chamada. A capacidade e a ordem da fila continuam valendo. Para novas inclusões, use Adicionar participante.</p>
         {feedback}
+        <VolleyListFilters search={search} onSearch={setSearch} searchLabel="Buscar membro nesta lista" shown={visibleMembers.length} total={availableMembers.length} active={!!search} onClear={() => setSearch("")} />
         <table className="sc-table vl-attendance-table">
           <thead>
             <tr>
@@ -265,8 +271,7 @@ export function EventManager({
             </tr>
           </thead>
           <tbody>
-            {members
-              .filter((m) => m.is_active && m.membership_status === "approved")
+            {visibleMembers
               .map((m) => {
                 const record = attendance.find((row) => row.member_id === m.id);
                 const time = record
@@ -335,6 +340,7 @@ export function EventManager({
               })}
           </tbody>
         </table>
+        {!visibleMembers.length && <p>Nenhum membro encontrado nesta lista.</p>}
       </VolleyCard>
     </>
   );

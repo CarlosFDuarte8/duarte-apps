@@ -5,7 +5,8 @@
   --vm-subtle: #edf4fb;
   --vm-line: #e5e5e5;
   --vm-ink: #001f3b;
-  --vm-muted: #737373;
+  --vm-muted: #576679;
+  --v-focus-ring: #0059ac;
   --vm-accent: #00498c;
   --vm-hover: #edf4fb;
   --vm-action: #00498c;
@@ -38,6 +39,7 @@
   --vm-line: #ffffff1a;
   --vm-ink: #fafafa;
   --vm-muted: #b0bdcc;
+  --v-focus-ring: #b5d6ff;
   --vm-accent: #83a3d5;
   --vm-hover: #003668;
   --vm-action: #83a3d5;

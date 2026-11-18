@@ -1,7 +1,7 @@
 "use server";
 import { z } from "zod";
 import {
-  studentEnrollmentSchema,
+  studentClassSchema,
   studentDaysSchema,
 } from "@/lib/volei/students";
 import { revalidatePath } from "next/cache";
@@ -165,7 +165,7 @@ export async function addMember(
   const { client } = await requireAdmin();
   const birth = requiredBirthDateSchema.safeParse(birthDate);
   if (!birth.success) return invalid(birth.error);
-  const student = studentEnrollmentSchema.safeParse(enrollment);
+  const student = studentClassSchema.safeParse(enrollment);
   if (!student.success) return invalid(student.error);
   const parsed = memberNameSchema.safeParse(name);
   if (!parsed.success) return invalid(parsed.error);
@@ -173,7 +173,8 @@ export async function addMember(
   if (contact && !contact.success) return invalid(contact.error);
   const { error } = await client.from("volei_members").insert({
     name: parsed.data,
-    student_weekdays: student.data,
+    student_weekdays: student.data.days,
+    student_class_time: student.data.classTime,
     phone: contact?.data ?? null,
     membership_status: "approved",
     birth_date: birth.data,
@@ -470,18 +471,25 @@ export async function saveStudentDays(
   const { client } = await requireAdmin();
   const parsed = z
     .object({
-      enrollment: studentEnrollmentSchema,
+      enrollment: studentClassSchema,
       expectedDays: studentDaysSchema,
       expectedRequest: studentDaysSchema.nullable(),
+      expectedTime: z.string().nullable(),
+      expectedRequestedTime: z.string().nullable(),
+      expectedReviewedAt: z.iso.datetime({ offset: true }).nullable(),
     })
     .safeParse(input);
   if (!id.safeParse(memberId).success) return { error: "Membro inválido." };
   if (!parsed.success) return invalid(parsed.error);
-  const { error } = await client.rpc("volei_save_student_days", {
+  const { error } = await client.rpc("volei_save_student_class", {
     p_member: memberId,
-    p_days: parsed.data.enrollment,
+    p_days: parsed.data.enrollment.days,
+    p_class_time: parsed.data.enrollment.classTime,
     p_expected_days: parsed.data.expectedDays,
     p_expected_request: parsed.data.expectedRequest,
+    p_expected_time: parsed.data.expectedTime,
+    p_expected_requested_time: parsed.data.expectedRequestedTime,
+    p_expected_reviewed_at: parsed.data.expectedReviewedAt,
   });
   return done(error);
 }

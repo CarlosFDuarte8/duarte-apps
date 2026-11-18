@@ -1,7 +1,7 @@
 "use client";
 import { VolleyCard, VolleyFormCard } from "@/components/volei/page-frame";
 
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -10,7 +10,7 @@ import { submitComplaint } from "@/app/volei/complaint-actions";
 import { formatDate } from "@/lib/volei/domain";
 import type { complaintTargets } from "@/lib/volei/complaint-repository";
 import "./notifications.css";
-import { useOperationStatus } from "./activity";
+import { useRun } from "./use-run";
 export function ComplaintForm({
   targets,
 }: {
@@ -21,15 +21,8 @@ export function ComplaintForm({
   const [event, setEvent] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
-  const [pending, start] = useTransition();
-  useOperationStatus(
-    pending,
-    "Enviando relato…",
-    error,
-    sent ? "Relato enviado." : "",
-  );
+  const { run, pending, feedback } = useRun({ revalidated: true, successMessage: "Relato enviado." });
   const key = useRef("");
   if (sent)
     return (
@@ -59,24 +52,16 @@ export function ComplaintForm({
       className="vn-complaint-form"
       onSubmit={(e) => {
         e.preventDefault();
-        setError("");
+        if (pending) return;
         if (!key.current) key.current = crypto.randomUUID();
-        start(async () => {
-          try {
-            const result = await submitComplaint({
+        run(() => submitComplaint({
               targetType: type,
               targetId: target,
               eventId: type === "member" && event ? event : null,
               title,
               description,
               submissionKey: key.current,
-            });
-            if (result.error) setError(result.error);
-            else setSent(true);
-          } catch {
-            setError("Não foi possível enviar. Tente novamente.");
-          }
-        });
+            }), () => setSent(true), "Enviando relato…");
       }}
     >
       <p className="vn-private-note">
@@ -158,11 +143,7 @@ export function ComplaintForm({
         />
         <small>{description.length}/3000 caracteres</small>
       </label>
-      {error && (
-        <p className="volley-error" role="alert">
-          {error}
-        </p>
-      )}
+      {feedback}
       <Button type="submit" loading={pending} loadingText="Enviando relato…">
         {pending ? "Enviando…" : "Enviar ao responsável"}
       </Button>

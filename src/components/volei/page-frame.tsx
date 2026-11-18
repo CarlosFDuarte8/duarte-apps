@@ -11,7 +11,7 @@ export function VolleyPage({
   className?: string;
 }) {
   return (
-    <main data-slot="volley-page" className={cn(styles.page, "volley-content", className)}>
+    <main id="volley-main" tabIndex={-1} data-slot="volley-page" className={cn(styles.page, "volley-content", className)}>
       <svg className={styles.court} aria-hidden="true" viewBox="0 0 1450 1100" preserveAspectRatio="xMidYMax slice" fill="none">
         <path d="M-220 490C210 490 490 630 835 850M-80 1010C220 670 670 550 1510 760M1110 1200C1210 850 1435 655 1610 530M850 1200C990 700 1250 420 1540 320M1020 745H1550" />
       </svg>

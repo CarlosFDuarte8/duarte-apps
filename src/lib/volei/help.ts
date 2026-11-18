@@ -1,5 +1,13 @@
 export const helpSections = [
   {
+    title: "Inscrições e conferência de dados",
+    items: [
+      ["Por que preciso conferir meu nascimento e minha turma?", "Antes da primeira confirmação após esta atualização, confira seu nascimento e informe se você é aluno, os dias e o horário da aula. A turma declarada depende da validação do responsável. Esses dados não aparecem na lista pública."],
+      ["Quando posso confirmar presença?", "Entre com seu celular na página do jogo para consultar o horário de abertura da sua inscrição, sempre no horário de Brasília. Antes da abertura, a inscrição e a entrada na espera ficam indisponíveis. O horário pode variar conforme seu cadastro e a turma validada."],
+      ["Posso perder uma vaga já confirmada por causa da prioridade?", "Vagas já confirmadas são preservadas. A preferência é aplicada na fila de espera, respeitando a ordem de inscrição dentro de cada faixa. Convidados dependem da liberação e aguardam depois dos membros."],
+    ],
+  },
+  {
     title: "Telefone e navegador",
     items: [
       [

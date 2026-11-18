@@ -1,7 +1,10 @@
 "use client";
 import "./student-fields.css";
 import { Checkbox } from "@/components/ui/checkbox";
+import { NativeSelect } from "@/components/ui/native-select";
+import { ClassTimeField } from "./class-time-field";
 import { WEEKDAY_LABELS } from "@/lib/volei/frequency";
+import { useId } from "react";
 export function StudentFields({
   isStudent,
   days,
@@ -9,24 +12,40 @@ export function StudentFields({
   onDaysChange,
   disabled = false,
   selfRegistration = false,
+  classTime,
+  onClassTimeChange,
+  requireAnswer = false,
+  excludeEveningClass = false,
 }: {
-  isStudent: boolean;
+  isStudent: boolean | null;
   days: number[];
   onStudentChange: (value: boolean) => void;
   onDaysChange: (days: number[]) => void;
   disabled?: boolean;
   selfRegistration?: boolean;
+  classTime?: string;
+  onClassTimeChange?: (value: string) => void;
+  requireAnswer?: boolean;
+  excludeEveningClass?: boolean;
 }) {
+  const id = useId();
   return (
     <fieldset disabled={disabled} className="vm-student-fields">
       <legend>Aluno da turma</legend>
-      <label className="vm-core-control">
+      {requireAnswer ? <div className="volley-filter-field">
+        <label htmlFor={id}>Você é aluno?</label>
+        <NativeSelect id={id} required value={isStudent === null ? "" : isStudent ? "yes" : "no"} onChange={event => onStudentChange(event.target.value === "yes")}>
+          <option value="" disabled>Selecione uma opção</option>
+          <option value="yes">Sim, sou aluno</option>
+          <option value="no">Não sou aluno</option>
+        </NativeSelect>
+      </div> : <label className="vm-core-control">
         <Checkbox
-          checked={isStudent}
+          checked={isStudent === true}
           onCheckedChange={(value) => onStudentChange(value === true)}
         />
         <span>{selfRegistration ? "Sou aluno" : "É aluno"}</span>
-      </label>
+      </label>}
       {isStudent && (
         <>
           <p>Selecione os dias de aula:</p>
@@ -48,12 +67,13 @@ export function StudentFields({
               </label>
             ))}
           </div>
+          {onClassTimeChange && <ClassTimeField value={classTime ?? ""} onChange={onClassTimeChange} excludeEveningClass={excludeEveningClass} />}
         </>
       )}
       <p className="vm-hint">
         {selfRegistration
-          ? "O administrador precisa confirmar os dias de aula antes de liberar a prioridade."
-          : "Os dias salvos ficam aprovados e dão prioridade na fila desses dias. O aluno ainda precisa se inscrever no jogo."}
+          ? "Informe sua turma. O responsável vai conferir esses dados; a declaração não aprova a turma automaticamente."
+          : "Confira os dias e o horário da turma antes de aprovar. A preferência depende também da idade e do dia do jogo. O aluno ainda precisa confirmar presença."}
       </p>
     </fieldset>
   );

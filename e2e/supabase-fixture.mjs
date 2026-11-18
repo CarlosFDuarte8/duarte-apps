@@ -12,6 +12,7 @@ const member = {
   emergency_name: "Contato de emergência", emergency_phone: "+5561988888888", emergency_relationship: "Familiar",
   token: "a".repeat(64), points: 0, skill_level: 3, created_at: `${date}T10:00:00Z`,
   student_weekdays: [], preferred_weekdays: [], preferred_dates: [], unavailable_dates: [],
+  requested_student_weekdays: null, student_class_time: null, requested_student_class_time: null, participation_reviewed_at: `${date}T10:00:00Z`,
 };
 const event = {
   id, date, title: "Vôlei da galera — encontro com título comprido para testar a responsividade",
@@ -21,7 +22,7 @@ const event = {
   registration_deadline: `${date}T23:59:00-03:00`, guests_open_at: null, presence_closed_at: null,
   volei_attendance: ["confirmado", "confirmado", "reservado", "espera"].map((status, i) => ({
     member_id: i === 0 ? member.id : `member-${i}`, status, registered_at: `${date}T10:0${i}:00Z`, queue_order: i,
-    volei_members: { name: i === 0 ? member.name : `Participante ${i}`, is_core: i === 0 },
+    volei_members: { name: i === 0 ? member.name : `Participante ${i}`, is_core: i === 0, birth_date: "1995-01-01" },
   })), volei_guests: [],
 };
 const guest = {
@@ -37,6 +38,11 @@ const originalEvent = structuredClone(event);
 let birthScenario = false;
 let usabilityScenario = false;
 let deviceBinding = null;
+let pendingApproval = false;
+let noGame = false;
+let failEvents = false;
+let participationScenario = false;
+let joinAllowed = false;
 function readBody(request, done) {
   let body = "";
   request.on("data", chunk => { body += chunk; });
@@ -51,12 +57,54 @@ const complaint = {
 };
 createServer((request, response) => {
   const url = new URL(request.url, "http://127.0.0.1:3101");
+  if (url.pathname === "/__test__/participation" && request.method === "POST") {
+    readBody(request, input => {
+      Object.assign(member, structuredClone(originalMember));
+      Object.assign(event, structuredClone(originalEvent));
+      participationScenario = !input.reset;
+      birthScenario = false; usabilityScenario = false;
+      deviceBinding = createHash("sha256").update("a".repeat(64)).digest("hex");
+      joinAllowed = !!input.joinAllowed;
+      if (!input.reset) {
+        const shifted = new Date(`${date}T12:00:00Z`);
+        shifted.setUTCDate(shifted.getUTCDate() + (input.daysAhead ?? 2));
+        event.date = shifted.toISOString().slice(0, 10);
+        event.registration_deadline = `${event.date}T23:59:00-03:00`;
+        event.volei_attendance[0].status = input.status ?? "nao_vai";
+        member.birth_date = input.birthDate === undefined ? "1995-01-01" : input.birthDate;
+        if (input.legacy) member.phone = null;
+        member.participation_reviewed_at = input.reviewed === false ? null : originalMember.participation_reviewed_at;
+        member.student_weekdays = input.student ? [input.wrongDay ? (shifted.getUTCDay() + 1) % 7 : shifted.getUTCDay()] : [];
+        member.student_class_time = input.student ? input.classTime ?? "18:00:00" : null;
+        Object.assign(event.volei_attendance[0].volei_members, { birth_date: member.birth_date, student_weekdays: member.student_weekdays, student_class_time: member.student_class_time });
+      }
+      response.writeHead(200, { "Content-Type": "application/json" }); response.end("{}");
+    });
+    return;
+  }
+  if (participationScenario && url.pathname === "/rest/v1/rpc/volei_review_and_join") {
+    readBody(request, input => {
+      member.birth_date = input.p_birth_date;
+      member.participation_reviewed_at = new Date().toISOString();
+      member.requested_student_weekdays = input.p_days.length ? input.p_days : null;
+      member.requested_student_class_time = input.p_class_time;
+      member.student_weekdays = []; member.student_class_time = null;
+      if (joinAllowed) event.volei_attendance[0].status = "confirmado";
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ joined: joinAllowed, message: joinAllowed ? "Dados atualizados e presença confirmada." : "Dados atualizados. Aguarde a abertura das inscrições." }));
+    });
+    return;
+  }
   // Test controls exist only in this standalone loopback fixture.
   if (url.pathname === "/__test__/usability" && request.method === "POST") {
     readBody(request, input => {
       Object.assign(member, structuredClone(originalMember));
       Object.assign(event, structuredClone(originalEvent));
       usabilityScenario = !input.reset;
+      participationScenario = false;
+      pendingApproval = !!input.pendingApproval;
+      noGame = !!input.noGame;
+      failEvents = !!input.failEvents;
       birthScenario = false;
       deviceBinding = input.bound === false ? null : createHash("sha256").update("a".repeat(64)).digest("hex");
       if (input.status) event.volei_attendance[0].status = input.status;
@@ -66,6 +114,11 @@ createServer((request, response) => {
       event.directions_url = input.directionsURL ?? null;
       if (input.membershipStatus) member.membership_status = input.membershipStatus;
       if (input.status === "espera") { event.volei_guests = [structuredClone(guest)]; }
+      if (input.listScenario) {
+        event.volei_attendance[0].checked_in_at = `${date}T18:00:00Z`;
+        event.volei_guests = [{ ...structuredClone(guest), status: "confirmado", checked_in_at: null }];
+      }
+      if (input.finalized) { event.presence_closed_at = `${date}T23:00:00Z`; event.closed = true; }
       response.writeHead(200, { "Content-Type": "application/json" });
       response.end("{}");
     });
@@ -95,8 +148,10 @@ createServer((request, response) => {
     readBody(request, input => {
       Object.assign(member, originalMember);
       birthScenario = !input.reset;
+      participationScenario = false;
       if (birthScenario) {
         member.birth_date = input.birthDate ?? null;
+        member.participation_reviewed_at = member.birth_date ? originalMember.participation_reviewed_at : null;
         member.is_core = false;
         if (input.legacy) member.phone = null;
       }
@@ -107,17 +162,19 @@ createServer((request, response) => {
     });
     return;
   }
-  if (birthScenario && ["volei_register_member_profile", "volei_phone_manage_profile", "volei_respond_profile"].some(name => url.pathname === `/rest/v1/rpc/${name}`)) {
+  if (birthScenario && ["volei_register_member_profile", "volei_register_participation_profile", "volei_review_and_join", "volei_phone_manage_profile", "volei_respond_profile"].some(name => url.pathname === `/rest/v1/rpc/${name}`)) {
     readBody(request, input => {
       if (input.p_birth_date) member.birth_date = input.p_birth_date;
-      if (url.pathname.endsWith("volei_register_member_profile")) {
+      const registration = url.pathname.endsWith("volei_register_member_profile") || url.pathname.endsWith("volei_register_participation_profile");
+      member.participation_reviewed_at = new Date().toISOString();
+      if (registration) {
         Object.assign(member, { name: input.p_name, phone: input.p_phone, membership_status: "pending" });
         deviceBinding = input.p_secret_hash;
       } else {
         event.volei_attendance[0].status = input.p_action === "cancel" || ["nao_vai", "limpar"].includes(input.p_status) ? "nao_vai" : "confirmado";
       }
       response.writeHead(200, { "Content-Type": "application/json" });
-      response.end(JSON.stringify(url.pathname.endsWith("volei_register_member_profile") ? member.id : null));
+      response.end(JSON.stringify(registration ? member.id : url.pathname.endsWith("volei_review_and_join") ? { joined: true, message: "Dados atualizados e presença confirmada." } : null));
     });
     return;
   }
@@ -148,6 +205,11 @@ createServer((request, response) => {
     });
     return;
   }
+  if (url.pathname === "/rest/v1/volei_events" && failEvents) {
+    response.writeHead(503, { "Content-Type": "application/json" });
+    response.end(JSON.stringify({ code: "fixture_failure", message: "Temporary fixture outage" }));
+    return;
+  }
   let result;
   if (url.pathname === "/auth/v1/user") result = {
     id: "44444444-4444-4444-8444-444444444444", email: "admin@example.test",
@@ -159,10 +221,11 @@ createServer((request, response) => {
   else if (url.pathname.startsWith("/rest/v1/rpc/")) result = null;
   else if (url.pathname === "/rest/v1/volei_events") {
     const dates = url.searchParams.getAll("date");
-    result = dates.some(filter => filter.startsWith("gte.") && date < filter.slice(4) || filter.startsWith("lte.") && date > filter.slice(4)) ? [] : [event];
+    result = noGame || dates.some(filter => filter.startsWith("gte.") && event.date < filter.slice(4) || filter.startsWith("lte.") && event.date > filter.slice(4)) ? [] : [event];
   } else if (url.pathname === "/rest/v1/volei_members") {
     const binding = url.searchParams.get("device_secret_hash");
-    result = url.searchParams.get("membership_status") === "eq.pending" || (birthScenario || usabilityScenario) && binding && binding !== `eq.${deviceBinding}` ? [] : [member];
+    const pending = pendingApproval ? [{ ...member, id: "66666666-6666-4666-8666-666666666666", name: "Cadastro aguardando aprovação", membership_status: "pending" }] : [];
+    result = url.searchParams.get("membership_status") === "eq.pending" ? pending : (birthScenario || usabilityScenario || participationScenario) && binding && binding !== `eq.${deviceBinding}` ? [] : binding || url.searchParams.has("token") ? [member] : [member, ...pending];
   }
   else if (url.pathname === "/rest/v1/volei_attendance") result = event.volei_attendance;
   else if (url.pathname === "/rest/v1/volei_complaints") result = [complaint];

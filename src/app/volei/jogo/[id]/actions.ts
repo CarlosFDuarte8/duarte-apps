@@ -1,7 +1,7 @@
 ﻿"use server";
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
-import { studentEnrollmentSchema } from "@/lib/volei/students";
+import { studentClassSchema } from "@/lib/volei/students";
 import { revalidatePath } from "next/cache";
 import { serviceClient } from "@/lib/escalas/supabase";
 import {
@@ -33,7 +33,7 @@ export async function registerForGame(
 ): Promise<{ error: string }> {
   const parsed = z
     .object({
-      enrollment: studentEnrollmentSchema.default([]),
+      enrollment: studentClassSchema,
       eventId: z.uuid(),
       name: z.string().trim().min(2, "Informe seu nome completo.").max(100),
       phone: phoneSchema,
@@ -48,13 +48,14 @@ export async function registerForGame(
   const secret = (await deviceSecret()) ?? randomBytes(32).toString("hex");
   const { eventId, name, phone, enrollment, birthDate } = parsed.data;
   const { error } = await serviceClient().rpc(
-    "volei_register_member_profile",
+    "volei_register_participation_profile",
     {
       p_event: eventId,
       p_name: name,
       p_phone: phone,
       p_secret_hash: hashDevice(secret),
-      p_student_weekdays: enrollment,
+      p_days: enrollment.days,
+      p_class_time: enrollment.classTime,
       p_birth_date: birthDate,
     },
   );
