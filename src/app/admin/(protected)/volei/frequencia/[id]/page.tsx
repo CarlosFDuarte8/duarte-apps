@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+import { VolleyCard, VolleyPageHeader } from "@/components/volei/page-frame";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { requireVoleiAdmin } from "@/lib/volei/auth";
@@ -54,20 +55,18 @@ export default async function Page({
           Times e controle da quadra
         </Link>
       </Button>
-      <section className="volley-hero">
-        <span className="volley-eyebrow">CHAMADA DO ENCONTRO</span>
-        <h1>{formatDate(found.event.date)}</h1>
-        <p>
-          {found.event.title} ·{" "}
+      <VolleyPageHeader
+        eyebrow="CHAMADA DO ENCONTRO"
+        title={formatDate(found.event.date)}
+        description={<> {found.event.title} ·{" "}
           {[found.event.start_time, found.event.location]
             .filter(Boolean)
-            .join(" · ")}
-        </p>
-      </section>
+            .join(" · ")} </>}
+      />
       {found.event.date > today() ? (
-        <section className="volley-card">
+        <VolleyCard as="section">
           A chamada fica disponível a partir do dia do jogo.
-        </section>
+        </VolleyCard>
       ) : (
         <PresenceRollCall
           eventId={id}

@@ -1,53 +1,17 @@
 .pagina {
-  min-height: 100vh;
-  background: var(--vm-component-surface, #f5f7fb);
-  color: var(--vm-component-ink, #17233b);
-  padding: 40px 20px;
-  font-family: Arial, Helvetica, sans-serif;
+  min-width: 0;
+  font-family: inherit;
 }
 
 .container {
-  max-width: 1100px;
-  margin: 0 auto;
+  display: grid;
+  gap: var(--v-page-gap);
+  min-width: 0;
 }
 
-.cabecalho {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 28px;
-}
-
-.cabecalho h1 {
-  font-size: 30px;
-  margin: 8px 0;
-  font-weight: 750;
-}
-
-.cabecalho p,
 .painelCabecalho p {
   color: var(--vm-component-muted, #64748b);
   font-size: 14px;
-}
-
-.subtitulo {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--vm-component-muted, #2563eb);
-  letter-spacing: 1.5px;
-}
-
-.botaoImprimir,
-.botaoAdicionar {
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 9px;
-  padding: 13px 20px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
 }
 
 .acoesCabecalho {
@@ -57,35 +21,10 @@
   gap: 10px;
 }
 
-.botaoWhatsApp {
-  background: #16a34a;
-  color: white;
-  border: none;
-  border-radius: 9px;
-  padding: 13px 20px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.botaoWhatsApp:hover {
-  background: #15803d;
-}
-
-.botaoImprimir:hover,
-.botaoAdicionar:hover {
-  background: #1d4ed8;
-}
-
 .configuracoes {
   display: grid;
   grid-template-columns: 1fr 220px;
   gap: 16px;
-  background: white;
-  padding: 22px;
-  border: 1px solid var(--vm-component-line, #e2e8f0);
-  border-radius: 14px;
-  margin-bottom: 20px;
 }
 
 .campo {
@@ -95,65 +34,15 @@
 }
 
 .campo label {
-  font-size: 13px;
+  font-size: var(--v-text-label);
   font-weight: 600;
 }
 
-.campo input,
-.formulario input {
-  width: 100%;
-  min-width: 0;
-  border: 1px solid var(--vm-component-line, #dbe2ea);
-  border-radius: 9px;
-  padding: 12px;
-  background: white;
-  color: var(--vm-component-ink, #17233b);
-  font-size: 14px;
-}
-
-.resumo {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 22px;
-}
-
-.cartao {
-  text-align: left;
-  background: white;
-  border: 1px solid var(--vm-component-line, #e2e8f0);
-  border-radius: 13px;
-  padding: 20px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  color: var(--vm-component-ink, #17233b);
-}
-
-.cartao span {
-  font-size: 13px;
-  color: var(--vm-component-muted, #64748b);
-}
-
-.cartao strong {
-  font-size: 30px;
-}
-
-.cartaoAtivo {
-  border-color: var(--vm-component-line, #2563eb);
-  box-shadow: 0 0 0 1px #2563eb;
-}
-
 .painel {
-  background: white;
-  border: 1px solid var(--vm-component-line, #e2e8f0);
-  border-radius: 14px;
-  padding: 22px;
 }
 
 .painelCabecalho h2 {
-  font-size: 19px;
+  font-size: var(--v-title-section);
   font-weight: 700;
   margin: 0 0 5px;
 }
@@ -191,44 +80,6 @@
   font-weight: 600;
 }
 
-.seletor {
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 9px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.confirmado {
-  background: var(--vm-component-subtle, #dcfce7);
-  color: var(--vm-component-ink, #166534);
-}
-
-.pendente {
-  background: var(--vm-component-subtle, #fef3c7);
-  color: var(--vm-component-ink, #92400e);
-}
-
-.nao_vai {
-  background: var(--vm-component-subtle, #fee2e2);
-  color: var(--vm-component-ink, #991b1b);
-}
-
-.botaoRemover {
-  background: transparent;
-  border: none;
-  color: var(--vm-component-ink, #dc2626);
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.vazio {
-  text-align: center;
-  padding: 30px;
-  color: var(--vm-component-muted, #64748b);
-}
-
 .infoImpressao {
   display: flex;
   justify-content: space-between;
@@ -254,6 +105,8 @@
   text-align: center;
   margin-bottom: 26px;
 }
+.folhaTopo { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+.folhaTopo .folhaCabecalho { flex: 1; min-width: 0; margin-bottom: 0; }
 
 .folhaCabecalho h2 {
   font-size: 23px;
@@ -306,20 +159,12 @@
 
 @media (max-width: 700px) {
   .pagina {
-    padding: 20px 12px;
-  }
-
-  .cabecalho {
-    align-items: flex-start;
-    flex-direction: column;
+    min-width: 0;
+    font-family: inherit;
   }
 
   .configuracoes {
     grid-template-columns: 1fr;
-  }
-
-  .resumo {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   .formulario {
@@ -341,27 +186,26 @@
 }
 
 @media print {
-  :global(html),
-  :global(body) {
+  .pagina [data-slot="volley-hero"] { display: none; }
+  :global(html):has(.pagina),
+  :global(body):has(.pagina) {
     background: white !important;
     margin: 0 !important;
     padding: 0 !important;
   }
 
   .pagina {
-    background: white !important;
-    padding: 0 !important;
-    min-height: auto;
+    min-width: 0;
+    font-family: inherit;
   }
 
   .container {
-    max-width: none;
-    margin: 0;
+    display: grid;
+    gap: var(--v-page-gap);
+    min-width: 0;
   }
 
-  .cabecalho,
   .configuracoes,
-  .resumo,
   .painel,
   .infoImpressao {
     display: none !important;
@@ -411,36 +255,18 @@
 .controles {
   border: 0;
   padding: 0;
-  margin: 20px 0;
+  margin: 0;
   min-width: 0;
+  display: grid;
+  gap: var(--v-page-gap);
 }
 .controles button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-.controles select {
-  max-width: 100%;
-  padding: 10px;
-  border: 1px solid var(--vm-component-line, #dbe2ea);
-  border-radius: 8px;
-  background: white;
-  color: var(--vm-component-ink, #17233b);
-}
 .controles small {
   display: block;
   font-weight: normal;
-}
-.controles td button {
-  margin: 5px 2px;
-  padding: 6px;
-  border: 1px solid var(--vm-component-line, #dbe2ea);
-  border-radius: 6px;
-  background: var(--vm-component-surface, #f5f7fb);
-  color: var(--vm-component-ink, #17233b);
-  cursor: pointer;
-}
-.controles .resumo {
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
 }
 @media print {
   .controles,
@@ -451,11 +277,10 @@
 
 @media screen and (max-width: 640px) {
   .pagina {
-    padding: 0;
     min-width: 0;
+    font-family: inherit;
   }
   .container,
-  .cabecalho > div,
   .campo,
   .painel,
   .formulario > * {
@@ -464,7 +289,6 @@
   }
   .configuracoes {
     grid-template-columns: minmax(0, 1fr);
-    padding: 16px;
   }
   .campo input,
   .formulario input,
@@ -474,7 +298,6 @@
     font-size: 16px;
   }
   .painel {
-    padding: 16px;
   }
   .acoesCabecalho {
     width: 100%;
@@ -493,15 +316,5 @@
   }
   .tabelaImpressao {
     min-width: 360px;
-  }
-  .resumo {
-    gap: 8px;
-  }
-  .controles .resumo {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .cartao {
-    padding: 14px;
-    min-width: 0;
   }
 }

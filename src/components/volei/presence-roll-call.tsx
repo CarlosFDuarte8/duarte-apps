@@ -1,9 +1,14 @@
-﻿"use client";
+"use client";
+import { VolleyCard } from "@/components/volei/page-frame";
+
 import { useRun } from "./use-run";
 import { recordPresence, closePresence } from "@/app/admin/volei-actions";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { VolleyListFilters } from "./list-filters";
+import { matchesName, matchesKind, participantKinds } from "@/lib/volei/list-search";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -32,12 +37,17 @@ export function PresenceRollCall({
   people: PresencePerson[];
 }) {
   const { run, pending, feedback } = useRun();
+  const [search, setSearch] = useState("");
+  const [kind, setKind] = useState("all");
+  const [arrival, setArrival] = useState("all");
   const attendees = people.filter(
     (p) => p.status === "confirmado" || p.status === "ausente",
   );
   const present = attendees.filter((p) => p.checkedIn).length;
+  const visible = attendees.filter(person => matchesName(person.name, search) && matchesKind(person.guest, kind) &&
+    (arrival === "all" || (arrival === "present" ? person.checkedIn : !person.checkedIn)));
   return (
-    <section className="volley-card">
+    <VolleyCard as="section">
       <div className="vm-section-head">
         <div>
           <h2>Quem compareceu?</h2>
@@ -53,8 +63,12 @@ export function PresenceRollCall({
         </Badge>
       </div>
       {feedback}
+      <VolleyListFilters search={search} onSearch={setSearch} filters={[
+        { label: "Tipo de participante", value: kind, onChange: setKind, options: participantKinds },
+        { label: "Chegada", value: arrival, onChange: setArrival, options: [{ value: "all", label: "Todas as chegadas" }, { value: "pending", label: closed ? "Ausentes" : "Ainda não chegaram" }, { value: "present", label: "Presentes" }] },
+      ]} shown={visible.length} total={attendees.length} active={!!search || kind !== "all" || arrival !== "all"} onClear={() => { setSearch(""); setKind("all"); setArrival("all"); }} />
       <div className="vm-roll-call">
-        {attendees.map((p) => (
+        {visible.map((p) => (
           <label key={`${p.guest ? "guest" : "member"}-${p.id}`}>
             <Checkbox
               aria-label={`Compareceu: ${p.name}`}
@@ -81,13 +95,14 @@ export function PresenceRollCall({
           </label>
         ))}
       </div>
+      {!!attendees.length && !visible.length && <p>Nenhum participante corresponde aos filtros. A chamada completa continua preservada.</p>}
       {!attendees.length && (
         <p className="vm-hint">Não há confirmados para conferir neste jogo.</p>
       )}
       {!closed && attendees.length > 0 && (
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button disabled={pending}>Concluir chamada</Button>
+            <Button id="concluir-chamada" disabled={pending}>Concluir chamada</Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -118,6 +133,6 @@ export function PresenceRollCall({
           Chamada concluída. As presenças deste jogo já contam no ranking.
         </p>
       )}
-    </section>
+    </VolleyCard>
   );
 }

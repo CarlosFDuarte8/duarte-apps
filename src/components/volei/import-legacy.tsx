@@ -1,4 +1,7 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { VolleyCard } from "@/components/volei/page-frame";
+
 
 import { useState, useTransition } from "react";
 import { z } from "zod";
@@ -81,20 +84,20 @@ export function ImportLegacyMembers() {
   }
 
   return (
-    <section className="sc-card sc-form-card">
+    <VolleyCard as="section" className="sc-form-card">
       <h2>Importar lista antiga</h2>
       <p>
         Importa os nomes salvos neste navegador. Se não houver uma lista salva,
         usa os 12 nomes iniciais. Nomes já cadastrados não são duplicados.
       </p>
-      <button
+      <Button
         type="button"
         className="sc-btn sc-btn-ghost"
         onClick={importRoster}
         disabled={pending}
       >
         {pending ? "Importando…" : "Importar nomes da lista antiga"}
-      </button>
+      </Button>
       {message && (
         <p
           className={`sc-feedback ${error ? "sc-feedback-error" : "sc-feedback-ok"}`}
@@ -103,6 +106,6 @@ export function ImportLegacyMembers() {
           {message}
         </p>
       )}
-    </section>
+    </VolleyCard>
   );
 }

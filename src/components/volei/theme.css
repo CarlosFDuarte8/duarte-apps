@@ -20,91 +20,6 @@
   --color-border: var(--vm-line);
   --color-ring: #6a8bb7;
 }
-.volley-app .volley-sidebar {
-  width: 256px;
-  background: var(--vm-surface);
-  border-right: 1px solid var(--vm-line);
-  padding: 32px 18px 20px;
-  gap: 32px;
-  color: var(--vm-muted);
-}
-.volley-app .volley-brand {
-  color: var(--vm-ink);
-  gap: 10px;
-  font-size: 22px;
-  letter-spacing: 0.6px;
-  font-weight: 750;
-  padding-inline: 10px;
-}
-.volley-app .volley-brand > span {
-  background: #00498c;
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 8px;
-}
-.volley-app .volley-brand small {
-  color: var(--vm-muted);
-  font-size: 7px;
-  letter-spacing: 1.8px;
-  font-weight: 500;
-}
-.volley-app .volley-mode {
-  font-size: 8px;
-  letter-spacing: 1.6px;
-  color: var(--vm-muted);
-  padding-left: 14px;
-}
-.volley-app .volley-sidebar nav {
-  gap: 7px;
-}
-.volley-app .volley-sidebar nav a {
-  border-radius: 10px;
-  color: var(--vm-muted);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 13px 14px;
-  align-items: center;
-}
-.volley-app .volley-sidebar nav a svg {
-  width: 18px;
-  height: 18px;
-}
-.volley-app .volley-sidebar nav a:hover {
-  background: var(--vm-subtle);
-  color: var(--vm-muted);
-}
-.volley-app .volley-sidebar nav a[aria-current] {
-  background: var(--vm-subtle);
-  color: var(--vm-component-ink, #00498c);
-  box-shadow: none;
-}
-.volley-app .volley-sidebar-note {
-  background: var(--vm-subtle);
-  border: 0;
-  border-radius: 16px;
-  padding: 20px 16px;
-  color: var(--vm-muted);
-  font-size: 10px;
-  line-height: 1.8;
-}
-.volley-app .volley-sidebar-note strong {
-  display: block;
-  color: var(--vm-muted);
-  font-size: 13px;
-  font-weight: 550;
-}
-.volley-app .volley-sidebar-note p {
-  margin: 9px 0 0;
-}
-.volley-app .volley-sidebar footer {
-  gap: 14px;
-  padding-inline: 12px;
-  font-size: 10px;
-}
-.volley-app .volley-sidebar footer a,
-.volley-app .volley-sidebar footer button {
-  color: var(--vm-muted);
-}
 .volley-app .volley-top {
   background: var(--vm-surface);
   border-color: var(--vm-line);
@@ -212,7 +127,7 @@
 }
 .volley-app:not(.vc-game-overlay)
   .volley-content
-  :is(.sc-btn-ghost, .sc-button.sc-btn-ghost) {
+  :is(.sc-btn-ghost) {
   background: var(--vm-surface);
   border-color: var(--vm-line);
   color: var(--vm-muted) !important;
@@ -317,62 +232,16 @@
   box-shadow: 0 2px 5px #28466c05;
 }
 .volley-app:not(.vc-game-overlay)
-  :is(.vm-metrics > div, .vm-member-metrics > button, .vc-metrics > div) {
+  :is( .vc-metrics > div) {
   border-color: var(--vm-line);
   border-radius: 13px;
 }
-.volley-app:not(.vc-game-overlay) :is(.vm-metrics strong, .vc-metrics strong) {
+.volley-app:not(.vc-game-overlay) :is( .vc-metrics strong) {
   color: var(--vm-component-ink, #526d94);
   font-weight: 600;
 }
-.volley-app:not(.vc-game-overlay) :is(.vm-metrics span, .vc-metrics span) {
+.volley-app:not(.vc-game-overlay) :is( .vc-metrics span) {
   color: var(--vm-muted);
-}
-.volley-app .vm-member-metrics {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 2px;
-  min-width: 0;
-  scrollbar-width: thin;
-}
-.volley-app .vm-member-metrics > button {
-  display: flex;
-  flex-direction: row-reverse;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-  min-width: 110px;
-  min-height: 48px;
-  padding: 12px 16px;
-  border: 1px solid var(--vm-line);
-  border-radius: 10px;
-  background: var(--vm-surface);
-  font: inherit;
-}
-.volley-app .vm-member-metrics > button strong {
-  margin: 0;
-  font-size: 11px;
-  color: var(--vm-muted);
-  padding: 2px 6px;
-  border-radius: 5px;
-  background: var(--vm-component-subtle, #f2f5fa);
-  letter-spacing: 0;
-}
-.volley-app .vm-member-metrics > button span {
-  font-size: 12px;
-  color: var(--vm-muted);
-}
-.volley-app .vm-member-metrics > button[aria-pressed="true"] {
-  background: #2b466c;
-  border-color: var(--vm-component-line, #2b466c);
-}
-.volley-app .vm-member-metrics > button[aria-pressed="true"] span {
-  color: #f5f8ff;
-}
-.volley-app .vm-member-metrics > button[aria-pressed="true"] strong {
-  background: #405d85;
-  color: var(--vm-component-muted, #c8d7ed);
 }
 .volley-app:not(.vc-game-overlay) .vm-members-filters {
   background: var(--vm-component-surface, #fafcff);
@@ -506,30 +375,6 @@ body:has(.volley-app)
   font-size: 12px;
   color: var(--vm-muted);
 }
-.volley-app .game-deadline-box {
-  background: var(--vm-surface);
-  border: 1px solid var(--vm-line);
-  border-radius: 14px;
-  padding: 18px 20px;
-  min-width: 200px;
-}
-.volley-app .game-deadline-box > p {
-  margin: 10px 0 0;
-  font-size: 10px;
-  color: var(--vm-muted);
-}
-.volley-app .game-deadline-box > strong {
-  font-size: 27px;
-  color: var(--vm-muted);
-  font-weight: 550;
-}
-.volley-app .game-deadline-box > strong small {
-  display: none;
-}
-.volley-app .game-deadline-box > span:last-child {
-  color: var(--vm-muted);
-  font-size: 10px;
-}
 .volley-app .game-summary-strip {
   padding: 18px 20px;
   border-radius: 13px;
@@ -558,8 +403,7 @@ body:has(.volley-app)
 .volley-public
   .volley-content
   :is(
-    .game-deadline-box > p,
-    .game-deadline-box > span:last-child,
+
     .game-summary-strip > span,
     .game-summary-strip > span:last-child,
     .vx-eyebrow,
@@ -569,10 +413,6 @@ body:has(.volley-app)
     .vp-member-age
   ) {
   font-size: 12px;
-}
-.volley-app.volley-public .volley-content .game-open-badge {
-  font-size: 12px;
-  white-space: normal;
 }
 .vx-event-jumps {
   display: flex;
@@ -616,53 +456,11 @@ body:has(.volley-app)
   box-shadow: 0 0 0 3px #b6ccec22;
 }
 @media (max-width: 1320px) and (min-width: 1025px) {
-  .volley-app .volley-sidebar {
-    width: 190px;
-    padding-inline: 14px;
-  }
   .volley-app .volley-content {
     padding-inline: 26px;
   }
 }
 @media (max-width: 1024px) {
-  .volley-app .volley-sidebar {
-    width: 100%;
-    padding: 0;
-    border: 0;
-  }
-  .volley-app .volley-sidebar nav {
-    background: color-mix(in srgb, var(--vm-surface) 65%, transparent);
-
-    inset: auto 12px calc(10px + env(safe-area-inset-bottom, 0px));
-
-    border: 1px solid color-mix(in srgb, var(--vm-line) 65%, transparent);
-    border-radius: 19px;
-
-    box-shadow:
-      0 8px 32px rgba(31, 45, 61, 0.1),
-      0 2px 8px rgba(31, 45, 61, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.35);
-
-    min-height: 68px;
-    padding: 6px;
-    gap: 3px;
-
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
-  }
-  .volley-app .volley-sidebar nav a {
-    box-shadow: none;
-    padding: 8px 2px;
-    border-radius: 13px;
-    font-size: 10px;
-    color: var(--vm-muted);
-    gap: 5px;
-  }
-  .volley-app .volley-sidebar nav a[aria-current] {
-    background: var(--vm-subtle);
-    color: var(--vm-muted);
-    box-shadow: none;
-  }
   .volley-app {
     --volley-nav-height: 96px;
   }
@@ -733,17 +531,6 @@ body:has(.volley-app)
     ) {
     font-size: 16px;
   }
-  .volley-app .vm-member-metrics > button {
-    min-width: 105px;
-    min-height: 48px;
-    padding: 10px 14px;
-  }
-  .volley-app .vm-member-metrics > button strong {
-    font-size: 11px;
-  }
-  .volley-app .vm-member-metrics > button span {
-    font-size: 12px;
-  }
   .volley-app .game-event-header {
     grid-template-columns: minmax(0, 1fr);
     gap: 18px;
@@ -751,36 +538,6 @@ body:has(.volley-app)
   .volley-app .game-event-header h1 {
     font-size: 28px;
     margin-block: 10px 14px;
-  }
-  .volley-app .game-deadline-box {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 5px 12px;
-    padding: 14px 16px;
-    align-items: center;
-  }
-  .volley-app .game-deadline-box .game-open-badge {
-    grid-column: 1;
-    grid-row: 1;
-    justify-self: start;
-    font-size: 8px;
-  }
-  .volley-app .game-deadline-box > p {
-    grid-column: 2;
-    grid-row: 1;
-    margin: 0;
-    font-size: 9px;
-  }
-  .volley-app .game-deadline-box > strong {
-    grid-column: 2;
-    grid-row: 2;
-    font-size: 24px;
-    text-align: right;
-  }
-  .volley-app .game-deadline-box > span:last-child {
-    grid-column: 1;
-    grid-row: 2;
-    font-size: 10px;
   }
   .volley-app .game-summary-strip {
     display: grid;
@@ -807,14 +564,6 @@ body:has(.volley-app)
   }
   .vx-event-jumps {
     display: none;
-  }
-}
-.volley-app .volley-sidebar nav a {
-  font-size: 13px;
-}
-@media (max-width: 1024px) {
-  .volley-app .volley-sidebar nav a {
-    font-size: 11px;
   }
 }
 .volley-app .vn-bell {
@@ -858,81 +607,6 @@ body:has(.volley-app)
   color: #fff;
   border-color: var(--vm-component-line, #00498c);
 }
-
-/* Wheaton Flow shell: neutral surfaces, blue actions and a collapsible workspace. */
-.volley-app .volley-sidebar {
-  background: var(--vm-subtle);
-  padding: 32px 16px 20px;
-  gap: 28px;
-}
-.volley-app .volley-mode {
-  font-size: 12px;
-  letter-spacing: 0;
-  padding-left: 12px;
-}
-.volley-app .volley-sidebar nav {
-  gap: 4px;
-}
-.volley-app .volley-sidebar nav a {
-  min-height: 44px;
-  padding: 10px 12px;
-  font-size: 14px;
-  border-radius: 12px;
-  color: var(--vm-ink);
-}
-.volley-app .volley-sidebar nav a[aria-current] {
-  background: var(--vm-subtle);
-  color: var(--vm-component-ink, #00498c);
-}
-.volley-app .volley-sidebar footer {
-  margin-top: auto;
-  padding: 20px 4px 0;
-  border-top: 1px solid var(--vm-line);
-  font-size: 12px;
-}
-.volley-account {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-.volley-account > span {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--vm-subtle);
-  color: var(--vm-component-ink, #00498c);
-}
-.volley-account svg {
-  width: 18px;
-  height: 18px;
-}
-.volley-account strong,
-.volley-account small {
-  display: block;
-}
-.volley-account strong {
-  color: var(--vm-ink);
-  font-size: 14px;
-  font-weight: 500;
-}
-.volley-account small {
-  color: var(--vm-muted);
-  font-size: 12px;
-}
-.volley-app .volley-sidebar footer [data-slot="button"] {
-  width: 100%;
-  min-height: 36px;
-  justify-content: flex-start;
-  padding: 8px 12px;
-  background: transparent;
-  border: 1px solid var(--vm-line);
-  border-radius: 8px;
-  color: var(--vm-ink);
-}
 .volley-header-divider {
   height: 20px;
   border-left: 1px solid var(--vm-line);
@@ -963,50 +637,7 @@ body:has(.volley-app)
   font-weight: 500;
   letter-spacing: 1.8px;
 }
-@media (min-width: 1025px) {
-  .volley-app.volley-sidebar-collapsed .volley-sidebar {
-    width: 72px;
-    padding-inline: 8px;
-  }
-  .volley-sidebar-collapsed .volley-brand {
-    padding: 0;
-    justify-content: center;
-  }
-  .volley-sidebar-collapsed
-    :is(
-      .volley-brand > div,
-      .volley-mode,
-      .volley-nav-label,
-      .volley-account > div,
-      .volley-sidebar footer > a,
-      .volley-sidebar footer > span,
-      .volley-sidebar footer button > span
-    ) {
-    display: none;
-  }
-  .volley-app.volley-sidebar-collapsed .volley-sidebar nav a {
-    justify-content: center;
-    padding: 12px;
-  }
-  .volley-sidebar-collapsed .volley-account {
-    justify-content: center;
-  }
-  .volley-app.volley-sidebar-collapsed .volley-sidebar footer button {
-    justify-content: center;
-  }
-}
 @media (max-width: 1024px) {
-  .volley-app .volley-sidebar {
-    padding: 0;
-  }
-  .volley-app .volley-sidebar footer {
-    display: none;
-  }
-  .volley-app .volley-sidebar nav a {
-    min-height: 56px;
-    padding: 6px 2px;
-    font-size: 11px;
-  }
   .volley-app .volley-content {
     padding: 24px 20px calc(var(--volley-nav-height, 96px) + 20px);
   }

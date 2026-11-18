@@ -1,30 +1,37 @@
-﻿"use client";
-import { StudentFields } from "./student-fields";
-import { useId, useRef, useState, useTransition } from "react";
+"use client";
+import { VolleyCard, VolleySectionHeader } from "@/components/volei/page-frame";
+
+import { ParticipationFields } from "./participation-fields";
+import { ParticipationReview } from "./participation-review";
+import type { EnrollmentDraft, ParticipationProfile } from "@/lib/volei/students";
+import type { AdmissionWindow } from "@/lib/volei/admission";
+import { useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   registerForGame,
   manageGame,
-  identifyByPhone,
 } from "@/app/volei/jogo/[id]/actions";
+import { identifyByPhone } from "@/app/volei/access-actions";
 import { attendanceLabels, displayPhone } from "@/lib/volei/phone";
 import type { AttendanceStatus } from "@/lib/volei/domain";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { VolleyIcon } from "./volley-icon";
-import { PhoneInput } from "./phone-input";
-import { useCopy } from "./use-run";
-import { useOperationStatus } from "./activity";
+import { PhoneField } from "./phone-input";
+import { useCopy, useRun } from "./use-run";
+import { QueuePosition } from "./queue-position";
 export type MyGame = {
   name: string;
   phone: string;
   blocked: boolean;
   active: boolean;
   membershipStatus: "approved" | "pending" | "rejected";
+  profile: ParticipationProfile;
   canReport?: boolean;
   status?: AttendanceStatus;
-  guest?: { name: string; status: AttendanceStatus; profileToken?: string };
+  queuePosition?: number | null;
+  guest?: { name: string; status: AttendanceStatus; profileToken?: string; queuePosition?: number | null };
 };
 export function GameResponse({
   eventId,
@@ -32,74 +39,44 @@ export function GameResponse({
   mine,
   free,
   finished = false,
+  admission,
+  eventDate,
 }: {
   eventId: string;
   open: boolean;
   mine: MyGame | null;
   free: number;
   finished?: boolean;
+  admission: AdmissionWindow;
+  eventDate: string;
 }) {
   const [phone, setPhone] = useState("");
-  const [isStudent, setIsStudent] = useState(false);
-  const [studentDays, setStudentDays] = useState<number[]>([]);
+  const [enrollment, setEnrollment] = useState<EnrollmentDraft>({ isStudent: null, days: [], classTime: "" });
+  const [ready, setReady] = useState(false);
+  const [profileSaved, setProfileSaved] = useState(false);
   const [name, setName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [register, setRegister] = useState(false);
   const [guest, setGuest] = useState("");
   const [guestPhone, setGuestPhone] = useState("");
   const { copy, copied } = useCopy();
-  const [message, setMessage] = useState("");
-  const [failed, setFailed] = useState(false);
-  const [pending, start] = useTransition();
-  useOperationStatus(
-    pending,
-    mine
-      ? "Atualizando sua participação…"
-      : register
-        ? "Enviando cadastro para aprovação…"
-        : "Consultando seu telefone…",
-    failed ? message : "",
-    !failed ? message : "",
-  );
+  const { run: execute, pending, success, feedback } = useRun({ revalidated: true, successMessage: "" });
   const router = useRouter();
   const dialog = useRef<HTMLDialogElement>(null);
   const id = useId();
   const participating =
     mine?.status === "confirmado" || mine?.status === "espera";
   const approved = mine?.membershipStatus === "approved";
-  const canJoin = open && approved && mine?.active && !mine.blocked;
+  const canJoin = open && admission.open && approved && mine?.active && !mine.blocked;
   const activeGuest =
     mine?.guest &&
     (mine.guest.status === "confirmado" || mine.guest.status === "espera");
   function run(action: () => Promise<{ error: string }>, success: string) {
-    setMessage("");
-    start(async () => {
-      try {
-        const result = await action();
-        setFailed(!!result.error);
-        setMessage(result.error || success);
-        if (!result.error) {
-          dialog.current?.close();
-          router.refresh();
-        }
-      } catch {
-        setFailed(true);
-        setMessage("Não foi possível conectar. Tente novamente.");
-      }
-    });
+    execute(action, () => dialog.current?.close(), mine ? "Atualizando sua participação…" : "Enviando cadastro para aprovação…", success);
   }
   return (
-    <section className="volley-card game-signup" id="minha-presenca">
-      <header className="game-section-heading">
-        <span className="game-icon-box">
-          <VolleyIcon name={participating ? "check" : "phone"} />
-        </span>
-        <div>
-          <span className="game-kicker">SUA PARTICIPAÇÃO</span>
-          <h2>
-            {participating ? "Você está na lista!" : "Entre com seu celular"}
-          </h2>
-        </div>
-      </header>
+    <VolleyCard as="section" className="game-signup" id="minha-presenca">
+      <VolleySectionHeader eyebrow="SUA PARTICIPAÇÃO" title={participating ? "Você está na lista!" : "Entre com seu celular"} icon={<VolleyIcon name={participating ? "check" : "phone"} />} />
       {mine ? (
         <>
           <div className="game-identity">
@@ -173,33 +150,39 @@ export function GameResponse({
                     {mine.status === "confirmado"
                       ? "Sua vaga está garantida. Seu nome está na lista da portaria."
                       : mine.status === "espera"
-                        ? "Você será confirmado automaticamente se uma vaga for liberada."
+                        ? "Acompanhe sua posição abaixo. A promoção depende das vagas e das regras da fila."
                         : "Confirme abaixo para participar deste encontro."}
                   </p>
                 </div>
               </div>
+              {mine.status === "espera" && <QueuePosition position={mine.queuePosition} />}
               {(!mine.active || mine.blocked) && (
                 <p className="game-notice is-warning">
                   Seu cadastro está indisponível para novas inscrições. Fale com
                   o responsável.
                 </p>
               )}
-              {!participating && (
-                <Button
-                  className="game-primary"
-                  disabled={pending || !canJoin}
-                  onClick={() =>
+              {!participating && admission.state !== "open" && <p role="status" className="game-notice">{admission.message}</p>}
+              {profileSaved && <p role="status" className="volley-muted">Dados do cadastro atualizados.</p>}
+              {!mine.profile.reviewed ? <ParticipationReview eventId={eventId} eventDate={eventDate} profile={mine.profile} participating={participating} waiting={mine.status === "espera"} onSaved={() => setProfileSaved(true)} disabled={pending || !open || finished || !mine.active || mine.blocked} /> : !participating && (
+                <form
+                  className="game-form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
                     run(
-                      () => manageGame({ eventId, action: "join" }),
+                      () => manageGame({
+                        eventId,
+                        action: "join",
+                      }),
                       "Participação registrada.",
-                    )
-                  }
+                    );
+                  }}
                 >
-                  <VolleyIcon name="check" />
-                  {free
-                    ? "Confirmar minha presença"
-                    : "Entrar na lista de espera"}
-                </Button>
+                  <Button type="submit" className="game-primary" disabled={pending || !canJoin}>
+                    <VolleyIcon name="check" />
+                    {admission.state === "scheduled" ? "Aguardando abertura das inscrições" : free ? "Confirmar minha presença" : "Entrar na lista de espera"}
+                  </Button>
+                </form>
               )}
               {participating && (
                 <>
@@ -217,6 +200,7 @@ export function GameResponse({
                             ? "Confirmado · consta na portaria"
                             : "Aguardando vaga · membros têm prioridade"}
                         </span>
+                        {mine.guest!.status === "espera" && <QueuePosition position={mine.guest!.queuePosition} guest />}
                       </div>
                       <Button
                         variant="ghost"
@@ -286,9 +270,8 @@ export function GameResponse({
                           placeholder="Nome e sobrenome"
                         />
                       </label>
-                      <label>
-                        Telefone do convidado
-                        <PhoneInput
+                      <div>
+                        <PhoneField label="Telefone do convidado"
                           value={guestPhone}
                           onChange={setGuestPhone}
                           required
@@ -297,7 +280,7 @@ export function GameResponse({
                           Identifica o convidado e fica privado. Após incluir,
                           envie o link para ele completar o cadastro.
                         </small>
-                      </label>
+                      </div>
                       <Button
                         type="submit"
                         variant="outline"
@@ -311,7 +294,7 @@ export function GameResponse({
               )}
               {participating && (
                 <Button
-                  variant="ghost"
+                  variant="outline" className="volley-cancel-participation"
                   disabled={pending || finished}
                   onClick={() => dialog.current?.showModal()}
                 >
@@ -326,6 +309,8 @@ export function GameResponse({
           className="game-form"
           onSubmit={(e) => {
             e.preventDefault();
+            if (pending) return;
+            if (register && !ready) { e.currentTarget.querySelector<HTMLButtonElement>("[data-participation-next]")?.click(); return; }
             if (register)
               run(
                 () =>
@@ -333,26 +318,17 @@ export function GameResponse({
                     eventId,
                     name,
                     phone,
-                    enrollment: { isStudent, days: studentDays },
+                    birthDate,
+                    enrollment,
                   }),
                 "Cadastro enviado para aprovação.",
               );
             else {
-              setMessage("");
-              start(async () => {
-                try {
-                  const result = await identifyByPhone(phone);
-                  setFailed(!!result.error);
-                  setMessage(result.error);
-                  if (!result.error) {
-                    setRegister(!result.found);
-                    router.refresh();
-                  }
-                } catch {
-                  setFailed(true);
-                  setMessage("Falha de conexão. Tente novamente.");
-                }
-              });
+              execute(async () => {
+                const result = await identifyByPhone(phone);
+                if (!result.error) setRegister(!result.found);
+                return result;
+              }, undefined, "Consultando seu telefone…", "");
             }
           }}
         >
@@ -360,20 +336,18 @@ export function GameResponse({
             Já faz parte do grupo? Informe seu celular para confirmar presença.
             Novos cadastros precisam da aprovação do responsável.
           </p>
-          <label htmlFor={`${id}-phone`}>
-            Celular com DDD
-            <PhoneInput
+            <PhoneField label="Celular com DDD"
               id={`${id}-phone`}
               value={phone}
               onChange={(value) => {
                 setPhone(value);
+                setReady(false);
                 if (register) setRegister(false);
               }}
               maxLength={22}
               placeholder="(61) 99999-9999"
               required
             />
-          </label>
           {register && (
             <>
               <div className="game-notice is-warning">
@@ -395,18 +369,13 @@ export function GameResponse({
                   autoComplete="name"
                 />
               </label>
-              <StudentFields
-                isStudent={isStudent}
-                days={studentDays}
-                onStudentChange={setIsStudent}
-                onDaysChange={setStudentDays}
-                disabled={pending}
-                selfRegistration
-              />
+              <ParticipationFields birthDate={birthDate} onBirthDateChange={setBirthDate} enrollment={enrollment} onEnrollmentChange={setEnrollment} onReadyChange={setReady} disabled={pending} onDate={eventDate} />
             </>
           )}
+          {feedback}
           <Button
             type="submit"
+            disabled={register && !ready}
             loading={pending}
             loadingText={
               register ? "Enviando cadastro…" : "Consultando telefone…"
@@ -425,6 +394,7 @@ export function GameResponse({
               Seu telefone fica privado. Volte por este navegador para gerenciar
               a inscrição. Se trocar de aparelho, peça a liberação ao
               responsável. O número ainda não é validado por SMS.
+              {" "}<Link className="underline underline-offset-2" href="/volei/privacidade">Política de Privacidade</Link>.
             </p>
           </div>
         </form>
@@ -437,15 +407,9 @@ export function GameResponse({
             : "Cancelamentos seguem disponíveis."}
         </p>
       )}
-      {message && (
-        <p
-          role={failed ? "alert" : "status"}
-          className={failed ? "game-feedback is-error" : "game-feedback"}
-        >
-          {message}
-        </p>
-      )}
-      <dialog
+      {mine && feedback}
+      {success && <p role="status" className="game-feedback">{success}</p>}
+      {participating && <dialog
         ref={dialog}
         className="game-dialog"
         aria-labelledby={`${id}-cancel`}
@@ -481,12 +445,8 @@ export function GameResponse({
             Sim, não vou
           </Button>
         </div>
-        {failed && message && (
-          <p className="game-feedback is-error" role="alert">
-            {message}
-          </p>
-        )}
-      </dialog>
-    </section>
+        {feedback}
+      </dialog>}
+    </VolleyCard>
   );
 }

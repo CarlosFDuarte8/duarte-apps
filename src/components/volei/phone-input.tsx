@@ -1,5 +1,5 @@
 "use client";
-import { useState, type ComponentProps } from "react";
+import { useId, useState, type ComponentProps } from "react";
 import {
   AsYouType,
   getCountryCallingCode,
@@ -10,6 +10,15 @@ import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import "./phone-input.css";
 import countries from "./phone-countries.json";
+
+export function PhoneField({ label, id, ...props }: ComponentProps<typeof PhoneInput> & { label: string }) {
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
+  return <div className="volley-phone-field">
+    <label htmlFor={inputId}>{label}</label>
+    <PhoneInput id={inputId} {...props} />
+  </div>;
+}
 
 export function PhoneInput({
   value,

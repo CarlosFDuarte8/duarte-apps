@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowUpRight, Clock3, MapPin } from "lucide-react";
+import { Armchair, ArrowUpRight, Clock3, Hourglass, MapPin, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { eventCapacity, eventFreeSlots, type VoleiEvent } from "@/lib/volei/domain";
+import type { AdmissionWindow } from "@/lib/volei/admission";
 export type EventSummary = {
   event: VoleiEvent;
   confirmed: number;
@@ -9,6 +10,7 @@ export type EventSummary = {
   waiting?: number;
   guestsWaiting?: number;
   declined?: number;
+  admission?: AdmissionWindow;
 };
 export function EventCard({
   event,
@@ -17,6 +19,7 @@ export function EventCard({
   waiting = 0,
   guestsWaiting = 0,
   admin = false,
+  admission,
 }: EventSummary & { admin?: boolean }) {
   const date = new Date(`${event.date}T12:00:00Z`);
   const capacity = eventCapacity(event);
@@ -42,6 +45,7 @@ export function EventCard({
           {event.closed && <small className="vx-closed">Fechado</small>}
         </div>
         <h3>{event.title}</h3>
+        {!admin && admission && admission.state !== "open" && <p className="volley-muted">{admission.message}</p>}
         <p>
           {event.start_time && (
             <span>
@@ -59,17 +63,18 @@ export function EventCard({
       </div>
       <div className="vx-row-stats">
         <span>
+          <Users aria-hidden="true" />
           <strong>
             {confirmed}
             <small>/{capacity}</small>
           </strong>
-          confirmados
+          <span>confirmados</span>
         </span>
         <span>
-          <strong>{free}</strong>vagas
+          <Armchair aria-hidden="true" /><strong>{free}</strong><span>vagas</span>
         </span>
         <span>
-          <strong>{waiting + guestsWaiting}</strong>na espera
+          <Hourglass aria-hidden="true" /><strong>{waiting + guestsWaiting}</strong><span>na espera</span>
         </span>
       </div>
       <Button asChild variant="outline">

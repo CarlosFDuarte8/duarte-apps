@@ -1,0 +1,38 @@
+/* Shared measurements for the public area, administration and dialogs. */
+:root:has(.volley-app) {
+  --v-font-family: var(--font-geist-sans, Arial), sans-serif;
+  --v-text-body: 14px;
+  --v-text-label: 13px;
+  --v-text-small: 12px;
+  --v-title-page: clamp(28px, 2.8vw, 42px);
+  --v-title-section: 20px;
+  --v-title-subsection: 16px;
+  --v-line-height: 1.6;
+  --v-control-height: 48px;
+  --v-control-small: 40px;
+  --v-control-icon: 44px;
+  --v-focus-width: 3px;
+  --v-focus-offset: 3px;
+  --v-brand-size: 52px;
+  --v-mobile-hero-padding: 18px;
+  --v-mobile-metric-height: 90px;
+  --v-control-radius: 12px;
+  --v-card-radius: 22px;
+  --v-card-padding: 24px;
+  --v-page-gap: 28px;
+  --v-section-gap: 20px;
+  --v-field-gap: 8px;
+  --v-page-padding: clamp(24px, 2vw, 34px);
+  --v-card-shadow: 0 8px 24px -12px #285c9029;
+}
+
+@media (max-width: 640px) {
+  :root:has(.volley-app) {
+    --v-text-body: 14px;
+    --v-text-label: 13px;
+    --v-card-padding: 20px;
+    --v-card-radius: 20px;
+    --v-page-gap: 22px;
+    --v-page-padding: 16px;
+  }
+}

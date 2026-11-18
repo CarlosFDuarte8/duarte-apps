@@ -1,8 +1,11 @@
-﻿import type { Metadata } from "next";
+import { VolleyCard, VolleyPageHeader } from "@/components/volei/page-frame";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Presence } from "@/components/volei/presence";
 import { GameRoster } from "@/components/volei/game-roster";
+import { ownParticipationProfile } from "@/lib/volei/participation-profile";
+import { admissionForEvent } from "@/lib/volei/participation-policy";
 import { memberByToken, publicEvents } from "@/lib/volei/repository";
 import {
   currentMonth,
@@ -33,27 +36,24 @@ export default async function Page({
   ).flat();
   return (
     <>
-      <section className="volley-hero">
-        <span className="volley-eyebrow">SEU ESPAÇO NO GRUPO</span>
-        <h1>Olá, {member.name.split(" ")[0]}!</h1>
-        <p>
-          Confirme sua participação nos próximos jogos e acompanhe as vagas. Seu
-          link é pessoal: guarde com você.
-        </p>
-      </section>
+      <VolleyPageHeader
+        eyebrow="SEU ESPAÇO NO GRUPO"
+        title={<> Olá, {member.name.split(" ")[0]}! </>}
+        description="Confirme sua participação nos próximos jogos e acompanhe as vagas. Seu link é pessoal: guarde com você."
+      />
       {member.blocked && (
         <p role="alert" className="volley-error">
           Sua inscrição está temporariamente bloqueada. Fale com o responsável.
         </p>
       )}
       {!events.length && (
-        <section className="volley-card">
+        <VolleyCard as="section">
           Nenhum jogo cadastrado para este mês e o próximo.
-        </section>
+        </VolleyCard>
       )}
       {events.map((game) => (
         <section key={game.event.id} className="volley-form">
-          <div className="volley-card">
+          <VolleyCard >
             <span className="volley-muted">{formatDate(game.event.date)}</span>
             <h2>{game.event.title}</h2>
             <p className="volley-muted">
@@ -64,16 +64,19 @@ export default async function Page({
             <Presence
               token={token}
               eventId={game.event.id}
+              eventDate={game.event.date}
               mine={
                 game.attendance.find((a) => a.member_id === member.id)?.status
               }
               canRespond={!member.blocked}
-              canJoin={isEventOpen(game.event)}
+              canJoin={isEventOpen(game.event) && admissionForEvent(game.event, member).open}
+              admissionMessage={admissionForEvent(game.event, member).message}
+              profile={ownParticipationProfile(member)}
             />
             <Link className="volley-link" href={`/volei/jogo/${game.event.id}`}>
               Página do jogo e convidados →
             </Link>
-          </div>
+          </VolleyCard>
           <GameRoster game={game} updatedAt={new Date().toISOString()} />
         </section>
       ))}

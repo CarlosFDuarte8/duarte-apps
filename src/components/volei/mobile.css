@@ -31,24 +31,6 @@
     display: list-item;
     align-content: center;
   }
-  .volley-app .vm-member-metrics {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 6px;
-  }
-  .volley-app .vm-member-metrics > div,
-  .volley-app .vm-member-metrics > button {
-    padding: 10px 6px;
-    border-radius: 10px;
-  }
-  .volley-app .vm-member-metrics strong {
-    font-size: 22px;
-    margin-bottom: 4px;
-  }
-  .volley-app .vm-member-metrics span {
-    font-size: 10px;
-    line-height: 1.4;
-    display: block;
-  }
   .volley-app .vm-members-toolbar {
     padding: 16px;
     flex-direction: row;
@@ -112,13 +94,13 @@
     padding: 14px;
     gap: 10px;
   }
-  .vm-members-table .vm-member-name {
-    padding-right: 74px;
+  .volley-app .vm-members-table .vm-member-name {
+    padding-right: 0;
   }
   .vm-members-table .vm-member-action {
-    position: absolute;
-    top: 12px;
-    right: 12px;
+    position: static;
+    grid-column: 1/-1;
+    justify-self: end;
   }
   .volley-app .vm-member-action [data-slot="button"] {
     min-height: 48px;
@@ -196,9 +178,6 @@
 @media (max-width: 360px) {
   .vm-members-more-filters[data-open="true"] {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .volley-app .vm-member-metrics span {
-    font-size: 9px;
   }
 }
 .volley-nav-pending {

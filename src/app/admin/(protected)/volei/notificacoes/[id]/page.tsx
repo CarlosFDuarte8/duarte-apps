@@ -1,3 +1,4 @@
+import { VolleyCard, VolleyPageHeader } from "@/components/volei/page-frame";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
@@ -11,7 +12,7 @@ import {
   type ComplaintStatus,
 } from "@/lib/volei/complaints";
 import { formatDate } from "@/lib/volei/domain";
-import { PageHeader } from "@/components/escalas/admin-ui";
+
 import { Badge } from "@/components/ui/badge";
 import { ComplaintReview } from "@/components/volei/complaint-review";
 import "@/components/volei/notifications.css";
@@ -39,7 +40,7 @@ export default async function Page({
         : null;
   return (
     <>
-      <PageHeader
+      <VolleyPageHeader
         eyebrow="Vôlei · Atendimento privado"
         title={complaint.title}
         actions={
@@ -51,7 +52,7 @@ export default async function Page({
           </Link>
         }
       />
-      <section className="volley-card vn-section">
+      <VolleyCard as="section" className="vn-section">
         <Badge variant="outline">{complaintStatuses[complaint.status]}</Badge>
         <dl className="vn-complaint-meta">
           <div>
@@ -104,8 +105,8 @@ export default async function Page({
         </dl>
         <h2>Relato</h2>
         <p className="vn-complaint-description">{complaint.description}</p>
-      </section>
-      <section className="volley-card vn-section">
+      </VolleyCard>
+      <VolleyCard as="section" className="vn-section">
         <ComplaintReview
           key={`${id}:${complaint.updated_at}`}
           id={id}
@@ -113,9 +114,9 @@ export default async function Page({
           note={complaint.admin_note}
           readAt={complaint.read_at}
         />
-      </section>
+      </VolleyCard>
       {history.length > 0 && (
-        <section className="volley-card vn-section">
+        <VolleyCard as="section" className="vn-section">
           <h2>Histórico de atendimento</h2>
           <ol className="vn-history">
             {history.map((entry) => (
@@ -129,7 +130,7 @@ export default async function Page({
               </li>
             ))}
           </ol>
-        </section>
+        </VolleyCard>
       )}
     </>
   );

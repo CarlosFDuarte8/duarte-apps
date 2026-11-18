@@ -1,9 +1,10 @@
 "use client";
+import { VolleyCard } from "@/components/volei/page-frame";
+
 import { useState } from "react";
 import Link from "next/link";
 import { LogOut, Shuffle, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -32,6 +33,8 @@ import {
 import "./court.css";
 import { CourtGameMode } from "./court-game-mode";
 import { GameOverlay } from "./game-overlay";
+import { VolleyListFilters } from "./list-filters";
+import { matchesName, matchesKind, participantKinds } from "@/lib/volei/list-search";
 const teamName = (index: number) => String.fromCharCode(65 + index);
 export function CourtBoard({
   eventId,
@@ -50,6 +53,7 @@ export function CourtBoard({
 }) {
   const { run, pending, feedback } = useRun();
   const [search, setSearch] = useState("");
+  const [kind, setKind] = useState("all");
   const [first, setFirst] = useState("");
   const [second, setSecond] = useState("");
   const [gameMode, setGameMode] = useState(false);
@@ -62,11 +66,7 @@ export function CourtBoard({
   const absent = roster.filter(
     (p) => !state.arrivals.some((a) => a.key === p.key),
   );
-  const normalize = (text: string) =>
-    text
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
+  const visibleAbsent = absent.filter(person => matchesName(person.name, search) && matchesKind(person.guest, kind));
   function act(action: CourtAction) {
     run(
       () => manageCourt({ eventId, version, action }),
@@ -180,7 +180,7 @@ export function CourtBoard({
           até concluir a chamada.
         </p>
       )}
-      <section className="volley-card vc-section">
+      <VolleyCard as="section" className="vc-section">
         <div className="vc-heading">
           <div>
             <h2>Quadra e rodízio</h2>
@@ -430,25 +430,16 @@ export function CourtBoard({
             </p>
           </div>
         )}
-      </section>
-      <section className="volley-card vc-section">
+      </VolleyCard>
+      <VolleyCard as="section" className="vc-section">
         <h2>Registrar chegadas</h2>
         <p className="vc-help">
           A chegada conta como presença na frequência. A lista de espera da
           inscrição só autoriza entrada depois da confirmação da vaga.
         </p>
-        <label>
-          Buscar confirmado
-          <Input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Nome do participante"
-          />
-        </label>
+        <VolleyListFilters search={search} onSearch={setSearch} searchLabel="Buscar confirmado" filters={[{ label: "Tipo de participante", value: kind, onChange: setKind, options: participantKinds }]} shown={visibleAbsent.length} total={absent.length} active={!!search || kind !== "all"} onClear={() => { setSearch(""); setKind("all"); }} />
         <div className="vc-arrival-list">
-          {absent
-            .filter((p) => normalize(p.name).includes(normalize(search)))
+          {visibleAbsent
             .map((person) => (
               <article key={person.key}>
                 <div className="vc-player-line">
@@ -478,6 +469,7 @@ export function CourtBoard({
               Todos os confirmados já tiveram a chegada registrada.
             </p>
           )}
+          {!!absent.length && !visibleAbsent.length && <p className="vc-empty">Nenhum confirmado corresponde aos filtros.</p>}
         </div>
         {!state.started && present.length > 0 && (
           <div className="vc-arrival-list">
@@ -522,9 +514,9 @@ export function CourtBoard({
             ))}
           </details>
         )}
-      </section>
+      </VolleyCard>
       {state.history.length > 0 && (
-        <section className="volley-card vc-section">
+        <VolleyCard as="section" className="vc-section">
           <h2>Últimos rodízios · {state.round} partidas</h2>
           <ol className="vc-history">
             {state.history
@@ -558,7 +550,7 @@ export function CourtBoard({
                 </li>
               ))}
           </ol>
-        </section>
+        </VolleyCard>
       )}
     </div>
   );

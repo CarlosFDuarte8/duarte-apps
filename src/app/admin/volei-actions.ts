@@ -1,14 +1,16 @@
 "use server";
 import { z } from "zod";
 import {
-  studentEnrollmentSchema,
+  studentClassSchema,
   studentDaysSchema,
 } from "@/lib/volei/students";
 import { revalidatePath } from "next/cache";
 import { requireVoleiAdmin as requireAdmin } from "@/lib/volei/auth";
 import { phoneSchema } from "@/lib/volei/phone";
+import { duplicateMemberMessage, requiredBirthDateSchema } from "@/lib/volei/profile";
 import { deleteStoredPhotos } from "@/lib/volei/photos";
 import { preferencesSchema } from "@/lib/volei/frequency";
+import { eventLinkSettingsSchema } from "@/lib/volei/event-link-settings";
 import {
   eventSchema,
   memberNameSchema,
@@ -26,7 +28,8 @@ function done(error: { message: string; code?: string } | null): Result {
     revalidatePath("/volei", "layout");
     return ok;
   }
-  if (error.code === "23505") return { error: "Já existe um registro igual." };
+  if (error.code === "23505")
+    return { error: error.message.includes("volei_members_") ? duplicateMemberMessage : "Já existe um registro igual." };
   if (error.code === "P0001") return { error: error.message };
   return { error: "Não foi possível salvar. Tente novamente." };
 }
@@ -77,6 +80,7 @@ export async function updateEvent(
         .nullable()
         .optional(),
     })
+    .and(eventLinkSettingsSchema)
     .safeParse(input);
   if (!parsed.success || !id.safeParse(eventId).success)
     return { error: "Dados inválidos." };
@@ -156,9 +160,12 @@ export async function addMember(
   name: string,
   phone = "",
   enrollment: unknown = { isStudent: false, days: [] },
+  birthDate = "",
 ): Promise<Result> {
   const { client } = await requireAdmin();
-  const student = studentEnrollmentSchema.safeParse(enrollment);
+  const birth = requiredBirthDateSchema.safeParse(birthDate);
+  if (!birth.success) return invalid(birth.error);
+  const student = studentClassSchema.safeParse(enrollment);
   if (!student.success) return invalid(student.error);
   const parsed = memberNameSchema.safeParse(name);
   if (!parsed.success) return invalid(parsed.error);
@@ -166,11 +173,24 @@ export async function addMember(
   if (contact && !contact.success) return invalid(contact.error);
   const { error } = await client.from("volei_members").insert({
     name: parsed.data,
-    student_weekdays: student.data,
+    student_weekdays: student.data.days,
+    student_class_time: student.data.classTime,
     phone: contact?.data ?? null,
     membership_status: "approved",
+    birth_date: birth.data,
   });
   return done(error);
+}
+
+export async function registerAdminParticipant(input: unknown): Promise<Result & { name?: string; status?: string }> {
+  const { client } = await requireAdmin();
+  const parsed = z.object({ eventId: id, name: memberNameSchema.min(2), phone: phoneSchema, birthDate: requiredBirthDateSchema }).safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const { data, error } = await client.rpc("volei_admin_register_player", {
+    p_event: parsed.data.eventId, p_name: parsed.data.name, p_phone: parsed.data.phone, p_birth_date: parsed.data.birthDate,
+  });
+  const result = done(error);
+  return result.error ? result : { ...result, name: data?.name, status: data?.status };
 }
 
 export async function saveMemberContact(
@@ -451,18 +471,25 @@ export async function saveStudentDays(
   const { client } = await requireAdmin();
   const parsed = z
     .object({
-      enrollment: studentEnrollmentSchema,
+      enrollment: studentClassSchema,
       expectedDays: studentDaysSchema,
       expectedRequest: studentDaysSchema.nullable(),
+      expectedTime: z.string().nullable(),
+      expectedRequestedTime: z.string().nullable(),
+      expectedReviewedAt: z.iso.datetime({ offset: true }).nullable(),
     })
     .safeParse(input);
   if (!id.safeParse(memberId).success) return { error: "Membro inválido." };
   if (!parsed.success) return invalid(parsed.error);
-  const { error } = await client.rpc("volei_save_student_days", {
+  const { error } = await client.rpc("volei_save_student_class", {
     p_member: memberId,
-    p_days: parsed.data.enrollment,
+    p_days: parsed.data.enrollment.days,
+    p_class_time: parsed.data.enrollment.classTime,
     p_expected_days: parsed.data.expectedDays,
     p_expected_request: parsed.data.expectedRequest,
+    p_expected_time: parsed.data.expectedTime,
+    p_expected_requested_time: parsed.data.expectedRequestedTime,
+    p_expected_reviewed_at: parsed.data.expectedReviewedAt,
   });
   return done(error);
 }

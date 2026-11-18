@@ -1,24 +1,25 @@
 import { expect, it } from "vitest";
-import { studentEnrollmentSchema } from "./students";
+import { studentClassSchema } from "./students";
 it("normaliza dias e exige ao menos uma turma para aluno", () => {
   expect(
-    studentEnrollmentSchema.parse({ isStudent: true, days: [4, 2, 2] }),
-  ).toEqual([2, 4]);
+    studentClassSchema.parse({ isStudent: true, days: [4, 2, 2], classTime: "18:00" }),
+  ).toEqual({ days: [2, 4], classTime: "18:00" });
   expect(
-    studentEnrollmentSchema.parse({ isStudent: false, days: [2] }),
-  ).toEqual([]);
+    studentClassSchema.parse({ isStudent: false, days: [2] }),
+  ).toEqual({ days: [], classTime: null });
   for (const days of [[], [7], [-1], [2.5], [null]])
     expect(
-      studentEnrollmentSchema.safeParse({ isStudent: true, days }).success,
+      studentClassSchema.safeParse({ isStudent: true, days, classTime: "18:00" }).success,
     ).toBe(false);
 });
 it("a declaração nunca aceita dias já aprovados enviados pelo cliente", () => {
   expect(
-    studentEnrollmentSchema.parse({
+    studentClassSchema.parse({
       isStudent: true,
       days: [3],
+      classTime: "17:00",
       student_weekdays: [0, 1, 2, 3, 4, 5, 6],
       approved: true,
     }),
-  ).toEqual([3]);
+  ).toEqual({ days: [3], classTime: "17:00" });
 });

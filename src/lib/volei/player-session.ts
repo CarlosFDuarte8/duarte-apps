@@ -10,13 +10,22 @@ export async function deviceSecret() {
   const secret = (await cookies()).get(DEVICE_COOKIE)?.value;
   return secret && /^[a-f0-9]{64}$/.test(secret) ? secret : null;
 }
+export async function bindDevice(secret: string) {
+  (await cookies()).set(DEVICE_COOKIE, secret, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/volei",
+    maxAge: 60 * 60 * 24 * 365,
+  });
+}
 export async function currentPlayer() {
   const secret = await deviceSecret();
   if (!secret) return null;
   const { data, error } = await serviceClient()
     .from("volei_members")
     .select(
-      "id,name,phone,is_active,blocked,is_core,membership_status,birth_date,photo_path,emergency_name,emergency_phone,emergency_relationship",
+      "id,name,phone,is_active,blocked,is_core,membership_status,birth_date,student_weekdays,requested_student_weekdays,student_class_time,requested_student_class_time,participation_reviewed_at,photo_path,emergency_name,emergency_phone,emergency_relationship",
     )
     .eq("device_secret_hash", hashDevice(secret))
     .maybeSingle();
@@ -30,6 +39,11 @@ export async function currentPlayer() {
     is_core: boolean;
     membership_status: "approved" | "pending" | "rejected";
     birth_date: string | null;
+    student_weekdays: number[];
+    requested_student_weekdays: number[] | null;
+    student_class_time: string | null;
+    requested_student_class_time: string | null;
+    participation_reviewed_at: string | null;
     photo_path: string | null;
     emergency_name: string;
     emergency_phone: string;

@@ -19,7 +19,7 @@ export async function saveOwnProfile(form: FormData) {
   if (!player || !secret)
     return {
       error:
-        "Identifique seu telefone no link do jogo para acessar seu cadastro.",
+        "Identifique seu telefone em Meu cadastro para acessar seus dados.",
     };
   const result = await saveProfilePhoto(
     serviceClient(),

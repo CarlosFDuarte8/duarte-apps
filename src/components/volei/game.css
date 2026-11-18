@@ -39,7 +39,6 @@
   color: var(--vm-component-ink, #597447);
 }
 .game-event-label > span,
-.game-open-badge > span,
 .game-status-dot,
 .game-live > span,
 .game-available-dot {
@@ -88,58 +87,6 @@
   font-size: 13px;
   max-width: 560px;
   line-height: 1.7;
-}
-.game-deadline-box {
-  border-left: 1px solid var(--vm-component-line, #dce5d3);
-  padding-left: 30px;
-  flex-shrink: 0;
-  min-width: 220px;
-}
-.game-open-badge {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-  border: 1px solid var(--vm-component-success-line, #ccddba);
-  color: var(--vm-component-success-ink, #4f752e);
-  border-radius: 6px;
-  background: var(--vm-component-success-surface, #f1f7e9);
-  padding: 7px 9px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.7px;
-}
-.game-open-badge.is-closed {
-  color: var(--vm-component-muted, #7b7463);
-  border-color: var(--vm-component-line, #dedbd2);
-  background: var(--vm-component-subtle, #f3f1ec);
-}
-.game-open-badge.is-closed > span {
-  background: #a39c88;
-}
-.game-deadline-box > p {
-  font-size: 12px;
-  color: var(--vm-component-muted, #758270);
-  margin: 18px 0 4px;
-}
-.game-deadline-box > strong {
-  display: block;
-  color: var(--vm-component-ink, #2b4432);
-  font-size: 36px;
-  font-weight: 650;
-  letter-spacing: -1px;
-  line-height: 1.15;
-}
-.game-deadline-box > strong small {
-  display: block;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: var(--vm-component-muted, #8a9684);
-  margin: 6px 0 12px;
-}
-.game-deadline-box > span:last-child {
-  font-size: 12px;
-  color: var(--vm-component-muted, #67785e);
 }
 .game-summary-strip {
   display: flex;
@@ -250,31 +197,6 @@
 .game-required {
   color: var(--vm-component-muted, #a1af97);
   margin-left: 3px;
-}
-.volley-app .game-form input {
-  display: block;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  height: 48px;
-  border: 1px solid var(--vm-component-line, #dce4d8);
-  border-radius: 9px;
-  background: var(--vm-component-surface, #fcfdfb);
-  padding: 12px 14px;
-  font-size: 14px;
-  font-weight: 400;
-  margin-top: 9px;
-  color: var(--vm-component-ink, #253f2e);
-  box-shadow: 0 1px 2px #0f2d1403;
-}
-.volley-app .game-form input::placeholder {
-  color: var(--vm-component-muted, #a5afa0);
-}
-.volley-app .game-form input:focus {
-  outline: 3px solid var(--vm-component-line, #dff0ca);
-  border-color: var(--vm-component-line, #8db461);
-  outline-offset: 1px;
-  background: var(--vm-component-surface, white);
 }
 .game-form label > small {
   display: block;
@@ -905,37 +827,6 @@
     padding: 24px;
     gap: 22px;
   }
-  .game-deadline-box {
-    border-left: 0;
-    padding: 18px 0 0;
-    border-top: 1px solid var(--vm-component-line, #dfe8d6);
-    min-width: 0;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 5px 14px;
-  }
-  .game-deadline-box .game-open-badge {
-    width: fit-content;
-    grid-column: 1;
-  }
-  .game-deadline-box > p {
-    margin: 8px 0 0;
-    grid-column: 1;
-  }
-  .game-deadline-box > strong {
-    grid-column: 2;
-    grid-row: 1 / 4;
-    font-size: 30px;
-    text-align: right;
-  }
-  .game-deadline-box > strong small {
-    font-size: 12px;
-    margin-bottom: 0;
-  }
-  .game-deadline-box > span:last-child {
-    grid-column: 1;
-  }
   .game-summary-strip {
     gap: 12px 16px;
   }
@@ -946,9 +837,6 @@
   .volley-app .game-roster {
     padding: 22px 18px;
     gap: 20px;
-  }
-  .volley-app .game-form input {
-    font-size: 16px;
   }
   .game-phone-input > span {
     padding-inline: 10px;
@@ -961,13 +849,6 @@
 @media (max-width: 360px) {
   .game-event-header {
     padding: 20px 16px;
-  }
-  .game-open-badge {
-    font-size: 12px;
-    letter-spacing: 0.2px;
-  }
-  .game-deadline-box > strong {
-    font-size: 27px;
   }
   .volley-app .game-signup,
   .volley-app .game-roster {

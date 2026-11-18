@@ -1,10 +1,16 @@
-﻿"use client";
+"use client";
+import { VolleyCard, VolleySectionHeader } from "@/components/volei/page-frame";
+
 import { participationTime } from "@/lib/volei/participation-time";
 import { useMemo, useState } from "react";
 import type { publicEvent } from "@/lib/volei/repository";
 import { VolleyIcon } from "./volley-icon";
 import "./game.css";
 import { eventCapacity, eventFreeSlots } from "@/lib/volei/domain";
+import { queueRules } from "@/lib/volei/queue";
+import { Button } from "@/components/ui/button";
+import { VolleyListFilters } from "./list-filters";
+import { matchesName, matchesKind, participantKinds } from "@/lib/volei/list-search";
 type Game = NonNullable<Awaited<ReturnType<typeof publicEvent>>>;
 export function GameRoster({
   game,
@@ -13,6 +19,8 @@ export function GameRoster({
   game: Game;
   updatedAt: string;
 }) {
+  const [search, setSearch] = useState("");
+  const [kind, setKind] = useState("all");
   const [tab, setTab] = useState<"confirmed" | "waiting" | "guests">(
     "confirmed",
   );
@@ -72,18 +80,16 @@ export function GameRoster({
   }, [game]);
   const selected =
     tab === "confirmed" ? confirmed : tab === "waiting" ? waiting : guests;
+  const visible = selected.map((person, index) => ({ ...person, position: index + 1 }))
+    .filter(person => matchesName(person.name, search) && matchesKind(person.guest, kind));
   return (
-    <section className="volley-card game-roster" id="lista-do-dia">
-      <header className="game-roster-heading">
-        <div>
-          <span className="game-kicker">PARTICIPANTES DO ENCONTRO</span>
-          <h2>Quem vem para o jogo</h2>
-        </div>
+    <VolleyCard as="section" className="game-roster" id="lista-do-dia">
+      <VolleySectionHeader eyebrow="PARTICIPANTES DO ENCONTRO" title="Quem vem para o jogo" actions={
         <span className="game-live">
           <span />
           Atualização a cada 30 s
         </span>
-      </header>
+      } />
       <div className="game-capacity">
         <div>
           <strong>
@@ -129,14 +135,14 @@ export function GameRoster({
             ["guests", "Convidados", guests.length],
           ] as const
         ).map(([value, label, count]) => (
-          <button
+          <Button type="button" variant={tab === value ? "default" : "ghost"}
             key={value}
             aria-pressed={tab === value}
             onClick={() => setTab(value)}
           >
             {label}
             <span>{count}</span>
-          </button>
+          </Button>
         ))}
       </div>
       {tab === "guests" && (
@@ -153,13 +159,14 @@ export function GameRoster({
       )}
       {tab === "waiting" && (
         <p className="game-description">
-          A lista é atualizada automaticamente quando uma vaga é liberada.
+          {queueRules}
         </p>
       )}
+      <VolleyListFilters search={search} onSearch={setSearch} filters={[{ label: "Tipo de participante", value: kind, onChange: setKind, options: participantKinds }]} shown={visible.length} total={selected.length} active={!!search || kind !== "all"} onClear={() => { setSearch(""); setKind("all"); }} />
       <div className="game-roster-content" aria-live="polite">
-        {selected.length ? (
+        {visible.length ? (
           <ol className="game-player-list">
-            {selected.map((person, i) => {
+            {visible.map((person) => {
               const time = participationTime(
                 tab === "confirmed" ? "confirmado" : "espera",
                 person.at,
@@ -168,7 +175,7 @@ export function GameRoster({
               return (
                 <li key={person.id}>
                   <span className="game-player-position">
-                    {String(i + 1).padStart(2, "0")}
+                    {String(person.position).padStart(2, "0")}
                   </span>
                   <span className="game-player-avatar">
                     {person.name
@@ -207,7 +214,7 @@ export function GameRoster({
               );
             })}
           </ol>
-        ) : (
+        ) : selected.length ? <div className="game-empty"><h3>Nenhum participante encontrado</h3><p>Confira o nome ou limpe os filtros para ver a lista completa.</p></div> : (
           <div className="game-empty">
             <span className="game-empty-icon">
               <VolleyIcon name={tab === "confirmed" ? "ball" : "users"} />
@@ -231,6 +238,6 @@ export function GameRoster({
         <VolleyIcon name="shield" />A lista pública mostra nomes, vínculo de
         aluno e horários. Telefones ficam privados.
       </footer>
-    </section>
+    </VolleyCard>
   );
 }

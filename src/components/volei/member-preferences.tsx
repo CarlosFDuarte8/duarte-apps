@@ -46,8 +46,8 @@ export function MemberPreferences({ member }: { member: VoleiMember }) {
         <span>
           <strong>Faz parte do grupo principal</strong>
           <small>
-            Reserva uma vaga nos dias preferidos até marcar “não vou”. Não
-            retira vagas já confirmadas de outras pessoas.
+            Identifica os membros do grupo principal. Cada pessoa confirma sua
+            presença dentro do próprio horário de inscrição.
           </small>
         </span>
       </label>
@@ -73,9 +73,8 @@ export function MemberPreferences({ member }: { member: VoleiMember }) {
         </div>
       </fieldset>
       <p className="vm-hint">
-        No grupo principal, estes dias definem quando reservar uma vaga. Sem
-        dias definidos, a reserva vale para todos os jogos. Outros dias
-        continuam disponíveis para inscrição, sem reserva automática.
+        Estas preferências ajudam a organizar a agenda. Não reservam vagas nem
+        alteram os dias de aula validados pelo responsável.
       </p>
       <DateChoices
         label="Datas avulsas preferidas"

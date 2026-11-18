@@ -198,10 +198,11 @@
 .vp-page {
   display: grid;
   gap: 24px;
-  max-width: 900px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   width: 100%;
 }
+.vp-page > .volley-surface { width: 100%; max-width: 900px; margin-inline: auto; }
 .vp-page .volley-card {
   display: grid;
   gap: 20px;

@@ -2,8 +2,9 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { serviceClient } from "@/lib/escalas/supabase";
 import { signPhotos } from "./photos";
+import { duplicateMemberMessage } from "./profile";
+import { priorityForEvent } from "./participation-policy";
 import {
-  weekdayOf,
   daysInMonth,
   isEventOpen,
   type AttendanceStatus,
@@ -13,9 +14,9 @@ import {
 } from "./domain";
 
 const eventColumns =
-  "id,date,title,start_time,location,notes,closed,registration_deadline,guests_open_at,presence_closed_at,max_teams";
+  "id,date,title,start_time,location,notes,closed,registration_deadline,guests_open_at,presence_closed_at,max_teams,calendar_enabled,directions_enabled,directions_url";
 const memberColumns =
-  "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,student_weekdays,requested_student_weekdays,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status,birth_date,photo_path,skill_level,emergency_name,emergency_phone,emergency_relationship";
+  "id,name,token,points,blocked,blocked_reason,is_active,phone,is_core,student_weekdays,requested_student_weekdays,student_class_time,requested_student_class_time,participation_reviewed_at,preferred_weekdays,preferred_dates,unavailable_dates,preference_notes,membership_status,birth_date,photo_path,skill_level,emergency_name,emergency_phone,emergency_relationship";
 
 function fail(error: { message: string } | null): asserts error is null {
   if (error) throw new Error(error.message);
@@ -142,13 +143,13 @@ export async function memberByToken(token: string) {
   if (!/^[a-f0-9]{64}$/.test(token)) return null;
   const { data, error } = await serviceClient()
     .from("volei_members")
-    .select("id,name,points,blocked,is_active,phone")
+    .select("id,name,points,blocked,is_active,phone,birth_date,student_weekdays,requested_student_weekdays,student_class_time,requested_student_class_time,participation_reviewed_at")
     .eq("token", token)
     .maybeSingle();
   fail(error);
   return data as Pick<
     VoleiMember,
-    "id" | "name" | "points" | "blocked" | "is_active" | "phone"
+    "id" | "name" | "points" | "blocked" | "is_active" | "phone" | "birth_date" | "student_weekdays" | "requested_student_weekdays" | "student_class_time" | "requested_student_class_time" | "participation_reviewed_at"
   > | null;
 }
 
@@ -163,7 +164,7 @@ export async function publicLeaderboard() {
   return (data ?? []) as { name: string; points: number }[];
 }
 
-const publicEventColumns = `${eventColumns}, volei_attendance(member_id,status,registered_at,confirmed_at,queue_order, volei_members(name,is_core,student_weekdays)), volei_guests(id,member_id,name,status,registered_at,confirmed_at,queue_order)`;
+const publicEventColumns = `${eventColumns}, volei_attendance(member_id,status,registered_at,confirmed_at,queue_order, volei_members(name,birth_date,student_weekdays,student_class_time,is_active,blocked,membership_status)), volei_guests(id,member_id,name,status,registered_at,confirmed_at,queue_order)`;
 
 function presentPublicEvent(row: unknown) {
   const {
@@ -182,27 +183,24 @@ function presentPublicEvent(row: unknown) {
         name: string;
         is_core: boolean;
         student_weekdays?: number[];
+        birth_date?: string | null;
+        student_class_time?: string | null;
+        is_active?: boolean;
+        blocked?: boolean;
+        membership_status?: string;
       } | null;
     }[];
   };
+  const eligible = rows.filter(row => row.volei_members && row.volei_members.is_active !== false && !row.volei_members.blocked && !["pending", "rejected"].includes(row.volei_members.membership_status ?? ""));
+  const allowed = new Set(eligible.map(row => row.member_id));
   return {
     event,
-    guests: guests ?? [],
-    attendance: rows
+    guests: (guests ?? []).filter(guest => allowed.has(guest.member_id)),
+    attendance: eligible
       .sort(
         (a, b) =>
-          Number(
-            !!b.volei_members?.is_core ||
-              !!b.volei_members?.student_weekdays?.includes(
-                weekdayOf(event.date),
-              ),
-          ) -
-            Number(
-              !!a.volei_members?.is_core ||
-                !!a.volei_members?.student_weekdays?.includes(
-                  weekdayOf(event.date),
-                ),
-            ) ||
+          priorityForEvent(a.volei_members ?? {}, event.date) -
+            priorityForEvent(b.volei_members ?? {}, event.date) ||
           a.registered_at.localeCompare(b.registered_at) ||
           a.queue_order - b.queue_order,
       )
@@ -257,11 +255,19 @@ export async function publicEvents(month: string, fromDate: string) {
   return (data ?? []).map(presentPublicEvent);
 }
 
+export async function publicEventDetails(id: string): Promise<VoleiEvent | null> {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return null;
+  const { data, error } = await serviceClient().from("volei_events").select(eventColumns).eq("id", id).maybeSingle();
+  fail(error);
+  return data as VoleiEvent | null;
+}
+
 export async function savePublicAttendance(
   token: string,
   eventId: string,
   status: AttendanceStatus | "limpar",
   now: string,
+  birthDate?: string,
 ) {
   const member = await memberByToken(token);
   if (!member || !member.is_active) return { error: "Link inválido." };
@@ -286,16 +292,21 @@ export async function savePublicAttendance(
     (status === "confirmado" && !isEventOpen(event as VoleiEvent, now))
   )
     return { error: "Este dia não aceita mais confirmações." };
-  const result = await client.rpc("volei_respond", {
+  const result = await client.rpc("volei_respond_profile", {
     p_event: eventId,
     p_member: member.id,
     p_status: status,
     p_token: token,
+    p_birth_date: birthDate ?? null,
   });
   if (result.error)
     return {
       error:
-        "Não foi possível registrar. Verifique se as inscrições estão abertas.",
+        result.error.code === "P0001"
+          ? result.error.message
+          : result.error.code === "23505"
+            ? duplicateMemberMessage
+            : "Não foi possível registrar. Verifique se as inscrições estão abertas.",
     };
   return { error: "" };
 }

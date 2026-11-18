@@ -1,3 +1,4 @@
+import { VolleyHeroDetail, VolleyPageHeader } from "@/components/volei/page-frame";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { publicEvent } from "@/lib/volei/repository";
@@ -8,7 +9,13 @@ import { serviceClient } from "@/lib/escalas/supabase";
 import { GameResponse, type MyGame } from "@/components/volei/game-response";
 import { GameRoster } from "@/components/volei/game-roster";
 import { VolleyIcon } from "@/components/volei/volley-icon";
+import { publicWhatsAppGroup } from "@/lib/volei/group-settings";
+import { WhatsAppGroupCard } from "@/components/volei/whatsapp-group";
 import "@/components/volei/game.css";
+import { guestQueuePosition, memberQueuePosition } from "@/lib/volei/queue";
+import { EventLinks } from "@/components/volei/event-links";
+import { ownParticipationProfile } from "@/lib/volei/participation-profile";
+import { admissionForEvent } from "@/lib/volei/participation-policy";
 export const dynamic = "force-dynamic";
 export default async function Page({
   params,
@@ -16,10 +23,11 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [game, player] = await Promise.all([publicEvent(id), currentPlayer()]);
+  const [game, player, group] = await Promise.all([publicEvent(id), currentPlayer(), publicWhatsAppGroup()]);
   if (!game) notFound();
   const { event, attendance, guests } = game;
   const open = isEventOpen(event);
+  const admission = admissionForEvent(event, player);
   const confirmed =
     attendance.filter((p) => p.status === "confirmado").length +
     guests.filter((p) => p.status === "confirmado").length;
@@ -27,7 +35,7 @@ export default async function Page({
   const ownGuest = player
     ? await serviceClient()
         .from("volei_guests")
-        .select("name,status,profile_token")
+        .select("id,name,status,profile_token")
         .eq("event_id", id)
         .eq("member_id", player.id)
         .maybeSingle()
@@ -39,20 +47,21 @@ export default async function Page({
         blocked: player.blocked,
         active: player.is_active,
         membershipStatus: player.membership_status,
+        profile: ownParticipationProfile(player),
         canReport: canSubmitComplaint(player),
         status: attendance.find((p) => p.member_id === player.id)?.status,
+        queuePosition: memberQueuePosition(attendance, player.id),
         guest: ownGuest?.data
           ? {
               name: ownGuest.data.name,
               status: ownGuest.data.status,
               profileToken: ownGuest.data.profile_token,
+              queuePosition: guestQueuePosition(guests, ownGuest.data.id),
             }
           : undefined,
       }
     : null;
-  const deadline = event.registration_deadline
-    ? new Date(event.registration_deadline)
-    : null;
+  const displayedDate = admission.state === "scheduled" && admission.opensAt ? new Date(admission.opensAt) : new Date(admission.closesAt);
   const timeFormat = new Intl.DateTimeFormat("pt-BR", {
     timeZone: "America/Sao_Paulo",
     hour: "2-digit",
@@ -63,14 +72,12 @@ export default async function Page({
       <Link href="/volei" className="game-back">
         ← Todos os jogos
       </Link>
-      <header className="game-event-header">
-        <div className="game-event-intro">
-          <span className="game-event-label">
-            <span />
-            LISTA DO DIA
-          </span>
-          <h1>{event.title}</h1>
-          <div className="game-event-details">
+      <VolleyPageHeader
+        mobileCompact
+        eyebrow="LISTA DO DIA"
+        title={event.title}
+        description={<>
+<div className="game-event-details">
             <span>
               <VolleyIcon name="clock" />
               {formatDate(event.date)}
@@ -89,28 +96,21 @@ export default async function Page({
               <p className="game-event-notes">{event.notes}</p>
             </details>
           )}
-        </div>
-        <div className="game-deadline-box">
-          <span className={`game-open-badge ${!open ? "is-closed" : ""}`}>
-            <span />
-            {open ? "INSCRIÇÕES ABERTAS" : "INSCRIÇÕES ENCERRADAS"}
-          </span>
-          <p>Confirmações até</p>
-          <strong>
-            {deadline ? timeFormat.format(deadline) : "18:00"}
-            <small>horário de Brasília</small>
-          </strong>
-          <span>
-            {deadline
-              ? new Intl.DateTimeFormat("pt-BR", {
+        </>}
+        aside={<VolleyHeroDetail
+          status={admission.open ? "INSCRIÇÕES ABERTAS" : admission.state === "closed" ? "INSCRIÇÕES ENCERRADAS" : admission.state === "scheduled" ? "AGUARDANDO ABERTURA" : "CONSULTE SUA INSCRIÇÃO"}
+          active={admission.open}
+          label={admission.state === "scheduled" ? "Suas inscrições abrem às" : "Confirmações até"}
+          value={timeFormat.format(displayedDate)}
+          description="Horário de Brasília"
+          detail={new Intl.DateTimeFormat("pt-BR", {
                   timeZone: "America/Sao_Paulo",
                   day: "2-digit",
                   month: "long",
-                }).format(deadline)
-              : formatDate(event.date)}
-          </span>
-        </div>
-      </header>
+                }).format(displayedDate)}
+        />}
+      />
+      <EventLinks event={event} />
       <div className="game-summary-strip">
         <span>
           <VolleyIcon name="users" />
@@ -139,13 +139,16 @@ export default async function Page({
       <div className="game-page-grid">
         <GameResponse
           eventId={id}
+          eventDate={event.date}
           open={open}
+          admission={admission}
           finished={!!event.presence_closed_at}
           mine={mine}
           free={eventFreeSlots(event, confirmed, reserved)}
         />
         <GameRoster game={game} updatedAt={new Date().toISOString()} />
       </div>
+      <WhatsAppGroupCard group={group} />
       <footer className="game-page-footer">
         <VolleyIcon name="ball" />
         <p>

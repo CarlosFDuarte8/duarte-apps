@@ -1,0 +1,21 @@
+.invitation { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-width: 0; }
+.copy { flex: 1; min-width: 0; }
+.copy p, .note { margin: 10px 0 0; color: var(--vm-muted); font-size: var(--v-text-small); line-height: 1.6; }
+.qr { display: block; flex-shrink: 0; max-width: none; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
+.print { flex-shrink: 0; width: 112px; margin: 0; text-align: center; color: #111; font-family: Arial, sans-serif; }
+.print a { display: block; width: fit-content; margin: 0 auto; }
+.print figcaption { margin-top: 4px; font-size: 10px; line-height: 1.35; }
+.print figcaption strong, .print figcaption span { display: block; }
+.settings { display: grid; gap: var(--v-page-gap); max-width: 900px; width: 100%; }
+.field { display: grid; gap: var(--v-field-gap); }
+.help { font-size: var(--v-text-small); color: var(--vm-muted); line-height: 1.6; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.feedback { margin: 0; color: var(--vm-ink); font-size: var(--v-text-body); }
+.error { color: var(--vm-component-danger-ink); }
+@media (max-width: 400px) { .invitation { gap: 12px; } .invitation .qr { width: 96px; height: 96px; } }
+@media print {
+  .print { width: 30mm; break-inside: avoid; }
+  .print .qr { width: 26mm; height: 26mm; border: 0; border-radius: 0; }
+  .print, .print figcaption, .print strong, .print span { color: #000 !important; }
+  .print figcaption { font-size: 8pt; }
+}

@@ -10,11 +10,17 @@ import { logoutVolei as logout } from "@/app/volei/entrar/actions";
 import { VolleyIcon } from "./volley-icon";
 import { NotificationBell } from "./notification-bell";
 import { ThemeToggle } from "./theme-toggle";
+import { VolleyPage } from "./page-frame";
+import { VolleyBrand } from "./brand";
+import { NetworkStatus } from "./network-status";
+import "./design-tokens.css";
 import "./shell.css";
 import "@/components/ui/shadcn.css";
 import "./mobile.css";
 import "./theme.css";
 import "./color-mode.css";
+import "./navigation.css";
+import "./primitives.css";
 export function VoleiShell({
   children,
   admin = false,
@@ -31,12 +37,13 @@ export function VoleiShell({
     if (
       path?.includes("lista-presenca") ||
       path?.includes("entrar") ||
+      path === "/volei/privacidade" ||
       path?.endsWith("/portaria")
     )
       return;
     const refresh = () => {
       if (
-        document.visibilityState !== "visible" ||
+        !navigator.onLine || document.visibilityState !== "visible" ||
         refreshing ||
         Date.now() - lastRefresh.current < 5000 ||
         document.activeElement?.closest("form")
@@ -68,20 +75,12 @@ export function VoleiShell({
   return (
     <ActivityProvider>
       <div
+        data-ui="quadra"
         className={`volley-app${admin ? "" : " volley-public"}${collapsed ? " volley-sidebar-collapsed" : ""}`}
       >
+        <a href="#volley-main" className="volley-skip-link">Pular para o conteúdo</a>
         <aside className="volley-sidebar" id="volley-navigation">
-          <Link
-            href={admin ? "/admin/volei" : "/volei"}
-            className="volley-brand"
-          >
-            <span>
-              <VolleyIcon name="ball" width="30" height="30" />
-            </span>
-            <div>
-              QUADRA<small>VÔLEI DA GALERA</small>
-            </div>
-          </Link>
+          <VolleyBrand admin={admin} />
           <div className="volley-mode">
             {admin ? "GESTÃO DO GRUPO" : "DENTRO DE QUADRA"}
           </div>
@@ -92,7 +91,6 @@ export function VoleiShell({
                 href={href}
                 aria-label={label}
                 title={collapsed ? label : undefined}
-                style={{ position: "relative" }}
                 aria-current={
                   path === href ||
                   (href === "/volei" &&
@@ -150,27 +148,15 @@ export function VoleiShell({
             ) : (
               <span>Organize. Confirme. Jogue.</span>
             )}
+            <Link href="/volei/privacidade">Política de Privacidade</Link>
           </footer>
         </aside>
         <div className="volley-body">
           <header className="volley-top">
-            <Link
-              href={admin ? "/admin/volei" : "/volei"}
-              className="volley-mobile-brand"
-              aria-label={
-                admin
-                  ? "Quadra — painel administrativo"
-                  : "Quadra — jogos e presenças"
-              }
-            >
-              <VolleyIcon name="ball" width="28" height="28" />
-              <span>
-                QUADRA
-                <small>{admin ? "ADMINISTRATIVO" : "VÔLEI DA GALERA"}</small>
-              </span>
-            </Link>
+            <VolleyBrand admin={admin} mobile />
             <div className="vx-desktop-context">
               <Button
+                className="volley-menu-toggle"
                 variant="ghost"
                 size="icon"
                 onClick={() => setCollapsed(!collapsed)}
@@ -184,7 +170,11 @@ export function VoleiShell({
               </Button>
               <span className="volley-header-divider" />
               <strong>
-                {path?.includes("notificacoes")
+                {path?.includes("configuracoes")
+                  ? "Configurações do grupo"
+                  : path === "/volei/privacidade"
+                  ? "Política de Privacidade"
+                  : path?.includes("notificacoes")
                   ? "Solicitações"
                   : path?.includes("ajuda")
                     ? "Ajuda"
@@ -217,7 +207,7 @@ export function VoleiShell({
               )}
             </div>
           </header>
-          <div className="volley-content">{children}</div>
+          <VolleyPage><NetworkStatus />{children}</VolleyPage>
         </div>
       </div>
     </ActivityProvider>

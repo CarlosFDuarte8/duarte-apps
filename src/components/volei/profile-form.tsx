@@ -1,13 +1,14 @@
 "use client";
-import { useEffect, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PersonAvatar } from "./person-avatar";
 import { PhotoCropper } from "./photo-cropper";
 import { PhoneInput } from "./phone-input";
+import { BirthDateField } from "./birth-date-field";
 import "./profile.css";
 import { useOperationStatus } from "./activity";
+import { useRun } from "./use-run";
 
 export function ProfileForm({
   name,
@@ -16,11 +17,13 @@ export function ProfileForm({
   maxDate,
   save,
   emergency,
+  birthRequired = false,
 }: {
   name: string;
   birthDate?: string | null;
   photoUrl?: string | null;
   maxDate: string;
+  birthRequired?: boolean;
   save: (form: FormData) => Promise<{ error: string }>;
   emergency?: {
     emergency_name?: string;
@@ -45,14 +48,13 @@ export function ProfileForm({
   const [cropImage, setCropImage] = useState<ImageBitmap | null>(null);
   const [message, setMessage] = useState("");
   const [failed, setFailed] = useState(false);
-  const [pending, start] = useTransition();
+  const { run, pending, feedback, success } = useRun({ successMessage: "Cadastro atualizado." });
   useOperationStatus(
-    pending || processing,
-    processing ? "Preparando foto…" : "Salvando cadastro e foto…",
+    processing,
+    "Preparando foto…",
     failed ? message : "",
     !failed ? message : "",
   );
-  const router = useRouter();
   useEffect(
     () => () => {
       if (preview) URL.revokeObjectURL(preview);
@@ -74,17 +76,7 @@ export function ProfileForm({
           form.set("emergency_relationship", contactRelationship);
           form.set("remove_photo", String(remove));
           if (photo) form.set("photo", photo);
-          start(async () => {
-            try {
-              const result = await save(form);
-              setFailed(!!result.error);
-              setMessage(result.error || "Cadastro atualizado.");
-              if (!result.error) router.refresh();
-            } catch {
-              setFailed(true);
-              setMessage("Não foi possível salvar. Tente novamente.");
-            }
-          });
+          run(() => save(form), undefined, "Salvando cadastro e foto…");
         }}
       >
         <div className="vp-photo-editor">
@@ -158,19 +150,7 @@ export function ProfileForm({
             </small>
           </div>
         </div>
-        <label className="vp-birth-label">
-          Data de nascimento
-          <Input
-            type="date"
-            min="1900-01-01"
-            max={maxDate}
-            value={birth}
-            onChange={(e) => setBirth(e.target.value)}
-          />
-          <small>
-            Ajuda o responsável a identificar participantes menores de 18 anos.
-          </small>
-        </label>
+        <BirthDateField value={birth} onChange={setBirth} maxDate={maxDate} required={birthRequired} disabled={pending} />
         <fieldset className="vp-emergency">
           <legend>Contato de emergência (opcional)</legend>
           <p>
@@ -210,6 +190,8 @@ export function ProfileForm({
         >
           {pending ? "Salvando…" : "Salvar dados do cadastro"}
         </Button>
+        {feedback}
+        {success && <p role="status" className="vm-success">{success}</p>}
         {message && (
           <p
             className={failed ? "volley-error" : "vm-success"}

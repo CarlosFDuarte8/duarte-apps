@@ -1,5 +1,11 @@
 "use client";
-import { useRef, useState } from "react";
+import { NativeSelect } from "@/components/ui/native-select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import { VolleyCard } from "@/components/volei/page-frame";
+
+import { useState } from "react";
 import { addAdminGuest } from "@/app/admin/volei-actions";
 import { useRun } from "./use-run";
 
@@ -7,21 +13,23 @@ export function AdminGuestForm({
   eventId,
   sponsors,
   finalized,
+  embedded = false,
 }: {
   eventId: string;
   sponsors: { id: string; name: string }[];
   finalized: boolean;
+  embedded?: boolean;
 }) {
   const { run, pending, feedback } = useRun({ revalidated: true });
   const [memberId, setMemberId] = useState("");
   const [name, setName] = useState("");
   const [receipt, setReceipt] = useState("");
-  const lock = useRef(false);
   const unavailable = finalized || sponsors.length === 0;
   return (
-    <section
+    <VolleyCard as="section"
+      data-variant={embedded ? "embedded" : undefined}
       id="adicionar-convidado"
-      className="sc-card sc-form-card scroll-mt-24"
+      className="sc-form-card scroll-mt-24"
     >
       <h2>Adicionar convidado</h2>
       <p>
@@ -41,23 +49,18 @@ export function AdminGuestForm({
       <form
         onSubmit={(event) => {
           event.preventDefault();
-          if (lock.current || pending || unavailable) return;
-          lock.current = true;
+          if (pending || unavailable) return;
           setReceipt("");
           run(
             async () => {
-              try {
-                const result = await addAdminGuest(eventId, memberId, name);
-                if (!result.error) {
-                  setReceipt(
-                    `${result.name}: ${result.status === "confirmado" ? "confirmado — já consta na lista do jogo" : "na lista de espera — aguarde a liberação de vaga"}.`,
-                  );
-                  setName("");
-                }
-                return result;
-              } finally {
-                lock.current = false;
+              const result = await addAdminGuest(eventId, memberId, name);
+              if (!result.error) {
+                setReceipt(
+                  `${result.name}: ${result.status === "confirmado" ? "confirmado — já consta na lista do jogo" : "na lista de espera — aguarde a liberação de vaga"}.`,
+                );
+                setName("");
               }
+              return result;
             },
             undefined,
             "Adicionando convidado…",
@@ -66,7 +69,7 @@ export function AdminGuestForm({
       >
         <label>
           Responsável pelo convidado
-          <select
+          <NativeSelect
             required
             value={memberId}
             disabled={pending || unavailable}
@@ -78,11 +81,11 @@ export function AdminGuestForm({
                 {person.name}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </label>
         <label>
           Nome completo do convidado
-          <input
+          <Input
             required
             maxLength={100}
             value={name}
@@ -94,14 +97,14 @@ export function AdminGuestForm({
         </label>
         {feedback}
         {receipt && <p role="status">{receipt}</p>}
-        <button
+        <Button
           type="submit"
           className="sc-btn"
           disabled={pending || unavailable || !memberId || !name.trim()}
         >
           {pending ? "Adicionando…" : "Adicionar convidado ao jogo"}
-        </button>
+        </Button>
       </form>
-    </section>
+    </VolleyCard>
   );
 }

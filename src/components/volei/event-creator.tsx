@@ -1,4 +1,9 @@
 "use client";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import { VolleyFormCard } from "@/components/volei/page-frame";
+
 import { useState } from "react";
 import { createEvents } from "@/app/admin/volei-actions";
 import { daysInMonth, weekdayOf } from "@/lib/volei/domain";
@@ -18,8 +23,8 @@ export function EventCreator({ month }: { month: string }) {
   );
 
   return (
-    <form
-      className="sc-card sc-form-card"
+    <VolleyFormCard
+      className="sc-form-card"
       onSubmit={(e) => {
         e.preventDefault();
         const form = new FormData(e.currentTarget);
@@ -71,7 +76,7 @@ export function EventCreator({ month }: { month: string }) {
         </label>
         <label>
           Confirmar presença até (Brasília)
-          <input
+          <Input
             type="time"
             name="registration_time"
             defaultValue="18:00"
@@ -84,23 +89,23 @@ export function EventCreator({ month }: { month: string }) {
         </label>
         <label>
           Título
-          <input name="title" defaultValue="Vôlei" required maxLength={100} />
+          <Input name="title" defaultValue="Vôlei" required maxLength={100} />
         </label>
         <label>
           Horário
-          <input name="start_time" placeholder="19h" maxLength={20} />
+          <Input name="start_time" placeholder="19h" maxLength={20} />
         </label>
         <label>
           Local
-          <input name="location" maxLength={120} />
+          <Input name="location" maxLength={120} />
         </label>
         <label>
           Observações
-          <input name="notes" maxLength={500} />
+          <Input name="notes" maxLength={500} />
         </label>
       </div>
       {feedback}
-      <button
+      <Button
         type="submit"
         className="sc-btn"
         disabled={pending || selected.length === 0}
@@ -108,7 +113,7 @@ export function EventCreator({ month }: { month: string }) {
         {pending
           ? "Salvando…"
           : `Adicionar ${selected.length || ""} ${selected.length === 1 ? "dia" : "dias"}`}
-      </button>
-    </form>
+      </Button>
+    </VolleyFormCard>
   );
 }

@@ -1,14 +1,15 @@
+import { VolleyPageHeader } from "@/components/volei/page-frame";
 import Link from "next/link";
 import { Printer } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requireVoleiAdmin as requireAdmin } from "@/lib/volei/auth";
-import { PageHeader } from "@/components/escalas/admin-ui";
+
 import { EventManager } from "@/components/volei/event-manager";
 import { getEvent, listMembers, publicEvent } from "@/lib/volei/repository";
 import { GameRoster } from "@/components/volei/game-roster";
 import { formatDate } from "@/lib/volei/domain";
 import { Button } from "@/components/ui/button";
-import { AdminGuestForm } from "@/components/volei/admin-guest-form";
+import { AdminParticipantForm } from "@/components/volei/admin-participant-form";
 
 export default async function Page({
   params,
@@ -26,11 +27,21 @@ export default async function Page({
   if (!found) notFound();
   return (
     <>
-      <PageHeader
+      <VolleyPageHeader
         eyebrow="Vôlei"
         title={formatDate(found.event.date)}
         actions={
           <>
+            <Button asChild variant="outline">
+              <Link href={`/admin/volei/${id}/quadra`}>
+                Montar times e controlar a quadra
+              </Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href={`/admin/volei/frequencia/${id}`}>
+                Conferir quem compareceu
+              </Link>
+            </Button>
             <Button asChild>
               <Link href={`/admin/volei/${id}/portaria`}>
                 <Printer aria-hidden="true" /> Imprimir lista da portaria
@@ -45,18 +56,9 @@ export default async function Page({
           </>
         }
       />
-      <Button asChild variant="outline">
-        <Link href={`/admin/volei/${id}/quadra`}>
-          Montar times e controlar a quadra
-        </Link>
-      </Button>
-      <Button asChild variant="outline">
-        <Link href={`/admin/volei/frequencia/${id}`}>
-          Conferir quem compareceu
-        </Link>
-      </Button>
-      <AdminGuestForm
+      <AdminParticipantForm
         eventId={id}
+        members={members.filter(member => member.is_active && !member.blocked && member.membership_status === "approved").map(({ id, name, phone }) => ({ id, name, phone }))}
         finalized={!!found.event.presence_closed_at}
         sponsors={members
           .filter(

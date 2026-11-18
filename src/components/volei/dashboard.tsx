@@ -14,8 +14,11 @@ import {
   UserRound,
   Plus,
   ChevronDown,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { VolleyCard, VolleyHero, VolleyPageHeader } from "./page-frame";
+import { VolleyMetric, VolleyMetrics } from "./metric";
 import { EventCard, type EventSummary } from "./event-card";
 import { ShareGameButton } from "./share-game-button";
 import {
@@ -28,21 +31,40 @@ import {
 } from "@/lib/volei/domain";
 import "./dashboard.css";
 import type { ReactNode } from "react";
+import type { AttendanceStatus } from "@/lib/volei/domain";
+import { EventLinks } from "./event-links";
 export function VolleyDashboard({
   items,
   admin = false,
   month,
   creator,
+  groupInvite,
+  personal,
+  tasks,
 }: {
   items: EventSummary[];
   admin?: boolean;
   month: string;
   creator?: ReactNode;
+  groupInvite?: ReactNode;
+  tasks?: ReactNode;
+  personal?: { name: string; membershipStatus: string; available: boolean; statuses: Record<string, AttendanceStatus>; positions: Record<string, number | null> } | null;
 }) {
   const upcoming = items.find(
-    (item) => item.event.date >= today() && !item.event.closed,
+    (item) => item.event.date >= today() && (admin ? !item.event.closed : !item.event.presence_closed_at),
   );
   const next = upcoming?.event;
+  const ownStatus = next ? personal?.statuses[next.id] : undefined;
+  const personalMessage = personal
+    ? personal.membershipStatus !== "approved" ? personal.membershipStatus === "pending" ? "Seu cadastro está aguardando aprovação." : "Seu cadastro não foi aprovado. Fale com o responsável."
+      : !personal.available ? "Seu cadastro está indisponível para novas inscrições."
+      : ownStatus === "confirmado" ? "Você está confirmado para este encontro."
+      : ownStatus === "espera" ? `Você está na lista de espera deste encontro.${next && personal.positions[next.id] ? ` Posição atual: ${personal.positions[next.id]}º na fila de membros.` : ""}`
+      : upcoming?.admission && !upcoming.admission.open ? upcoming.admission.message
+      : next && isEventOpen(next) ? "Você ainda não confirmou sua presença."
+      : next ? "As inscrições encerraram. Consulte sua participação."
+      : "Assim que houver um novo encontro, ele aparecerá aqui."
+    : null;
   const other = items.filter((item) => item.event.id !== next?.id);
   const occupied = upcoming?.confirmed ?? 0;
   const free = next
@@ -68,6 +90,12 @@ export function VolleyDashboard({
           text: "Pendências para acompanhar",
           icon: Bell,
         },
+        {
+          href: "/admin/volei/configuracoes",
+          title: "Grupo do WhatsApp",
+          text: "Link público e QR code",
+          icon: MessageCircle,
+        },
       ]
     : [
         {
@@ -84,45 +112,37 @@ export function VolleyDashboard({
         },
       ];
   return (
-    <div className="vx-dashboard">
-      <header className="vx-page-intro">
-        <div>
-          <p className="vx-eyebrow">
-            {admin ? "SEU PAINEL DE CONTROLE" : "VÔLEI DA GALERA"}
-          </p>
-          <h1>
-            {admin
-              ? "Visão geral"
-              : "Jogos e presenças"}
-          </h1>
-          <p>
-            {admin
-              ? "Acompanhe a próxima partida e organize o que vem depois."
-              : "Escolha seu jogo. Confirme a presença. A gente se vê na quadra."}
-          </p>
-        </div>
-        {admin && (
+    <div className={`vx-dashboard${admin ? "" : " vx-dashboard-public"}`}>
+      {admin ? (
+        <VolleyPageHeader eyebrow="SEU PAINEL DE CONTROLE" title="Visão geral" description="Acompanhe a próxima partida e organize o que vem depois." actions={
           <Button asChild variant="outline">
             <Link href="/volei">
               Área pública
               <ArrowUpRight aria-hidden="true" />
             </Link>
           </Button>
-        )}
-      </header>
-      <section className="vx-overview-stats" aria-label="Resumo dos encontros">
+        } />
+      ) : (
+        <VolleyHero
+          id="volley-games-title"
+          eyebrow="VÔLEI DA GALERA"
+          title="Jogos e presenças"
+          description="Escolha seu jogo. Confirme a presença. A gente se vê na quadra."
+          compact
+          mobileCompact
+        />
+      )}
+      {tasks}
+      <VolleyMetrics aria-label="Resumo dos encontros" mobileCompact={!admin}>
         {[
           { label: "Encontros", value: items.length, detail: admin ? formatMonth(month) : "Na agenda", icon: CalendarDays, tone: "blue" },
           { label: "Confirmados", value: occupied, detail: "No próximo encontro", icon: Users, tone: "green" },
           { label: "Vagas livres", value: free, detail: next ? "No próximo encontro" : "Sem encontro agendado", icon: ShieldCheck, tone: "blue" },
           { label: "Na espera", value: (upcoming?.waiting ?? 0) + (upcoming?.guestsWaiting ?? 0), detail: "Membros e convidados", icon: Clock3, tone: "amber" },
         ].map(({ label, value, detail, icon: Icon, tone }) => (
-          <article key={label} className={`vx-overview-stat vx-stat-${tone}`}>
-            <div><span>{label}</span><i><Icon aria-hidden="true" /></i></div>
-            <strong>{value}</strong><p>{detail}</p>
-          </article>
+          <VolleyMetric key={label} className="vx-overview-stat" label={label} value={value} detail={detail} icon={<Icon />} tone={tone as "blue" | "green" | "amber"} />
         ))}
-      </section>
+      </VolleyMetrics>
       <div className="vx-dashboard-columns">
         <div className="vx-main-column">
           <section
@@ -136,10 +156,12 @@ export function VolleyDashboard({
                 {next?.date === today() ? "É HOJE!" : "PRÓXIMO ENCONTRO"}
               </span>
               <h2>{next ? next.title : "A próxima partida está por vir."}</h2>
+              {!admin && personal && <p className="vx-feature-description" data-slot="personal-game-status"><strong>Olá, {personal.name.split(" ")[0]}!</strong> {personalMessage}</p>}
+              {!admin && !personal && upcoming?.admission && <p className="vx-feature-description">{upcoming.admission.message}</p>}
               {next ? (
                 <>
-                  <p className="vx-feature-date">{formatDate(next.date)}</p>
                   <div className="vx-feature-meta">
+                    <span><CalendarDays aria-hidden="true" />{formatDate(next.date)}</span>
                     {next.start_time && (
                       <span>
                         <Clock3 aria-hidden="true" />
@@ -159,11 +181,15 @@ export function VolleyDashboard({
                         href={
                           admin
                             ? `/admin/volei/${next.id}/quadra`
-                            : `/volei/jogo/${next.id}`
+                            : `/volei/jogo/${next.id}#minha-presenca`
                         }
                       >
                         {admin
                           ? "Abrir quadra e times"
+                          : ownStatus === "confirmado" ? "Gerenciar minha presença"
+                          : ownStatus === "espera" ? "Acompanhar minha posição"
+                          : personal && (personal.membershipStatus !== "approved" || !personal.available) ? "Consultar minha situação"
+                          : upcoming?.admission && !upcoming.admission.open ? upcoming.admission.state === "review" ? "Conferir dados para participar" : "Consultar minha inscrição"
                           : isEventOpen(next)
                             ? "Confirmar minha presença"
                             : "Ver lista do encontro"}
@@ -172,6 +198,7 @@ export function VolleyDashboard({
                     </Button>
                     <ShareGameButton id={next.id} />
                   </div>
+                  {!admin && <EventLinks event={next} inverse />}
                   <p className="vx-feature-foot">
                     <Users aria-hidden="true" />
                     <strong>{occupied} confirmados</strong>
@@ -189,10 +216,10 @@ export function VolleyDashboard({
                       : "Assim que um novo encontro for marcado, ele aparece por aqui."}
                   </p>
                   {admin && (
-                    <a className="vx-feature-text-link" href="#agendar-jogos">
+                    <Button asChild variant="outline" data-tone="inverse"><a className="vx-feature-text-link" href="#agendar-jogos">
                       Agendar um encontro
                       <ArrowRight aria-hidden="true" />
-                    </a>
+                    </a></Button>
                   )}
                 </>
               )}
@@ -207,13 +234,14 @@ export function VolleyDashboard({
               </span>
             </Link>
           )}
-          <section className="vx-agenda-section">
+          <VolleyCard className="vx-agenda-section" aria-labelledby="volley-agenda-title">
             <header className="vx-agenda-head">
               <div>
                 <span className="vx-eyebrow">
-                  {admin ? "PLANEJE OS PRÓXIMOS DIAS" : "PROGRAME-SE"}
+                  <CalendarDays aria-hidden="true" />
+                  {admin ? "PLANEJE OS PRÓXIMOS DIAS" : "PRÓXIMOS ENCONTROS"}
                 </span>
-                <h2>{admin ? "Agenda da quadra" : "Mais encontros"}</h2>
+                <h2 id="volley-agenda-title">{admin ? "Agenda da quadra" : "Mais encontros"}</h2>
               </div>
               {admin && (
                 <div className="vx-agenda-month">
@@ -229,6 +257,11 @@ export function VolleyDashboard({
                     </Link>
                   </Button>
                 </div>
+              )}
+              {!admin && other.length > 0 && (
+                <Button asChild variant="outline">
+                  <a href="#lista-encontros"><CalendarDays aria-hidden="true" />Ver agenda completa<ArrowRight aria-hidden="true" /></a>
+                </Button>
               )}
             </header>
             {items.length > 0 && (
@@ -276,7 +309,7 @@ export function VolleyDashboard({
                 <div id="agendar-jogos">{creator}</div>
               </details>
             )}
-            <div className="vx-event-list">
+            <div className="vx-event-list" id="lista-encontros" tabIndex={-1}>
               {other.map((item) => (
                 <EventCard key={item.event.id} {...item} admin={admin} />
               ))}
@@ -298,17 +331,18 @@ export function VolleyDashboard({
                 </div>
               </div>
             )}
-          </section>
+          </VolleyCard>
         </div>
         <aside className="vx-side-column">
-          <section className="vx-tools">
+          {groupInvite}
+          <VolleyCard className="vx-tools" aria-labelledby="volley-tools-title">
             <header>
               <span className="vx-tool-icon">
                 <Users aria-hidden="true" />
               </span>
               <div>
-                <span className="vx-eyebrow">FORA DAS QUATRO LINHAS</span>
-                <h2>{admin ? "Cuide do seu grupo" : "Seu espaço no grupo"}</h2>
+                <span className="vx-eyebrow">{admin ? "GESTÃO DO GRUPO" : "SEU ESPAÇO NO GRUPO"}</span>
+                <h2 id="volley-tools-title">{admin ? "Cuide do seu grupo" : "Seu espaço no grupo"}</h2>
               </div>
             </header>
             <div className="vx-shortcuts">
@@ -321,13 +355,13 @@ export function VolleyDashboard({
                     <strong>{title}</strong>
                     <small>{text}</small>
                   </div>
-                  <ArrowUpRight aria-hidden="true" />
+                  <ArrowRight aria-hidden="true" />
                 </Link>
               ))}
             </div>
-          </section>
+          </VolleyCard>
           {admin ? (
-            <section className="vx-month-summary">
+            <VolleyCard className="vx-month-summary">
               <span className="vx-eyebrow">
                 EM {formatMonth(month).toLocaleUpperCase("pt-BR")}
               </span>
@@ -355,11 +389,11 @@ export function VolleyDashboard({
                 </div>
               </dl>
               <p>Uma pessoa pode participar de mais de um encontro.</p>
-            </section>
+            </VolleyCard>
           ) : (
-            <section className="vx-how">
+            <VolleyCard className="vx-how" aria-labelledby="volley-how-title">
               <span className="vx-eyebrow">SIMPLES ASSIM</span>
-              <h2>Da lista para a quadra.</h2>
+              <h2 id="volley-how-title">Da lista para a quadra.</h2>
               <ol>
                 <li>
                   <span>01</span>
@@ -383,7 +417,7 @@ export function VolleyDashboard({
                   </div>
                 </li>
               </ol>
-            </section>
+            </VolleyCard>
           )}
         </aside>
       </div>

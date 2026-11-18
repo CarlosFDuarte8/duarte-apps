@@ -1,4 +1,6 @@
-﻿import Link from "next/link";
+import { VolleyMetric, VolleyMetrics } from "@/components/volei/metric";
+import { VolleyFormCard, VolleyCard, VolleyPageHeader } from "@/components/volei/page-frame";
+import Link from "next/link";
 import { z } from "zod";
 import { requireVoleiAdmin } from "@/lib/volei/auth";
 import { today, currentMonth, formatDate } from "@/lib/volei/domain";
@@ -39,15 +41,12 @@ export default async function Page({
   const report = summarizeFrequency(members, events);
   return (
     <>
-      <section className="volley-hero">
-        <span className="volley-eyebrow">QUEM FAZ O JOGO ACONTECER</span>
-        <h1>Frequência do grupo</h1>
-        <p>
-          Confira quem compareceu de verdade. Acompanhe presenças, faltas e a
-          participação de cada membro, sem punições automáticas.
-        </p>
-      </section>
-      <form className="volley-card vm-period" action="/admin/volei/frequencia">
+      <VolleyPageHeader
+        eyebrow="QUEM FAZ O JOGO ACONTECER"
+        title="Frequência do grupo"
+        description="Confira quem compareceu de verdade. Acompanhe presenças, faltas e a participação de cada membro, sem punições automáticas."
+      />
+      <VolleyFormCard className="vm-period" action="/admin/volei/frequencia">
         <label>
           De
           <Input
@@ -74,27 +73,15 @@ export default async function Page({
             Escolha um período de até um ano, sem datas futuras.
           </p>
         )}
-      </form>
-      <div className="vm-metrics">
-        <div>
-          <strong>{report.completedGames}</strong>
-          <span>Jogos conferidos</span>
-        </div>
-        <div>
-          <strong>{report.totalPresences}</strong>
-          <span>Presenças de membros</span>
-        </div>
-        <div>
-          <strong>{report.totalAbsences}</strong>
-          <span>Faltas sem cancelamento</span>
-        </div>
-        <div>
-          <strong>{report.pendingGames}</strong>
-          <span>Chamadas pendentes</span>
-        </div>
-      </div>
+      </VolleyFormCard>
+      <VolleyMetrics>
+        <VolleyMetric  value={report.completedGames} label="Jogos conferidos" />
+        <VolleyMetric  value={report.totalPresences} label="Presenças de membros" />
+        <VolleyMetric  value={report.totalAbsences} label="Faltas sem cancelamento" />
+        <VolleyMetric  value={report.pendingGames} label="Chamadas pendentes" />
+      </VolleyMetrics>
       <FrequencyRanking report={report} />
-      <section className="volley-card">
+      <VolleyCard as="section">
         <header className="vm-section-head">
           <div>
             <h2>Chamada dos jogos</h2>
@@ -131,7 +118,7 @@ export default async function Page({
             </p>
           )}
         </div>
-      </section>
+      </VolleyCard>
     </>
   );
 }

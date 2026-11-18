@@ -3,6 +3,11 @@ import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 import { transpileModule, ModuleKind } from "typescript";
 import * as zod from "zod";
+import * as profile from "./profile";
+import * as students from "./students";
+import * as phone from "./phone";
+import * as domain from "./domain";
+import * as eventLinkSettings from "./event-link-settings";
 
 const id = (n: number) =>
   `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
@@ -10,9 +15,10 @@ function fixture(
   error: { code?: string; message?: string } | null = null,
   authorized = true,
 ) {
-  const calls: { method: string; args: Record<string, string> }[] = [];
+  const calls: { method: string; args: Record<string, unknown> }[] = [];
   const invalidations: string[] = [];
   const exports: {
+    addMember?: (name: string, phone: string, enrollment: unknown, birthDate?: string) => Promise<{ error: string }>;
     addAdminGuest?: (
       event: string,
       member: string,
@@ -35,6 +41,10 @@ function fixture(
               if (!authorized) throw new Error("Acesso restrito");
               return {
                 client: {
+                  from: () => ({ insert: async (args: Record<string, unknown>) => {
+                    calls.push({ method: "insert", args });
+                    return { error };
+                  } }),
                   rpc: async (method: string, args: Record<string, string>) => {
                     calls.push({ method, args });
                     return {
@@ -46,6 +56,11 @@ function fixture(
               };
             },
           };
+        if (name === "@/lib/volei/profile") return profile;
+        if (name === "@/lib/volei/students") return students;
+        if (name === "@/lib/volei/phone") return phone;
+        if (name === "@/lib/volei/domain") return domain;
+        if (name === "@/lib/volei/event-link-settings") return eventLinkSettings;
         if (
           [
             "@/lib/volei/students",
@@ -60,8 +75,20 @@ function fixture(
       },
     },
   );
-  return { add: exports.addAdminGuest!, calls, invalidations };
+  return { add: exports.addAdminGuest!, addMember: exports.addMember!, calls, invalidations };
 }
+
+it("requires birth date for administrative registrations and preserves authorization", async () => {
+  const denied = fixture(null, false);
+  await expect(denied.addMember("Nome completo", "", {}, "2010-05-10")).rejects.toThrow(/restrito/);
+  const api = fixture();
+  const enrollment = { isStudent: false, days: [] };
+  for (const birth of [undefined, "", "2099-01-01", "2008-02-30"])
+    expect((await api.addMember("Nome completo", "", enrollment, birth)).error).toBeTruthy();
+  expect(api.calls).toHaveLength(0);
+  expect(await api.addMember("Nome completo", "(61) 99999-1234", enrollment, "2010-05-10")).toEqual({ error: "" });
+  expect(api.calls[0].args).toMatchObject({ birth_date: "2010-05-10", phone: "+5561999991234", membership_status: "approved" });
+});
 
 it("adds an administrative guest with the selected sponsor through the existing atomic RPC", async () => {
   const api = fixture();

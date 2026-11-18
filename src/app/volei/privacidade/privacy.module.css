@@ -1,0 +1,40 @@
+.document {
+  display: grid;
+  gap: var(--v-page-gap);
+  width: 100%;
+  max-width: 960px;
+  min-width: 0;
+}
+
+.document p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.document ul {
+  display: grid;
+  gap: var(--v-field-gap);
+  margin: 0;
+  padding-inline-start: 20px;
+}
+
+.section {
+  scroll-margin-top: var(--v-page-gap);
+}
+
+.document a:not([data-slot="button"]) {
+  color: var(--vm-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.updated {
+  font-size: var(--v-text-small);
+}
+
+.shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v-field-gap);
+}

@@ -15,10 +15,6 @@
   border-color: var(--vm-component-line, #bed2aa);
   color: var(--vm-component-ink, #385d34) !important;
 }
-.volley-app .vn-summary > a {
-  text-decoration: none;
-  color: var(--vm-component-ink, #3f633c);
-}
 .vn-bell-count {
   position: absolute;
   top: -5px;
@@ -138,32 +134,6 @@
 }
 .vn-all-done {
   color: var(--vm-component-success-ink, #5d7e45);
-}
-.vn-summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-.vn-summary > * {
-  display: block;
-  min-width: 0;
-  border: 1px solid var(--vm-component-line, #dfe7d8);
-  border-radius: 14px;
-  background: var(--vm-component-surface, #fff);
-  padding: 20px;
-  text-decoration: none;
-  color: var(--vm-component-ink, #3f633c);
-}
-.vn-summary strong {
-  display: block;
-  font-size: 30px;
-  letter-spacing: -1px;
-  margin-bottom: 8px;
-}
-.vn-summary span {
-  color: var(--vm-component-muted, #839278);
-  font-size: 12px;
-  line-height: 1.6;
 }
 .vn-tabs {
   display: flex;
@@ -418,20 +388,6 @@
   margin: 10px 0 0;
 }
 @media (max-width: 600px) {
-  .vn-summary {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
-  }
-  .vn-summary > * {
-    padding: 16px;
-    display: flex;
-    gap: 16px;
-    align-items: center;
-  }
-  .vn-summary strong {
-    font-size: 25px;
-    margin: 0;
-  }
   .vn-header-actions {
     gap: 8px;
   }

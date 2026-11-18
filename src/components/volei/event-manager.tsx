@@ -1,4 +1,9 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+import { VolleyCard, VolleySectionHeader } from "@/components/volei/page-frame";
+
 import { participationTime } from "@/lib/volei/participation-time";
 import { useState } from "react";
 import {
@@ -18,6 +23,10 @@ import { defaultDeadline } from "@/lib/volei/phone";
 import "./volei.css";
 import { NativeSelect } from "@/components/ui/native-select";
 import { buildGateList } from "@/lib/volei/gate-list";
+import { ageLabel, ageOn } from "@/lib/volei/profile";
+import { EventLinkSettings } from "./event-link-settings";
+import { VolleyListFilters } from "./list-filters";
+import { matchesName } from "@/lib/volei/list-search";
 
 type Status = AttendanceStatus | "limpar";
 
@@ -46,6 +55,9 @@ export function EventManager({
   const { run, pending, feedback } = useRun({ revalidated: true });
   const { copied, copy } = useCopy();
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [search, setSearch] = useState("");
+  const availableMembers = members.filter(member => member.is_active && member.membership_status === "approved");
+  const visibleMembers = availableMembers.filter(member => matchesName(member.name, search));
   const statusOf = new Map(attendance.map((a) => [a.member_id, a.status]));
   const confirmedNames = members
     .filter((m) => statusOf.get(m.id) === "confirmado")
@@ -69,24 +81,22 @@ export function EventManager({
 
   return (
     <>
-      <section className="volley-hero">
-        <span className="volley-eyebrow">COMPARTILHE COM O GRUPO</span>
-        <h1>O jogo está marcado.</h1>
-        <p>
-          Envie o link deste dia para os jogadores acompanharem as vagas e
-          confirmarem com nome e celular, sem precisar de um link individual.
-        </p>
-        <button
-          type="button"
-          className="sc-btn"
-          onClick={() =>
-            copy(`${window.location.origin}/volei/jogo/${event.id}`)
+      <VolleyCard as="section">
+        <VolleySectionHeader
+          eyebrow="COMPARTILHE COM O GRUPO"
+          title="O jogo está marcado."
+          description="Envie o link deste dia para os jogadores acompanharem as vagas e confirmarem com nome e celular, sem precisar de um link individual."
+          actions={
+            <Button
+              type="button"
+              onClick={() => copy(`${window.location.origin}/volei/jogo/${event.id}`)}
+            >
+              {copied ? "Link copiado" : "Copiar link público do jogo"}
+            </Button>
           }
-        >
-          {copied ? "Link copiado" : "Copiar link público do jogo"}
-        </button>
-      </section>
-      <section className="sc-card sc-form-card">
+        />
+      </VolleyCard>
+      <VolleyCard as="section" className="sc-form-card">
         <h2>Detalhes do dia</h2>
         <form
           onSubmit={(e) => {
@@ -99,6 +109,9 @@ export function EventManager({
                 location: f.get("location"),
                 notes: f.get("notes"),
                 closed: f.get("closed") === "on",
+                calendar_enabled: f.get("calendar_enabled") === "on",
+                directions_enabled: f.get("directions_enabled") === "on",
+                directions_url: f.get("directions_url"),
                 max_teams: Number(f.get("max_teams")),
                 registration_deadline: f.get("registration_deadline")
                   ? new Date(
@@ -127,7 +140,7 @@ export function EventManager({
             </label>
             <label>
               Prazo de inscrição (Brasília)
-              <input
+              <Input
                 type="datetime-local"
                 name="registration_deadline"
                 required
@@ -138,7 +151,7 @@ export function EventManager({
             </label>
             <label>
               Liberar convidados a partir de (Brasília)
-              <input
+              <Input
                 type="datetime-local"
                 name="guests_open_at"
                 defaultValue={localInput(event.guests_open_at)}
@@ -146,7 +159,7 @@ export function EventManager({
             </label>
             <label>
               Título
-              <input
+              <Input
                 name="title"
                 defaultValue={event.title}
                 required
@@ -155,7 +168,7 @@ export function EventManager({
             </label>
             <label>
               Horário
-              <input
+              <Input
                 name="start_time"
                 defaultValue={event.start_time}
                 maxLength={20}
@@ -163,7 +176,7 @@ export function EventManager({
             </label>
             <label>
               Local
-              <input
+              <Input
                 name="location"
                 defaultValue={event.location}
                 maxLength={120}
@@ -171,7 +184,7 @@ export function EventManager({
             </label>
             <label>
               Observações
-              <input name="notes" defaultValue={event.notes} maxLength={500} />
+              <Input name="notes" defaultValue={event.notes} maxLength={500} />
             </label>
           </div>
           <p className="volley-muted">
@@ -188,12 +201,13 @@ export function EventManager({
             />
             Fechar confirmações deste dia
           </label>
+          <EventLinkSettings event={event} pending={pending} />
           <div className="vl-actions">
-            <button type="submit" className="sc-btn" disabled={pending}>
+            <Button type="submit" className="sc-btn" disabled={pending}>
               Salvar detalhes
-            </button>
+            </Button>
             {confirmDelete ? (
-              <button
+              <Button
                 type="button"
                 className="sc-btn sc-btn-danger"
                 disabled={pending}
@@ -205,32 +219,32 @@ export function EventManager({
                 }
               >
                 Confirmar exclusão
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
                 type="button"
                 className="sc-btn sc-btn-ghost"
                 onClick={() => setConfirmDelete(true)}
               >
                 Excluir dia
-              </button>
+              </Button>
             )}
           </div>
         </form>
-      </section>
+      </VolleyCard>
 
-      <section className="sc-card sc-form-card">
+      <VolleyCard as="section" className="sc-form-card">
         <div className="vl-row">
           <h2>Lista para o WhatsApp</h2>
           <div className="vl-actions">
-            <button
+            <Button
               type="button"
               className="sc-btn"
               onClick={() => copy(text)}
               disabled={confirmedNames.length + confirmedGuests.length === 0}
             >
               {copied ? "Copiado ✓" : "Copiar lista"}
-            </button>
+            </Button>
             <a
               className="sc-button sc-btn-ghost"
               href={`https://wa.me/?text=${encodeURIComponent(text)}`}
@@ -242,11 +256,13 @@ export function EventManager({
           </div>
         </div>
         <pre className="vl-preview">{text}</pre>
-      </section>
+      </VolleyCard>
 
-      <section className="sc-card sc-form-card">
+      <VolleyCard as="section" className="sc-form-card">
         <h2>Presença ({confirmedNames.length} confirmados)</h2>
+        <p className="volley-muted">O administrador pode confirmar ou incluir membros após o prazo e com as inscrições fechadas, até a conclusão da chamada. A capacidade e a ordem da fila continuam valendo. Para novas inclusões, use Adicionar participante.</p>
         {feedback}
+        <VolleyListFilters search={search} onSearch={setSearch} searchLabel="Buscar membro nesta lista" shown={visibleMembers.length} total={availableMembers.length} active={!!search} onClear={() => setSearch("")} />
         <table className="sc-table vl-attendance-table">
           <thead>
             <tr>
@@ -255,8 +271,7 @@ export function EventManager({
             </tr>
           </thead>
           <tbody>
-            {members
-              .filter((m) => m.is_active && m.membership_status === "approved")
+            {visibleMembers
               .map((m) => {
                 const record = attendance.find((row) => row.member_id === m.id);
                 const time = record
@@ -270,6 +285,11 @@ export function EventManager({
                   <tr key={m.id}>
                     <td data-label="Membro">
                       {m.name}
+                      <small className="vl-participation-detail">
+                        {ageOn(m.birth_date) !== null && ageOn(m.birth_date)! < 18
+                          ? <strong>{ageLabel(m.birth_date)}</strong>
+                          : ageLabel(m.birth_date)}
+                      </small>
                       {!!m.student_weekdays?.length && (
                         <small className="vl-participation-detail">
                           {record?.status === "confirmado"
@@ -289,7 +309,7 @@ export function EventManager({
                       )}
                     </td>
                     <td data-label="Situação">
-                      <select
+                      <NativeSelect
                         aria-label={`Situação de ${m.name}`}
                         value={statusOf.get(m.id) ?? "limpar"}
                         disabled={pending}
@@ -307,20 +327,21 @@ export function EventManager({
                         <option value="reservado" disabled>
                           Vaga reservada
                         </option>
-                        <option value="confirmado">Confirmado</option>
+                        <option value="confirmado" disabled={!!event.presence_closed_at}>Confirmado</option>
                         <option value="espera" disabled>
                           Em espera
                         </option>
                         <option value="ausente">Ausente</option>
                         <option value="nao_vai">Não vai</option>
-                      </select>
+                      </NativeSelect>
                     </td>
                   </tr>
                 );
               })}
           </tbody>
         </table>
-      </section>
+        {!visibleMembers.length && <p>Nenhum membro encontrado nesta lista.</p>}
+      </VolleyCard>
     </>
   );
 }
