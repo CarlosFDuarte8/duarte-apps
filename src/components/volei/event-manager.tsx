@@ -250,6 +250,7 @@ export function EventManager({
 
       <VolleyCard as="section" className="sc-form-card">
         <h2>Presença ({confirmedNames.length} confirmados)</h2>
+        <p className="volley-muted">O administrador pode confirmar ou incluir membros após o prazo e com as inscrições fechadas, até a conclusão da chamada. A capacidade e a ordem da fila continuam valendo. Para incluir um convidado, use o formulário Adicionar convidado.</p>
         {feedback}
         <table className="sc-table vl-attendance-table">
           <thead>
@@ -316,7 +317,7 @@ export function EventManager({
                         <option value="reservado" disabled>
                           Vaga reservada
                         </option>
-                        <option value="confirmado">Confirmado</option>
+                        <option value="confirmado" disabled={!!event.presence_closed_at}>Confirmado</option>
                         <option value="espera" disabled>
                           Em espera
                         </option>

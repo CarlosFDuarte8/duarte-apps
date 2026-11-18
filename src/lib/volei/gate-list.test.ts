@@ -41,19 +41,28 @@ it("a portaria admite só confirmados aprovados e convidados confirmados vincula
 });
 
 it("imprime membros antes dos convidados, com assinatura, campo livre e checkbox, sem coluna Tipo", () => {
+  const members = [member("Zélia"), ...Array.from({ length: 9 }, (_, index) => member(`Membro ${index + 1}`))];
   const rows = buildGateList(
-    [member("Zélia")],
-    [{ member_id: "Zélia", status: "confirmado" }],
-    [{ id: "guest", member_id: "Zélia", name: "Ana", status: "confirmado" }],
+    members,
+    members.map(person => ({ member_id: person.id, status: "confirmado" as const })),
+    [
+      { id: "guest", member_id: "Zélia", name: "Ana", status: "confirmado" },
+      { id: "guest-2", member_id: "Membro 1", name: "Bia", status: "confirmado" },
+    ],
   );
   const html = renderToStaticMarkup(createElement(GateListTables, { rows }));
   expect(html.indexOf("Zélia</td>")).toBeLessThan(html.indexOf("Ana<small>"));
-  expect(html).toContain("Membros · 1");
-  expect(html).toContain("Convidados · 1");
+  expect(html).toContain("Membros · 10");
+  expect(html).toContain("Convidados · 2");
+  expect(html).toContain("Preenchimento manual · 6");
+  expect(html.indexOf("Convidados · 2")).toBeLessThan(html.indexOf("Preenchimento manual · 6"));
   expect(html).toContain("Assinatura");
   expect(html).toContain("Observações");
   expect(html).not.toContain("Tipo / responsável");
-  expect(html.match(/class="gate-checkbox"/g)).toHaveLength(2);
+  expect(html.match(/class="gate-checkbox"/g)).toHaveLength(12);
   expect(html).toContain("Responsável: Zélia");
-  expect(html).toContain("<td>2</td>");
+  expect(html.match(/data-slot="blank-print-row"/g)).toHaveLength(6);
+  expect(html).toContain("<td>11</td>");
+  expect(html).toContain("<td>18</td>");
+  expect(html).not.toContain("<td>19</td>");
 });

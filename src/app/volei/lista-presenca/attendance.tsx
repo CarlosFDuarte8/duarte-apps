@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import type { WhatsAppGroupInfo } from "@/lib/volei/whatsapp";
 import { WhatsAppGroupPrint } from "@/components/volei/whatsapp-group";
+import { VolleyLogo } from "@/components/volei/logo";
+import { BlankPrintRows } from "@/components/volei/blank-print-rows";
 
 import { useEffect, useState } from "react";
 import { z } from "zod";
@@ -124,6 +126,6 @@ export function LocalAttendance({ group }: { group: WhatsAppGroupInfo | null }) 
     <VolleyCard as="section" className={styles.painel}><h2>Histórico deste encontro</h2><p>Faltas são registradas sem punição automática. Cancelamentos e ausências liberam vagas enquanto as inscrições estão abertas.</p><ul>{[...meeting.history].reverse().map((h, i) => <li key={i}>{timestamp(h.at)} — {h.text}</li>)}</ul></VolleyCard>
     </fieldset>
     <section className={styles.infoImpressao}><strong>Prévia da impressão</strong><span>Apenas confirmados • {confirmed.length}/18 nomes</span></section>
-    <section className={styles.folha}><div className={styles.folhaTopo}><div className={styles.folhaCabecalho}><h2>{meeting.title}</h2><p>{date.split("-").reverse().join("/")}</p></div><WhatsAppGroupPrint group={group} /></div><table className={styles.tabelaImpressao}><thead><tr><th>Nº</th><th>Nome completo</th><th>Assinatura</th></tr></thead><tbody>{confirmed.map((p, i) => <tr key={p.id}><td>{i + 1}</td><td>{p.nome}</td><td></td></tr>)}</tbody></table></section>
+    <section className={styles.folha}><div className={styles.folhaTopo}><VolleyLogo print /><div className={styles.folhaCabecalho}><h2>{meeting.title}</h2><p>{date.split("-").reverse().join("/")}</p></div><WhatsAppGroupPrint group={group} /></div><table className={styles.tabelaImpressao}><thead><tr><th>Nº</th><th>Nome completo</th><th>Assinatura</th></tr></thead><tbody>{confirmed.map((p, i) => <tr key={p.id}><td>{i + 1}</td><td>{p.nome}</td><td></td></tr>)}<BlankPrintRows count={CAPACITY - confirmed.length} start={confirmed.length + 1} columns={3} /></tbody></table></section>
   </div></div>;
 }

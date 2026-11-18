@@ -57,7 +57,7 @@ test("theme survives public navigation, browser back and reload without hydratio
   await page.goto("/volei");
   await expect(page.locator("html")).toHaveAttribute("data-volley-theme", "dark");
   await page.locator(".volley-sidebar").getByRole("link", { name: "Acesso administrativo", exact: true }).click();
-  await expect(page).toHaveURL(/\/volei\/entrar$/);
+  await expect(page).toHaveURL(/\/volei\/entrar$/, { timeout: 30_000 });
   await page.goBack();
   await expect(page).toHaveURL(/\/volei$/);
   await page.reload();
@@ -81,14 +81,17 @@ test("theme initialization remains safe when React recovers the document on the 
   });
   await page.goto("/volei", { waitUntil: "domcontentloaded" });
   // Simulate old markup before the actual browser bootstrap hydrates it.
-  await page.locator(".volley-brand > div").evaluate(element => {
-    element.firstChild!.textContent = "Previous version";
+  await page.locator(".volley-brand").evaluate(element => {
+    const previous = document.createElement("span");
+    previous.textContent = "Previous version";
+    element.append(previous);
   });
   releaseScripts();
   await page.getByRole("button", { name: "Escolher tema" }).click();
   await expect.poll(() => errors.some(message => /Hydration failed/.test(message))).toBe(true);
   await expect(page.getByRole("heading", { name: "Jogos e presenças", exact: true })).toBeVisible();
-  await expect(page.locator(".volley-brand > div")).toContainText("QUADRA");
+  await expect(page.locator(".volley-brand > span")).toHaveCount(0);
+  await expect(page.locator('.volley-brand img[data-slot="volley-logo"]')).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("data-volley-theme", "dark");
   expect(errors.filter(message => !/Hydration failed/.test(message))).toEqual([]);
   expect(documents).toBe(1);

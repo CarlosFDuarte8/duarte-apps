@@ -11,6 +11,7 @@ import { VolleyIcon } from "./volley-icon";
 import { NotificationBell } from "./notification-bell";
 import { ThemeToggle } from "./theme-toggle";
 import { VolleyPage } from "./page-frame";
+import { VolleyBrand } from "./brand";
 import "./design-tokens.css";
 import "./shell.css";
 import "@/components/ui/shadcn.css";
@@ -35,6 +36,7 @@ export function VoleiShell({
     if (
       path?.includes("lista-presenca") ||
       path?.includes("entrar") ||
+      path === "/volei/privacidade" ||
       path?.endsWith("/portaria")
     )
       return;
@@ -76,17 +78,7 @@ export function VoleiShell({
         className={`volley-app${admin ? "" : " volley-public"}${collapsed ? " volley-sidebar-collapsed" : ""}`}
       >
         <aside className="volley-sidebar" id="volley-navigation">
-          <Link
-            href={admin ? "/admin/volei" : "/volei"}
-            className="volley-brand"
-          >
-            <span>
-              <VolleyIcon name="ball" width="30" height="30" />
-            </span>
-            <div>
-              QUADRA<small>VÔLEI DA GALERA</small>
-            </div>
-          </Link>
+          <VolleyBrand admin={admin} />
           <div className="volley-mode">
             {admin ? "GESTÃO DO GRUPO" : "DENTRO DE QUADRA"}
           </div>
@@ -154,25 +146,12 @@ export function VoleiShell({
             ) : (
               <span>Organize. Confirme. Jogue.</span>
             )}
+            <Link href="/volei/privacidade">Política de Privacidade</Link>
           </footer>
         </aside>
         <div className="volley-body">
           <header className="volley-top">
-            <Link
-              href={admin ? "/admin/volei" : "/volei"}
-              className="volley-mobile-brand"
-              aria-label={
-                admin
-                  ? "Quadra — painel administrativo"
-                  : "Quadra — jogos e presenças"
-              }
-            >
-              <VolleyIcon name="ball" width="28" height="28" />
-              <span>
-                QUADRA
-                <small>{admin ? "ADMINISTRATIVO" : "VÔLEI DA GALERA"}</small>
-              </span>
-            </Link>
+            <VolleyBrand admin={admin} mobile />
             <div className="vx-desktop-context">
               <Button
                 className="volley-menu-toggle"
@@ -191,6 +170,8 @@ export function VoleiShell({
               <strong>
                 {path?.includes("configuracoes")
                   ? "Configurações do grupo"
+                  : path === "/volei/privacidade"
+                  ? "Política de Privacidade"
                   : path?.includes("notificacoes")
                   ? "Solicitações"
                   : path?.includes("ajuda")

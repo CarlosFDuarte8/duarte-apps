@@ -1,16 +1,18 @@
 import type { buildGateList } from "@/lib/volei/gate-list";
 import * as React from "react";
+import { BlankPrintRows } from "./blank-print-rows";
 
 type Rows = ReturnType<typeof buildGateList>;
 
 export function GateListTables({ rows }: { rows: Rows }) {
   const members = rows.filter((row) => row.type === "Membro");
   const guests = rows.filter((row) => row.type === "Convidado");
-  function section(title: string, people: Rows, offset: number) {
+  const blankLines = Math.max(0, 18 - rows.length);
+  function section(title: string, people: Rows, offset: number, blankLines = 0) {
     return (
       <table>
         <caption>
-          {title} · {people.length}
+          {title} · {people.length + blankLines}
         </caption>
         <colgroup>
           <col className="gate-number-col" />
@@ -50,6 +52,7 @@ export function GateListTables({ rows }: { rows: Rows }) {
               </td>
             </tr>
           ))}
+          <BlankPrintRows count={blankLines} start={offset + people.length + 1} columns={5} />
         </tbody>
       </table>
     );
@@ -58,6 +61,7 @@ export function GateListTables({ rows }: { rows: Rows }) {
     <>
       {members.length > 0 && section("Membros", members, 0)}
       {guests.length > 0 && section("Convidados", guests, members.length)}
+      {blankLines > 0 && section("Preenchimento manual", [], rows.length, blankLines)}
     </>
   );
 }

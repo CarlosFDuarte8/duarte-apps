@@ -11,6 +11,11 @@ export function VoleiHelp({ admin = false }: { admin?: boolean }) {
         title="Como podemos ajudar?"
         description="Dicas para acessar o grupo e resolver os problemas mais comuns."
       />
+      <VolleyCard as="section" className={styles.section}>
+        <h2>Seus dados e sua privacidade</h2>
+        <p>Saiba quais informações são utilizadas no cadastro e nos jogos, o que fica público e como falar sobre seus dados.</p>
+        <Link className="volley-link" href="/volei/privacidade">Ler a Política de Privacidade</Link>
+      </VolleyCard>
       {admin && (
         <Link className="sc-button" href="/admin/volei/membros">
           Abrir membros para liberar acesso

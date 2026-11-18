@@ -439,6 +439,7 @@ export function GameResponse({
               Seu telefone fica privado. Volte por este navegador para gerenciar
               a inscrição. Se trocar de aparelho, peça a liberação ao
               responsável. O número ainda não é validado por SMS.
+              {" "}<Link className="underline underline-offset-2" href="/volei/privacidade">Política de Privacidade</Link>.
             </p>
           </div>
         </form>

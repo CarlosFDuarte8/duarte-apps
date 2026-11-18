@@ -11,6 +11,7 @@ import { GateListTables } from "@/components/volei/gate-list-tables";
 import { Button } from "@/components/ui/button";
 import { publicWhatsAppGroup } from "@/lib/volei/group-settings";
 import { WhatsAppGroupPrint } from "@/components/volei/whatsapp-group";
+import { VolleyLogo } from "@/components/volei/logo";
 import "@/components/volei/gate-list.css";
 export default async function Page({
   params,
@@ -35,6 +36,7 @@ export default async function Page({
 <PrintGateList /> </>} /></div>
       <VolleyCard as="section" className="gate-sheet" data-variant="print">
         <header>
+          <VolleyLogo print />
           <div className="gate-title">
           <span>CONTROLE DE ACESSO · PORTARIA</span>
           <h1>{found.event.title}</h1>

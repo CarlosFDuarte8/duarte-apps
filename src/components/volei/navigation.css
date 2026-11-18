@@ -28,20 +28,13 @@
   letter-spacing: -0.7px;
 }
 
-.volley-app .volley-brand > span {
-  display: grid;
-  place-items: center;
+.volley-app :is(.volley-brand, .volley-mobile-brand) > img {
+  display: block;
   flex-shrink: 0;
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  border-radius: 12px;
-  background: #005092;
-  color: white;
-  box-shadow: 0 3px 8px #00498c12;
+  width: var(--v-brand-size);
+  height: auto;
+  object-fit: contain;
 }
-
-.volley-brand > span svg { width: 24px; height: 24px; }
 
 .volley-app .volley-brand small {
   display: block;
